@@ -1,0 +1,10 @@
+/* Custom CSS to disable the loading overlay */
+.hold-transition .content-wrapper,
+.hold-transition .main-footer,
+.hold-transition .main-header {
+    display: block !important;
+}
+
+.hold-transition .wrapper {
+    display: none !important;   
+}
