@@ -9,7 +9,8 @@
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -23,7 +24,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1>Registrar Proveedores&nbsp;</h1>
+                    <h1>Registrar Proveedores</h1>
                     <form id="proveedorForm">
                         <input type="hidden" id="proveedor_id" name="proveedor_id">
                         <div class="form-group">
@@ -46,9 +47,8 @@
                             <label for="telefono">Teléfono</label>
                             <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
-                        <button type="button" class="btn btn-warning" id="btnActualizar">Actualizar</button>
-                        <button type="button" class="btn btn-danger" id="btnEliminar">Eliminar</button>
+                        <button type="submit" class="btn btn-primary">Registrar Proveedor</button>
+                       
                     </form>
 
                     <table id="proveedoresTable" class="display" style="width:100%">
@@ -80,8 +80,11 @@
     <!-- AdminLTE App -->
     <script src="dist/js/adminlte.min.js"></script>
     <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <!-- Custom JS -->
     <script src="JS/prov.js"></script> <!-- Ruta al archivo JS -->
+
+    <script src="JS/cerrarsesion.js"></script>
+<script src="JS/validsesion.js"></script>
 </body>
 </html>

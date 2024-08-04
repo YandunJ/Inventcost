@@ -1,40 +1,41 @@
 <?php
 // MODELO/modUsuario.php
-
-require_once "../CONFIG/conexion.php";
-
 class Usuario {
-    private $db;
+    private $conn;
 
     public function __construct() {
-        $conexion = new Cls_DataConnection();
-        $this->db = $conexion->FN_getConnect();
+        $this->conn = new Conexion();
+    }
+    public function insertarUsuario($cedula, $nombre, $apellido, $telefono, $correo, $direccion, $usuarioNombre, $contrasenia, $rol_id) {
+        $query = "INSERT INTO usuarios (usu_cedula, usu_nombre, usu_apellido, usu_telefono, usu_correo, usu_direccion, usu_usuario, usu_contrasenia, rol_id, fecha_reg) 
+                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$cedula, $nombre, $apellido, $telefono, $correo, $direccion, $usuarioNombre, $contrasenia, $rol_id]);
     }
 
-    public function obtenerRoles() {
-        $sql = "SELECT * FROM roles";
-        $result = $this->db->query($sql);
-        $roles = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $roles[] = $row;
-        }
-
-        return $roles;
+    public function obtenerUsuarios() {
+        $query = "CALL pa_obtener_usuarios()";
+        $result = $this->conn->query($query);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function insertarUsuario($cedula, $nombre, $apellido, $telefono, $correo, $direccion, $usuario, $contrasenia, $rol_id) {
-        $sql = "CALL sp_registrar_usuario(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        if ($stmt === false) {
-            throw new Exception('Error en la preparación del statement: ' . $this->db->error);
-        }
-        $stmt->bind_param("ssssssssi", $cedula, $nombre, $apellido, $telefono, $correo, $direccion, $usuario, $contrasenia, $rol_id);
-        $result = $stmt->execute();
-        if ($result === false) {
-            throw new Exception('Error en la ejecución del statement: ' . $stmt->error);
-        }
-        return $result;
+    public function obtenerUsuarioPorID($usu_id) {
+        $query = "SELECT * FROM usuarios WHERE usu_id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([$usu_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function actualizarUsuario($usu_id, $cedula, $nombre, $apellido, $telefono, $correo, $direccion, $usuarioNombre, $contrasenia, $rol_id) {
+        $query = "UPDATE usuarios SET usu_cedula = ?, usu_nombre = ?, usu_apellido = ?, usu_telefono = ?, usu_correo = ?, usu_direccion = ?, usu_usuario = ?, usu_contrasenia = ?, rol_id = ? WHERE usu_id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$cedula, $nombre, $apellido, $telefono, $correo, $direccion, $usuarioNombre, $contrasenia, $rol_id, $usu_id]);
+    }
+
+    public function eliminarUsuario($usu_id) {
+        $query = "DELETE FROM usuarios WHERE usu_id = ?";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute([$usu_id]);
     }
 }
 ?>

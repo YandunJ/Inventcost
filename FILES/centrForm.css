@@ -1,0 +1,8 @@
+
+.form-container {
+    max-width: 400px; /* Ajusta el tamaño según tus necesidades */
+    margin: 0 auto; /* Centrar el formulario */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+}

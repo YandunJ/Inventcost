@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">

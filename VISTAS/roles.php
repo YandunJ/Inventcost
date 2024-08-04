@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="../FILES/centrForm.css">
 </head> 
 <body>
 <div class="wrapper">
@@ -22,25 +23,28 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <h1>Agregar Rol</h1>
-                <form id="roleForm">
-                    <div class="form-group">
-                        <label for="rol_nombre">Nombre del Rol:</label>
-                        <input type="text" id="rol_nombre" name="rol_nombre" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="rol_descripcion">Descripción del Rol:</label>
-                        <input type="text" id="rol_descripcion" name="rol_descripcion" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="rol_area_trabajo">Permisos en el Sistema:</label>
-                        <select id="rol_area_trabajo" name="rol_area_trabajo" class="form-control" required></select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Agregar Rol</button>
-                </form>
+                <h1 class="text-center">Agregar Rol</h1>
+                <div class="form-container">
+                    <form id="roleForm">
+                        <div class="form-group">
+                            <label for="rol_nombre">Nombre del Rol:</label>
+                            <input type="text" id="rol_nombre" name="rol_nombre" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rol_descripcio
+                            n">Descripción del Rol:</label>
+                            <input type="text" id="rol_descripcion" name="rol_descripcion" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rol_area_trabajo">Permisos en el Sistema:</label>
+                            <select id="rol_area_trabajo" name="rol_area_trabajo" class="form-control" required></select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Agregar Rol</button>
+                    </form>
+                </div>
 
                 <!-- DataTable para mostrar los roles -->
-                <h2>Listado de Roles</h2>
+                <h2 class="text-center">Listado de Roles</h2>
                 <table id="rolesTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>

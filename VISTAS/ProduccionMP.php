@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">

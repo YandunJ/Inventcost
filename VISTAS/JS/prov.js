@@ -1,191 +1,117 @@
-$(document).ready(function () {
-    var table = $('#proveedoresTable').DataTable({
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/Spanish.json" 
-            
-        }
-    });
-
-
-    $("#proveedorForm").on("submit", function (event) {
-        event.preventDefault();
-        if (camposCompletos()) {
-            guardarProveedor();
-        } else {
-            alert("Completa todos los campos antes de guardar.");
-        }
-    });
-
-    $("#btnActualizar").hide();
-    $("#btnEliminar").hide();
-
-    function camposCompletos() {
-        return ($("#nombre_empresa").val() && $("#representante").val() && $("#direccion").val() && $("#correo").val() && $("#telefono").val());
-    }
-
-    function guardarProveedor() {
-        var formData = {
-            nombre_empresa: $("#nombre_empresa").val(),
-            representante: $("#representante").val(),
-            direccion: $("#direccion").val(),
-            correo: $("#correo").val(),
-            telefono: $("#telefono").val(),
-            action: "guardarDatosProveedor"
-        };
-
-        $.ajax({
-            url: "../AJAX/ctrProveedores.php",
-            type: "POST",
-            data: formData,
-            success: function (response) {
-                var res = JSON.parse(response);
-                if (res.status === "success") {
-                    alert("Proveedor registrado exitosamente.");
-                    $("#proveedorForm")[0].reset();
-                    cargarProveedores();
-                } else {
-                    alert("Error al registrar el proveedor: " + res.message);
+$(document).ready(function() {
+    // Inicializar DataTable
+    const proveedoresTable = $('#proveedoresTable').DataTable({
+        ajax: {
+            url: '../AJAX/ctrProveedores.php',
+            type: 'POST',
+            data: { action: 'getProveedores' },
+            dataSrc: 'data'  // Asegúrate de que esté configurado a 'data'
+        },
+        columns: [
+            { data: 'proveedor_id' },
+            { data: 'nombre_empresa' },
+            { data: 'representante' },
+            { data: 'direccion' },
+            { data: 'correo' },
+            { data: 'telefono' },
+            { data: 'fecha_reg' },
+            {
+                data: null,
+                render: function(data) {
+                    return `
+                        <button class="btn btn-warning btn-edit" data-id="${data.proveedor_id}">Editar</button>
+                        <button class="btn btn-danger btn-delete" data-id="${data.proveedor_id}">Eliminar</button>
+                    `;
                 }
-            },
-            error: function (xhr, status, error) {
-                alert("Ocurrió un error: " + error);
             }
-        });
-    }
-
-    function cargarProveedores() {
-        $.ajax({
-            url: "../AJAX/ctrProveedores.php",
-            type: "POST",
-            data: { action: "obtenerProveedores" },
-            success: function (response) {
-                var res = JSON.parse(response);
-                if (res.status === "success") {
-                    llenarTabla(res.data);
-                } else {
-                    alert("Error al obtener los proveedores: " + res.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Ocurrió un error: " + error);
-            }
-        });
-    }
-    function llenarTabla(proveedores) {
-        var table = $('#proveedoresTable').DataTable();
-        table.clear();
-        proveedores.forEach(function (proveedor) {
-            table.row.add([
-                proveedor.proveedor_id,
-                proveedor.nombre_empresa,
-                proveedor.representante,
-                proveedor.direccion,
-                proveedor.correo,
-                proveedor.telefono,
-                proveedor.fecha_registro,
-                '<button class="btn btn-warning btn-edit" data-id="' + proveedor.proveedor_id + '">Editar</button>' +
-                '<button class="btn btn-danger btn-delete" data-id="' + proveedor.proveedor_id + '">Eliminar</button>'
-            ]).draw();
-        });
-    }
+        ]
+    });
     
 
-    $('#proveedoresTable').on('click', '.btn-edit', function () {
-        var proveedor_id = $(this).data('id');
-        obtenerProveedor(proveedor_id);
-    });
-
-    $('#proveedoresTable').on('click', '.btn-delete', function () {
-        var proveedor_id = $(this).data('id');
-        if (confirm("¿Estás seguro de eliminar este proveedor?")) {
-            eliminarProveedor(proveedor_id);
-        }
-    });
-
-    function obtenerProveedor(proveedor_id) {
-        $.ajax({
-            url: "../AJAX/ctrProveedores.php",
-            type: "POST",
-            data: { proveedor_id: proveedor_id, action: "obtenerProveedor" },
-            success: function (response) {
-                var res = JSON.parse(response);
-                if (res.status === "success") {
-                    $("#proveedor_id").val(res.data.proveedor_id);
-                    $("#nombre_empresa").val(res.data.nombre_empresa);
-                    $("#representante").val(res.data.representante);
-                    $("#direccion").val(res.data.direccion);
-                    $("#correo").val(res.data.correo);
-                    $("#telefono").val(res.data.telefono);
-                    $("#btnGuardar").hide();
-                    $("#btnActualizar").show();
-                    $("#btnEliminar").show();
-                } else {
-                    alert("Error al obtener el proveedor: " + res.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Ocurrió un error: " + error);
-            }
-        });
-    }
-
-    $("#btnActualizar").on("click", function () {
-        actualizarProveedor();
-    });
-
-    function actualizarProveedor() {
-        var formData = {
-            proveedor_id: $("#proveedor_id").val(),
-            nombre_empresa: $("#nombre_empresa").val(),
-            representante: $("#representante").val(),
-            direccion: $("#direccion").val(),
-            correo: $("#correo").val(),
-            telefono: $("#telefono").val(),
-            action: "actualizarDatosProveedor"
+    // Manejar el envío del formulario para registrar proveedores
+    $('#proveedorForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            proveedor_id: $('#proveedor_id').val(),
+            nombre_empresa: $('#nombre_empresa').val(),
+            representante: $('#representante').val(),
+            direccion: $('#direccion').val(),
+            correo: $('#correo').val(),
+            telefono: $('#telefono').val()
         };
 
         $.ajax({
-            url: "../AJAX/ctrProveedores.php",
-            type: "POST",
-            data: formData,
-            success: function (response) {
-                var res = JSON.parse(response);
-                if (res.status === "success") {
-                    alert("Proveedor actualizado exitosamente.");
-                    $("#proveedorForm")[0].reset();
-                    cargarProveedores();
-                    $("#btnGuardar").show();
-                    $("#btnActualizar").hide();
-                    $("#btnEliminar").hide();
+            url: '../AJAX/ctrProveedores.php',
+            type: 'POST',
+            data: { action: 'addOrUpdateProveedor', ...formData },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Proveedor registrado exitosamente');
+                    proveedoresTable.ajax.reload();
+                    $('#proveedorForm')[0].reset(); // Limpiar el formulario
+                    // Cambiar el texto del botón de nuevo
+                    $('button[type="submit"]').text('Registrar Proveedor');
                 } else {
-                    alert("Error al actualizar el proveedor: " + res.message);
+                    alert('Error al registrar el proveedor: ' + response.message);
                 }
             },
-            error: function (xhr, status, error) {
-                alert("Ocurrió un error: " + error);
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                console.error("Response:", xhr.responseText);
             }
         });
-    }
+    });
 
-    function eliminarProveedor(proveedor_id) {
+    // Manejar el clic en el botón de editar
+  // Manejar el clic en el botón de editar
+    $('#proveedoresTable tbody').on('click', '.btn-edit', function() {
+        const proveedorId = $(this).data('id');
+
         $.ajax({
-            url: "../AJAX/ctrProveedores.php",
-            type: "POST",
-            data: { proveedor_id: proveedor_id, action: "eliminarDatosProveedor" },
-            success: function (response) {
-                var res = JSON.parse(response);
-                if (res.status === "success") {
-                    alert("Proveedor eliminado exitosamente.");
-                    cargarProveedores();
+            url: '../AJAX/ctrProveedores.php',
+            type: 'POST',
+            data: { action: 'getProveedorById', proveedor_id: proveedorId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    const proveedor = response.data;
+                    $('#proveedor_id').val(proveedor.proveedor_id);
+                    $('#nombre_empresa').val(proveedor.nombre_empresa);
+                    $('#representante').val(proveedor.representante);
+                    $('#direccion').val(proveedor.direccion);
+                    $('#correo').val(proveedor.correo);
+                    $('#telefono').val(proveedor.telefono);
+                    
+                    // Cambiar el texto del botón
+                    $('button[type="submit"]').text('Actualizar Proveedor');
                 } else {
-                    alert("Error al eliminar el proveedor: " + res.message);
+                    alert('Proveedor no encontrado');
                 }
-            },
-            error: function (xhr, status, error) {
-                alert("Ocurrió un error: " + error);
             }
         });
-    }
+    });
 
-    cargarProveedores();
+
+    // Manejar el clic en el botón de eliminar
+    $('#proveedoresTable tbody').on('click', '.btn-delete', function() {
+        const proveedorId = $(this).data('id');
+        if (confirm("¿Estás seguro de que deseas eliminar este proveedor?")) {
+            $.ajax({
+                url: '../AJAX/ctrProveedores.php',
+                type: 'POST',
+                data: { action: 'deleteProveedor', proveedor_id: proveedorId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert('Proveedor eliminado correctamente');
+                        proveedoresTable.ajax.reload();
+                    } else {
+                        alert('Error al eliminar proveedor: ' + response.message);
+                    }
+                }
+            });
+        }
+    });
 });
