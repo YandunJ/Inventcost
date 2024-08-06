@@ -22,48 +22,55 @@
             <section class="content">
                 <div class="container-fluid">
                     <h1>Inventario de Insumos</h1>
-                    <form id="inventarioForm">
-                        <div class="form-group">
-                            <label for="insumo_id">ID del Insumo:</label>
-                            <input type="number" id="insumo_id" name="insumo_id" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="proveedor_id">ID del Proveedor:</label>
-                            <input type="number" id="proveedor_id" name="proveedor_id" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha_hora_ing">Fecha y Hora de Ingreso:</label>
-                            <input type="datetime-local" id="fecha_hora_ing" name="fecha_hora_ing" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cantidad">Cantidad:</label>
-                            <input type="number" id="cantidad" name="cantidad" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="precio_unitario">Precio Unitario:</label>
-                            <input type="number" id="precio_unitario" name="precio_unitario" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="precio_total">Precio Total:</label>
-                            <input type="number" id="precio_total" name="precio_total" class="form-control" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
-                    </form>
+                    <div class="form-container"> <!-- Contenedor para centrar el formulario -->
+                        <form id="inventarioForm">
+                            <div class="form-group">
+                                <label for="proveedor_id">Proveedor:</label>
+                                <input type="number" id="proveedor_id" name="proveedor_id" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="fecha_hora_ing">Fecha y Hora de Ingreso:</label>
+                                <input type="datetime-local" id="fecha_hora_ing" name="fecha_hora_ing" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidad">Cantidad:</label>
+                                <input type="number" id="cantidad" name="cantidad" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="precio_unitario">Precio Unitario:</label>
+                                <input type="number" id="precio_unitario" name="precio_unitario" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="precio_total">Precio Total:</label>
+                                <input type="number" id="precio_total" name="precio_total" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
+                        </form>
+                    </div> <!-- Fin del contenedor del formulario -->
+
+                    <hr>
+
+                    <table id="inventarioTable" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Proveedor</th>
+                                <th>Fecha y Hora de Ingreso</th>
+                                <th>Cantidad</th>
+                                <th>Precio Unitario</th>
+                                <th>Precio Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be populated dynamically from the backend -->
+                        </tbody>
+                    </table>
                 </div>
             </section>
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <div class="float-right d-none d-sm-inline">
-                Custom footer text
-            </div>
-            <strong>Copyright &copy; 2024 <a href="https://adminlte.io">FranFruit.io</a>.</strong> Derechos Reservados.
-        </footer>
-    </div>
-    <!-- ./wrapper -->
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>
@@ -76,4 +83,3 @@
     <script src="JS/cerrarsesion.js"></script>
 </body>
 </html>
- 

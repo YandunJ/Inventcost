@@ -1,40 +1,38 @@
 $(document).ready(function() {
     // Inicializar DataTable
-    var table = $('#employeesTable').DataTable({
-        "ajax": {
-            "url": "../AJAX/ctrEmpleados.php",
-            "type": "POST",
-            "data": { action: "obtenerEmpleados" }
+    const employeesTable = $('#employeesTable').DataTable({
+        ajax: {
+            url: '../AJAX/ctrEmpleados.php',
+            type: 'POST',
+            data: { action: 'obtenerEmpleados' },
+            dataSrc: 'data'
         },
-        "columns": [
-            { "data": "emp_id" },
-            { "data": "emp_cedula" },
-            { "data": "emp_nombre" },
-            { "data": "emp_apellido" },
-            { "data": "emp_telefono" },
-            { "data": "emp_correo" },
-            { "data": "emp_direccion" },
+        columns: [
+            { data: 'emp_id' },
+            { data: 'emp_cedula' },
+            { data: 'emp_nombre' },
+            { data: 'emp_apellido' },
+            { data: 'emp_telefono' },
+            { data: 'emp_correo' },
+            { data: 'emp_direccion' },
             {
-                "data": null,
-                "defaultContent": `
-                    <button class="editEmployee btn btn-warning btn-sm">Editar</button>
-                    <button class="deleteEmployee btn btn-danger btn-sm">Eliminar</button>
-                `
+                data: null,
+                render: function(data) {
+                    return `
+                        <button class="btn btn-warning btn-edit" data-id="${data.emp_id}">Editar</button>
+                        <button class="btn btn-danger btn-delete" data-id="${data.emp_id}">Eliminar</button>
+                    `;
+                }
             }
         ]
     });
 
-    var editing = false;
-    var currentId = null;
-
-    // Manejar la acción de agregar empleado
+    // Manejar el envío del formulario para registrar empleados
     $('#employeeForm').on('submit', function(e) {
         e.preventDefault();
-
-        var action = editing ? 'updateEmpleado' : 'addEmpleado';
-        var formData = {
-            action: action,
-            emp_id: editing ? currentId : null,
+        
+        const formData = {
+            emp_id: $('#emp_id').val(),
             cedula: $('#cedula').val(),
             nombre: $('#nombre').val(),
             apellido: $('#apellido').val(),
@@ -46,69 +44,78 @@ $(document).ready(function() {
         $.ajax({
             url: '../AJAX/ctrEmpleados.php',
             type: 'POST',
-            data: formData,
+            data: { action: 'addOrUpdateEmpleado', ...formData },
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    alert(editing ? 'Empleado actualizado correctamente' : 'Empleado registrado correctamente');
-                    // Limpiar el formulario
+                    alert('Empleado registrado exitosamente');
+                    employeesTable.ajax.reload();
                     $('#employeeForm')[0].reset();
-                    // Recargar la tabla de empleados
-                    table.ajax.reload();
-                    // Resetear el estado de edición
-                    editing = false;
-                    currentId = null;
-                    $('#employeeForm button[type="submit"]').text('Agregar Empleado');
+                    $('#emp_id').val(''); // Limpiar el ID del empleado
+                    $('button[type="submit"]').text('Agregar Empleado');
                 } else {
-                    alert('Error: ' + response.message);
+                    alert('Error al registrar el empleado: ' + response.message);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
-                alert('Error en la solicitud AJAX: ' + textStatus);
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
+                console.error("Response:", xhr.responseText);
             }
         });
     });
 
-    // Editar y eliminar empleados
-    $('#employeesTable tbody').on('click', 'button', function() {
-        var action = $(this).hasClass('editEmployee') ? 'edit' : 'delete';
-        var data = table.row($(this).parents('tr')).data();
+    // Manejar el clic en el botón de editar
+    $('#employeesTable tbody').on('click', '.btn-edit', function() {
+        const empId = $(this).data('id');
 
-        if (action === 'edit') {
-            // Llenar el formulario con los datos del empleado
-            $('#cedula').val(data.emp_cedula);
-            $('#nombre').val(data.emp_nombre);
-            $('#apellido').val(data.emp_apellido);
-            $('#telefono').val(data.emp_telefono);
-            $('#correo').val(data.emp_correo);
-            $('#direccion').val(data.emp_direccion);
-            // Cambiar el estado de edición y guardar el id actual
-            editing = true;
-            currentId = data.emp_id;
-            $('#employeeForm button[type="submit"]').text('Actualizar Empleado');
-        } else if (action === 'delete') {
-            if (confirm('¿Estás seguro de que quieres eliminar este empleado?')) {
-                $.ajax({
-                    url: '../AJAX/ctrEmpleados.php',
-                    type: 'POST',
-                    data: { action: 'deleteEmpleado', emp_id: data.emp_id, cedula: data.emp_cedula },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            alert('Empleado eliminado correctamente');
-                            // Recargar la tabla de empleados
-                            table.ajax.reload();
-                        } else {
-                            alert('Error: ' + response.message);
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
-                        alert('Error en la solicitud AJAX: ' + textStatus);
-                    }
-                });
+        $.ajax({
+            url: '../AJAX/ctrEmpleados.php',
+            type: 'POST',
+            data: { action: 'getEmpleadoById', emp_id: empId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    const empleado = response.data;
+                    $('#emp_id').val(empleado.emp_id);
+                    $('#cedula').val(empleado.emp_cedula);
+                    $('#nombre').val(empleado.emp_nombre);
+                    $('#apellido').val(empleado.emp_apellido);
+                    $('#telefono').val(empleado.emp_telefono);
+                    $('#correo').val(empleado.emp_correo);
+                    $('#direccion').val(empleado.emp_direccion);
+                    
+                    $('button[type="submit"]').text('Actualizar Empleado');
+                } else {
+                    alert('Empleado no encontrado');
+                }
             }
+        });
+    });
+
+    // Manejar el clic en el botón de eliminar
+    $('#employeesTable tbody').on('click', '.btn-delete', function() {
+        const empId = $(this).data('id');
+        const cedula = $(this).closest('tr').find('td:eq(1)').text(); // Obtener la cédula del empleado
+
+        if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
+            $.ajax({
+                url: '../AJAX/ctrEmpleados.php',
+                type: 'POST',
+                data: { action: 'deleteEmpleado', emp_id: empId, cedula: cedula },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert('Empleado eliminado correctamente');
+                        employeesTable.ajax.reload();
+                    } else {
+                        alert('Error al eliminar empleado: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    console.error("Response:", xhr.responseText);
+                }
+            });
         }
     });
 });

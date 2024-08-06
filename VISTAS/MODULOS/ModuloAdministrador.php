@@ -28,17 +28,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="InvMateriaPrima.php" class="nav-link">
-                        <i class="nav-icon fas fa-edit"></i>
-                        <p>Invent. Materia Prima</p>
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a href="insumos.php" class="nav-link">
                         <i class="nav-icon fas fa-boxes"></i>
                         <p>Agregar Insumos</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="InvMateriaPrima.php" class="nav-link">
+                        <i class="nav-icon fas fa-edit"></i>
+                        <p>Invent. Materia Prima</p>
+                    </a>
+                </li>
+             
                 <li class="nav-item">
                     <a href="InvInsumos.php" class="nav-link">
                         <i class="nav-icon fas fa-warehouse"></i>

@@ -23,19 +23,21 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1>Gestión de Frutas</h1>
-                    <form id="fruitForm">
-                        <div class="form-group">
-                            <label for="nombre">Nombre de la Fruta:</label>
-                            <input type="text" id="nombre" name="nombre" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="descripcion">Descripción:</label>
-                            <textarea id="descripcion" name="descripcion" class="form-control" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Agregar Fruta</button>
-                    </form>
+                    <h1 class="text-center">Gestión de Frutas</h1>
+                        <div class="form-container">
+                            <form id="fruitForm">
+                                <div class="form-group">
+                                    <label for="nombre">Nombre de la Fruta:</label>
+                                    <input type="text" id="nombre" name="nombre" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descripcion">Descripción:</label>
+                                    <textarea id="descripcion" name="descripcion" class="form-control" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Agregar Fruta</button>
+                            </form>
 
+                    </div>
                     <hr>
 
                     <table id="fruitsTable" class="table table-bordered table-hover">
@@ -57,15 +59,7 @@
         </div>
         <!-- /.content-wrapper -->
 
-        <!-- Main Footer -->
-        <footer class="main-footer">
-            <div class="float-right d-none d-sm-inline">
-                Custom footer text
-            </div>
-            <strong>Copyright &copy; 2024 <a href="https://adminlte.io">FranFruit.io</a>.</strong> Derechos Reservados.
-        </footer>
-    </div>
-    <!-- ./wrapper -->
+      
 
     <!-- jQuery -->
     <script src="plugins/jquery/jquery.min.js"></script>

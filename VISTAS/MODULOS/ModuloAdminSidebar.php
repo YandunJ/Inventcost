@@ -31,26 +31,27 @@
                         <li class="nav-item">
                             <a href="frutas.php" class="nav-link">
                                 <i class="nav-icon fas fa-apple-alt"></i>
-                                <p>Argregar Fruta</p>
+                                <p>Nueva Fruta</p>
+                            </a>
+                        </li>
+                        </li>
+                        <li class="nav-item">
+                            <a href="insumos.php" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>Nuevos Insumos</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="InvMateriaPrima.php" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
-                                <p>Invent. Materia Prima</p>
+                                <p>Ingreso Materia Prima</p>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="insumos.php" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p>Agregar Insumos</p>
-                            </a>
-                        </li>
+                     
                         <li class="nav-item">
                             <a href="InvInsumos.php" class="nav-link">
                                 <i class="nav-icon fas fa-warehouse"></i>
-                                <p>Invent. Insumos</p>
+                                <p>Ingreso Insumos</p>
                             </a>
                         </li>
                      
