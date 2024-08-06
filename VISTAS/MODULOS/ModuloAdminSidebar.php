@@ -1,3 +1,7 @@
+<?php
+session_start();
+$nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] : 'User Name';
+?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="index.php" class="brand-link">
@@ -9,12 +13,13 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="../FILES/usulogo.png" class="img-circle elevation-2" alt="User Image">
-                    </div>
-                    <div class="info">
-                        <a href="#" class="d-block">User Name</a>
-                    </div>
-                </div>
+                        <img src="../FILES/usulog.png" class="img-circle elevation-2" alt="User Image">
+                        </div>
+                            <div class="info">
+                                <a href="#" class="d-block"><?php echo $nombreCompleto; ?></a>
+                            </div>
+                        </div>
+
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
@@ -31,27 +36,26 @@
                         <li class="nav-item">
                             <a href="frutas.php" class="nav-link">
                                 <i class="nav-icon fas fa-apple-alt"></i>
-                                <p>Nueva Fruta</p>
-                            </a>
-                        </li>
-                        </li>
-                        <li class="nav-item">
-                            <a href="insumos.php" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p>Nuevos Insumos</p>
+                                <p>Catalogo Frutas</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="InvMateriaPrima.php" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
-                                <p>Ingreso Materia Prima</p>
+                                <p>Compra Materia Prima</p>
                             </a>
-                     
+                        </li>
+                        <li class="nav-item">
+                            <a href="insumos.php" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>Catalogo Insumos</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="InvInsumos.php" class="nav-link">
                                 <i class="nav-icon fas fa-warehouse"></i>
-                                <p>Ingreso Insumos</p>
+                                <p>Compra Insumos</p>
                             </a>
                         </li>
                      
