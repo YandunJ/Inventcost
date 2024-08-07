@@ -24,33 +24,36 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1>Registrar Proveedores</h1>
+                <h1 class="text-center">Registrar Proveedores</h1>
+                <div class="form-container">
                     <form id="proveedorForm">
-                        <input type="hidden" id="proveedor_id" name="proveedor_id">
-                        <div class="form-group">
-                            <label for="nombre_empresa">Nombre Empresa</label>
-                            <input type="text" class="form-control" id="nombre_empresa" name="nombre_empresa" placeholder="Nombre Empresa" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="representante">Representante</label>
-                            <input type="text" class="form-control" id="representante" name="representante" placeholder="Representante" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="direccion">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="correo">Correo</label>
-                            <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="telefono">Teléfono</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registrar Proveedor</button>
-                       
-                    </form>
+                            <input type="hidden" id="proveedor_id" name="proveedor_id">
+                            <div class="form-group">
+                                <label for="nombre_empresa">Nombre Empresa</label>
+                                <input type="text" class="form-control" id="nombre_empresa" name="nombre_empresa" placeholder="Nombre Empresa" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="representante">Representante</label>
+                                <input type="text" class="form-control" id="representante" name="representante" placeholder="Representante" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="direccion">Dirección</label>
+                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="correo">Correo</label>
+                                <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono</label>
+                                <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Registrar Proveedor</button>
+                        
+                        </form>
+                </div>
 
+                <h2 class="text-center">Listado de Proveedores</h2>
                     <table id="proveedoresTable" class="display" style="width:100%">
                         <thead>
                             <tr>

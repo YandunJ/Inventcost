@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
     <link rel="stylesheet" href="../FILES/centrForm.css">
+
 </head> 
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -30,6 +34,7 @@
                                 <select id="fruta_id" name="fruta_id" class="form-control" required>
                                     <!-- Options will be populated dynamically from the backend -->
                                 </select>
+                                <a href="frutas.php" class="btn btn-primary btn-sm">Agregar Fruta</a>
                             </div>
                             <div class="form-group">
                                 <label for="fecha_cad">Fecha Limite de Producción:</label>
@@ -40,6 +45,10 @@
                                 <select id="proveedor_id" name="proveedor_id" class="form-control" required>
                                     <!-- Options will be populated dynamically from the backend -->
                                 </select>
+
+                                <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
+
+
                             </div>
                             <div class="form-group">
                                 <label for="cantidad">Cantidad (kg):</label>
@@ -50,12 +59,20 @@
                                 <input type="number" step="0.01" id="precio_unit" name="precio_unit" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="precio_total">Precio Total:</label>
+                                <label for="precio_total">Precio Total  Precio por KG:</label>
                                 <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="birx">Brix:</label>
                                 <input type="number" step="0.01" id="birx" name="birx" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="presentacion">Presentacion:</label>
+                                <select id="presentacion" name="presentacion" class="form-control" required>
+                                        <option value="cajas">Cajas</option>
+                                        <option value="bultos">Bultos</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="observaciones">Observaciones:</label>
@@ -67,7 +84,7 @@
 
                     <hr>
 
-                    <table id="materiaPrimaTable" class="table table-bordered table-hover">
+                    <table id="tablaMateriaPrimas" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -91,16 +108,15 @@
                 </div>
             </section>
         </div>
-        <!-- /.content-wrapper -->
-        <!-- jQuery -->
         <script src="plugins/jquery/jquery.min.js"></script>
         <!-- Bootstrap 4 -->
         <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <!-- AdminLTE App -->
         <script src="dist/js/adminlte.min.js"></script>
+        <!-- DataTables -->
+        <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
         <!-- Custom JS -->
         <script src="JS/InvenMateriaP.js"></script>
-        <!-- Incluir el script de cierre de sesión -->
         <script src="JS/cerrarsesion.js"></script>
         <script src="JS/validsesion.js"></script>
     </body>

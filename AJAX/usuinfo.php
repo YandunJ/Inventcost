@@ -1,15 +1,17 @@
 <?php
-// AJAX/getUserInfo.php
-
+// AJAX/usuinfo.php
 session_start();
 
-$response = array('status' => 'error');
-
 if (isset($_SESSION['usuario_id'])) {
-    $response['status'] = 'success';
-    $response['usuario_nombre'] = $_SESSION['usuario_nombre'];
-    $response['usuario_apellido'] = $_SESSION['usuario_apellido'];
+    $response = array(
+        'status' => 'success',
+        'usuario_id' => $_SESSION['usuario_id'],
+        'usuario_nombre' => $_SESSION['usuario_nombre'],
+        'permiso_id' => $_SESSION['permiso_id'] // Asegúrate de que esto está presente
+    );
+    echo json_encode($response);
+} else {
+    $response = array('status' => 'error');
+    echo json_encode($response);
 }
-
-echo json_encode($response);
 ?>

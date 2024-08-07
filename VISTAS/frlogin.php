@@ -9,24 +9,28 @@
     <script src="JS/log.js"></script> <!-- Ruta al archivo JS -->
 </head>
 <body>
-    <div class="login-container">
-        <h2>Iniciar Sesión</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="Usuario">Usuario:</label>
-                <input type="text" id="Usuario" name="Usuario" required>
+    <div class="container">
+        <div class="login-form">   
+            <div class="logo">
+                <img src="../FILES/fran2.png" alt="Logo">
             </div>
-            <div class="form-group">
-                <label for="Contrasenia">Contraseña:</label>
-                <input type="password" id="Contrasenia" name="Contrasenia" required>
-            </div>
-            <button type="submit">
-                <span class="box">
-                    Ingresar
-                </span>
-            </button>
-            <h6>Ingresa tus credenciales para inicar sesión</h6>
-        </form>
+            <h1>Iniciar Sesión</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="Usuario">Usuario:</label>
+                    <input type="text" id="Usuario" name="Usuario" required>
+                </div>
+                <div class="form-group">
+                    <label for="Contrasenia">Contraseña:</label>
+                    <input type="password" id="Contrasenia" name="Contrasenia" required>
+                </div>
+                <button type="submit">
+                    <span class="box">Iniciar Sesión</span>
+                </button>   
+            </form>
+        </div>
+        <div class="image-container"></div>
     </div>
+    
 </body>
 </html>

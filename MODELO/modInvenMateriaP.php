@@ -1,7 +1,5 @@
 <?php
-
 // MODELO/InvenMateriaP.php
-
 class MateriaPrima {
     private $conn;
 
@@ -10,36 +8,29 @@ class MateriaPrima {
         $this->conn = $conexion->FN_getConnect();
     }
 
-    public function insertar($fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $birx, $estado, $usuario_id, $observaciones) {
-        $sql = "CALL sp_reg_materia_prima('$fruta_id', '$fecha_cad', '$proveedor_id', '$cantidad', '$precio_unit', '$birx', '$estado', '$usuario_id', '$observaciones')";
-        return $this->ejecutarConsultaSP($sql);
+    public function insertar($mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $estado, $usuario_id, $observaciones) {
+        $sql = "CALL invent_materia_prima(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $estado, $usuario_id, $observaciones]);
     }
 
-    public function cargarFrutas() {
-        $sql = "CALL pa_obtener_frutas()";
-        return $this->ejecutarConsultaSP($sql);
-    }
-
-    public function eliminar($mp_id) {
-        $sql = "DELETE FROM materia_prima WHERE mp_id='$mp_id'";
-        return $this->ejecutarConsultaSP($sql);
-    }
-
-    public function cargarProveedores() {
-        $sql = "CALL pa_obtener_proveedores()";
-        return $this->ejecutarConsultaSP($sql);
-    }
-
-    private function ejecutarConsultaSP($sql) {
+    public function obtenerMateriaPrima() {
+        $sql = "CALL pa_obt_materia_prima()";
         $result = $this->conn->query($sql);
         if (!$result) {
             throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
         }
-        $data = array();
+        $data = [];
         while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
         return $data;
+    }
+
+    public function eliminar($mp_id) {
+        $sql = "CALL pa_eliminar_materia_prima(?)";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([$mp_id]);
     }
 }
 ?>

@@ -23,37 +23,41 @@
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <h1>Gestión de Empleados</h1>
-                <form id="employeeForm">
-                    <div class="form-group">
-                        <label for="cedula">Cédula:</label>
-                        <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Cédula" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nombre">Nombre:</label>
-                        <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre"  required>
-                    </div>
-                    <div class="form-group">
-                        <label for="apellido">Apellido:</label>
-                        <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="telefono">Teléfono:</label>
-                        <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="correo">Correo:</label>
-                        <input type="email" id="correo" name="correo" class="form-control" placeholder="Correo electrónico" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="direccion">Dirección:</label>
-                        <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Agregar Empleado</button>
-                </form>
+                <h1 class="text-center">Gestión de Empleados</h1>
+                     <div class="form-container">
+
+                        <form id="employeeForm">
+                            <div class="form-group">
+                                <label for="cedula">Cédula:</label>
+                                <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Cédula" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nombre">Nombre:</label>
+                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre"  required>
+                            </div>
+                            <div class="form-group">
+                                <label for="apellido">Apellido:</label>
+                                <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefono">Teléfono:</label>
+                                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="correo">Correo:</label>
+                                <input type="email" id="correo" name="correo" class="form-control" placeholder="Correo electrónico" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="direccion">Dirección:</label>
+                                <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Agregar Empleado</button>
+                        </form>
+                     </div>
 
                 <hr>
 
+                <h2 class="text-center">Listado de Empleados</h2>
                 <table id="employeesTable" class="display" style="width:100%">
                     <thead>
                         <tr>
