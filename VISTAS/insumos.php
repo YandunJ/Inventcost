@@ -1,18 +1,19 @@
+<?php include '../CONFIG/validar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Insumos</title>
-    <link rel="stylesheet" href="dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <?php include 'MODULOS/ModuloAdminNavbar.php';?>
-        <?php include 'MODULOS/ModuloAdminSidebar.php';?>
+        <?php include 'MODULOS/ModuloNavbar.php';?>
+        <?php include 'MODULOS/MDAdminSidebar.php';?>
 
         <div class="content-wrapper">
             <section class="content">
@@ -72,11 +73,11 @@
             </section>
         </div>
 
-        <script src="plugins/jquery/jquery.min.js"></script>
-        <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="plugins/datatables/jquery.dataTables.min.js"></script>
-        <script src="plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-        <script src="dist/js/adminlte.min.js"></script>
+        <script src="../Public/plugins/jquery/jquery.min.js"></script>
+        <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>
+        <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+        <script src="../Public/dist/js/adminlte.min.js"></script>
         <script src="JS/insumos.js"></script>
         <script src="JS/cerrarsesion.js"></script>
     </div>

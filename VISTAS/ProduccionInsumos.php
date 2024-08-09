@@ -1,16 +1,17 @@
+<?php include '../CONFIG/validar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producción de Insumos</title>
-    <link rel="stylesheet" href="dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <?php include 'MODULOS/ModuloAdminNavbar.php';?>
-    <?php include 'MODULOS/ModuloAdminSidebar.php';?>
+    <?php include 'MODULOS/ModuloNavbar.php';?>
+    <?php include 'MODULOS/MDAdminSidebar.php';?>
 
     <div class="content-wrapper">
         <section class="content">
@@ -47,9 +48,9 @@
         <!-- Footer content here -->
     </footer>
 </div>
-<script src="plugins/jquery/jquery.min.js"></script>
-<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="dist/js/adminlte.min.js"></script>
+<script src="../Public/plugins/jquery/jquery.min.js"></script>
+<script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../Public/dist/js/adminlte.min.js"></script>
 <script>
     $(document).ready(function() {
         // Populate the select box with dummy data

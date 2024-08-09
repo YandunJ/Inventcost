@@ -1,18 +1,49 @@
 <?php
-//AJAX/ctrInventInsumos.php
+//AJAX/ctrInvenInsumos.php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+require_once "../CONFIG/conexion.php";
+require_once "../MODELO/modInvenInsumos.php"; // Asegúrate de que este archivo exista
+require_once "../MODELO/sbinsumos.php"; // El modelo de insumos
 
-require_once "../MODELO/modInvenInsumos.php";
+$conn = (new Cls_DataConnection())->FN_getConnect();
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $insumo_id = $_POST['insumo_id'];
-    $proveedor_id = $_POST['proveedor_id'];
-    $cantidad = $_POST['cantidad'];
-    $precio_unitario = $_POST['precio_unitario'];
+$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
-    $modelo = new modInventarioInsumos();
-    $response = $modelo->registrarInventarioInsumos($insumo_id, $proveedor_id, $cantidad, $precio_unitario);
+switch ($action) {
+    case 'cargarInsumos':
+        cargarInsumos();
+        break;
+    case 'cargarProveedores':
+        cargarProveedores();
+        break;
+    default:
+        echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
+        break;
+}
 
-    echo json_encode($response);
+function cargarInsumos() {
+    global $conn;
+    $insumosModel = new InsumosModel($conn);
+    $insumos = $insumosModel->obtenerInsumos();
+
+    if (!$insumos) {
+        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los insumos']);
+    } else {
+        echo json_encode(['status' => 'success', 'data' => $insumos]);
+    }
+}
+
+function cargarProveedores() {
+    global $conn;
+    $insumosModel = new InsumosModel($conn);
+    $proveedores = $insumosModel->obtenerProveedores();
+
+    if (!$proveedores) {
+        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los proveedores']);
+    } else {
+        echo json_encode(['status' => 'success', 'data' => $proveedores]);
+    }
 }
 ?>

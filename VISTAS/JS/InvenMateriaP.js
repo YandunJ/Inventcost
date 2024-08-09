@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // Cargar frutas en el select box
+    // Cargar frutas y proveedores
     $.ajax({
         url: "../AJAX/ctrInvenMateriaP.php",
         type: "POST",
@@ -24,7 +24,6 @@ $(document).ready(function() {
         }
     });
 
-    // Cargar proveedores en el select box
     $.ajax({
         url: "../AJAX/ctrInvenMateriaP.php",
         type: "POST",
@@ -57,8 +56,8 @@ $(document).ready(function() {
         $('#precio_total').val(precioTotal.toFixed(2));
     });
 
-    // Inicializar el DataTable
-    const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
+     // Inicializar DataTable
+     const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         ajax: {
             url: '../AJAX/ctrInvenMateriaP.php',
             type: 'POST',
@@ -86,64 +85,166 @@ $(document).ready(function() {
             { data: 'observaciones' },
             {
                 data: null,
-                render: function(data) {
+                render: function(data, type, row) {
                     return `
-                        <button class="btn btn-primary btn-editar" data-id="${data.mp_id}">Editar</button>
-                        <button class="btn btn-danger btn-eliminar" data-id="${data.mp_id}">Eliminar</button>
+                    <button class="btn btn-info btn-sm edit-btn" data-id="${row.mp_id}">Editar</button>
+                    <button class="btn btn-success btn-sm approve-btn" data-id="${row.mp_id}">A</button>
+                    <button class="btn btn-danger btn-sm reject-btn" data-id="${row.mp_id}">X</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="${row.mp_id}">Eliminar</button>
                     `;
                 }
             }
         ]
     });
 
-    // Manejar el envío del formulario para guardar materia prima
-    $('#materiaPrimaForm').on('submit', function(event) {
-        event.preventDefault();
-        var formData = $(this).serialize();
-        var action = $('#mp_id').val() ? 'actualizarMateriaPrima' : 'guardarMateriaPrima';
 
+       // Botón de estado "A" (Aprobar)
+       $('#tablaMateriaPrimas').on('click', '.approve-btn', function() {
+        const mp_id = $(this).data('id');
+        cambiarEstado(mp_id, 1); // 1 para "aprobado"
+    });
+
+    // Botón de estado "X" (No Aprobar)
+    $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
+        const mp_id = $(this).data('id');
+        cambiarEstado(mp_id, 3); // 3 para "no_aprobado"
+    });
+
+
+    function cambiarEstado(mp_id, estado) {
         $.ajax({
-            url: `../AJAX/ctrInvenMateriaP.php?action=${action}`,
-            method: 'POST',
-            data: formData,
+            url: '../AJAX/ctrInvenMateriaP.php',
+            type: 'POST',
+            data: { action: 'cambiarEstadoMateriaPrima', mp_id: mp_id, estado: estado },
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    alert('Materia prima registrada/actualizada con éxito');
-                    $('#materiaPrimaForm')[0].reset();
-                    materiaPrimasTable.ajax.reload();
+                    alert('Estado actualizado exitosamente.');
+                    materiaPrimasTable.ajax.reload(); // Recargar la tabla
                 } else {
                     alert('Error: ' + response.message);
                 }
             },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error al procesar la solicitud: ' + textStatus);
+            error: function(xhr, status, error) {
+                alert("Ocurrió un error al cambiar el estado.");
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
+    }
+});
+
+
+        $('#materiaPrimaForm').on('submit', function(event) {
+            event.preventDefault();
+            const formData = $(this).serialize();
+            $.ajax({
+                url: "../AJAX/ctrInvenMateriaP.php",
+                type: "POST",
+                data: formData + '&action=guardarMateriaPrima',
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === 'success') {
+                        const actionType = $('#mp_id').val() ? 'actualizada' : 'registrada';
+                        alert(`Materia prima ${actionType} exitosamente.`);
+                        $('#materiaPrimaForm')[0].reset();
+                        $('.btn-primary.btn-block').text('Agregar Materia Prima'); // Restablecer el texto del botón
+                        materiaPrimasTable.ajax.reload(); // Recargar la tabla
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ocurrió un error al registrar la materia prima.");
+                    console.error("Error: ", error);
+                    console.error("Response: ", xhr.responseText);
+                }
+            });
+        });
+
+    // Al hacer clic en el botón Editar
+    $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
+        const mp_id = $(this).data('id');
+        $.ajax({
+            url: '../AJAX/ctrInvenMateriaP.php',
+            type: 'POST',
+            data: { action: 'obtenerMateriaPrima', mp_id: mp_id },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    const data = response.data;
+                    $('#fruta_id').val(data.fruta_id);
+                    $('#fecha_cad').val(data.fecha_cad);
+                    $('#proveedor_id').val(data.proveedor_id);
+                    $('#cantidad').val(data.cantidad);
+                    $('#precio_unit').val(data.precio_unit);
+                    $('#precio_total').val(data.precio_total);
+                    $('#birx').val(data.birx);
+                    $('#presentacion').val(data.presentacion);
+                    $('#observaciones').val(data.observaciones);
+                    $('#mp_id').val(data.mp_id); // Establecer el mp_id
+                    $('.btn-primary.btn-block').text('Actualizar Materia Prima'); // Cambiar el texto del botón
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Ocurrió un error al obtener los datos.");
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
             }
         });
     });
 
-    // Evento para el botón de eliminar
-    $('#tablaMateriaPrimas').on('click', '.btn-eliminar', function() {
-        var mp_id = $(this).data('id');
-
-        if (confirm('¿Estás seguro de que deseas eliminar esta materia prima?')) {
+    // Al hacer clic en el botón Eliminar
+    $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
+        const mp_id = $(this).data('id');
+        if (confirm('¿Estás seguro de que deseas eliminar este registro?')) {
             $.ajax({
                 url: '../AJAX/ctrInvenMateriaP.php',
-                method: 'POST',
+                type: 'POST',
                 data: { action: 'eliminarMateriaPrima', mp_id: mp_id },
                 dataType: 'json',
                 success: function(response) {
                     if (response.status === 'success') {
-                        alert('Materia prima eliminada con éxito');
+                        alert('Registro eliminado exitosamente.');
                         materiaPrimasTable.ajax.reload();
                     } else {
                         alert('Error: ' + response.message);
                     }
                 },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert('Error al procesar la solicitud: ' + textStatus);
+                error: function(xhr, status, error) {
+                    alert("Ocurrió un error al eliminar el registro.");
+                    console.error("Error: ", error);
+                    console.error("Response: ", xhr.responseText);
                 }
             });
         }
     });
+
+    // Al hacer clic en el botón de estado (Aprobar/No Aprobar)
+    $('#tablaMateriaPrimas').on('click', '.status-btn',     function() {
+        const mp_id = $(this).data('id');
+        const estadoActual = $(this).text();
+        const nuevoEstado = estadoActual === 'Aprobado' ? 'no_aprobado' : 'aprobado'; // Cambia el estado
+
+        $.ajax({
+            url: '../AJAX/ctrInvenMateriaP.php',
+            type: 'POST',
+            data: { action: 'cambiarEstadoMateriaPrima', mp_id: mp_id, estado: nuevoEstado },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    alert('Estado actualizado exitosamente.');
+                    materiaPrimasTable.ajax.reload(); // Recargar la tabla
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Ocurrió un error al cambiar el estado.");
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
 });
