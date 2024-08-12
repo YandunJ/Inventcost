@@ -58,16 +58,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <p>Compra Insumos</p>
                             </a>
                         </li>
-                     
-                    
-                        <li class="nav-item">
-                            <a href="producto.php" class="nav-link">
-                                <i class="nav-icon fas fa-box-open"></i>
-                                <p>Producto Terminado</p>
-                            </a>
-                        </li>
-
-                        
+                         
                         <!-- New dropdown for production modules -->
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -92,6 +83,14 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 </li>
                             </ul>
                         </li>
+                        <li class="nav-item">
+                            <a href="producto.php" class="nav-link">
+                                <i class="nav-icon fas fa-box-open"></i>
+                                <p>Producto Terminado</p>
+                            </a>
+                        </li>
+
+                       
                         <!-- Gestión de Personal -->
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">

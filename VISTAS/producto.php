@@ -7,6 +7,7 @@
     <title>Registrar Producto Terminado</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">

@@ -1,5 +1,6 @@
 <?php
 // MODELO/sbinsumos.php
+
 class InsumosModel {
     private $conn;
 
@@ -21,6 +22,7 @@ class InsumosModel {
         return $insumos;
     }
 
+
     public function obtenerProveedores() {
         $query = "SELECT proveedor_id, nombre_empresa FROM proveedores";
         $stmt = $this->conn->prepare($query);
@@ -34,5 +36,8 @@ class InsumosModel {
 
         return $proveedores;
     }
+
+
 }
 ?>
+

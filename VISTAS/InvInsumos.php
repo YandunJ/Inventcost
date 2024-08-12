@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -25,23 +27,21 @@
                     <h1>Inventario de Insumos</h1>
                     <div class="form-container"> <!-- Contenedor para centrar el formulario -->
                         <form id="inventinsumosForm">
+                        <input type="hidden" id="inventins_id" name="inventins_id">
+
                             <div class="form-group">
                                 <label for="insumo_id">Insumo:</label>
-                                <select id="insumo_id" name="insumo_id" class="form-control" required></select>
-                                <a href="insumos.php" class="btn btn-primary btn-sm">Agregar Insumos</a>
+                                <select id="insumo_id" name="insumo_id" class="form-control" required></select>                                
                             </div>
+                            <a href="insumos.php" class="btn btn-primary btn-sm">Agregar Insumos</a>
                             <div class="form-group">
                                 <label for="proveedor_id">Proveedor:</label>
                                 <select id="proveedor_id" name="proveedor_id" class="form-control" required></select>
-                                <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
                             </div>
+                            <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
                             <div class="form-group">
-                                <label for="fecha_hora_ing">Fecha de Ingreso:</label>
-                                <input type="date" id="fecha_hora_ing" name="fecha_hora_ing" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="cantidad">Cantidad:</label>
-                                <input type="number" id="cantidad" name="cantidad" class="form-control" required>
+                                <label for="fecha_cad">Fecha de Caducidad:</label>
+                                <input type="date" id="fecha_cad" name="fecha_cad" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="unidad_medida">Unidad de Medida:</label>
@@ -51,6 +51,10 @@
                                     <option value="l">Litros (l)</option>
                                     <!-- Agrega más opciones según sea necesario -->
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="cantidad">Cantidad:</label>
+                                <input type="number" id="cantidad" name="cantidad" class="form-control" required>
                             </div>
                             <div class="form-group">
                                 <label for="precio_unitario">Precio Unitario:</label>
@@ -66,14 +70,16 @@
 
                     <hr>
 
-                    <table id="inventarioTable" class="table table-bordered table-hover">
+                    <table id="inventarioInsumosdt" class="table table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Insumo</th>
                                 <th>Proveedor</th>
                                 <th>Fecha de Ingreso</th>
-                                <th>Cantidad</th>
+                                <th>Fecha de Caducidad</th>
                                 <th>Unidad de Medida</th>
+                                <th>Cantidad</th>
                                 <th>Precio Unitario</th>
                                 <th>Precio Total</th>
                                 <th>Acciones</th>
@@ -81,7 +87,7 @@
                         </thead>
                         <tbody>
                             <!-- Rows will be populated dynamically from the backend -->
-                        </tbody>
+                        </tbody>1
                     </table>
                 </div>
             </section>
@@ -95,8 +101,11 @@
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <!-- Custom JS -->
+    <script src="JS/InvenInsumos.js"></script>
     <script src="JS/cerrarsesion.js"></script>
-    <script src="JS/validsesion.js"></script>
+
+    
 </body>
 </html>

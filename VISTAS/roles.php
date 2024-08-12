@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">

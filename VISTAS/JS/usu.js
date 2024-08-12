@@ -110,7 +110,7 @@ $(document).ready(function() {
         var usu_id = $(this).data('id');
 
         $.ajax({
-            url: '../AJAX/ctrUsuario.php?action=obtenerUsuarioPorId',
+            url: '../AJAX/ctrUsuario.php?action=obtenerUsuarioPorID',
             method: 'GET',
             data: { usu_id: usu_id },
             dataType: 'json',

@@ -7,6 +7,7 @@
     <title>Gestión de Materia Prima</title>
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
@@ -24,9 +25,9 @@
 
                             <div class="form-group">
                                 <label for="fruta_id">Fruta:</label>
-                                <select id="fruta_id" name="fruta_id" class="form-control" required></select>
-                                <a href="frutas.php" class="btn btn-primary btn-sm">Agregar Fruta</a>
+                                <select id="fruta_id" name="fruta_id" class="form-control" required></select>                                
                             </div>
+                            <a href="frutas.php" class="btn btn-primary btn-sm">Agregar Fruta</a>
                             <div class="form-group">
                                 <label for="fecha_cad">Fecha Limite de Producción:</label>
                                 <input type="date" id="fecha_cad" name="fecha_cad" class="form-control" required>
@@ -34,14 +35,14 @@
                             <div class="form-group">
                                 <label for="proveedor_id">Proveedor:</label>
                                 <select id="proveedor_id" name="proveedor_id" class="form-control" required></select>
-                                <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
                             </div>
+                            <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
                             <div class="form-group">
-                                <label for="cantidad">Cantidad (kg):</label>
+                                <label for="cantidad">Cantidad Kilogramos (kg):</label>
                                 <input type="number" step="0.01" id="cantidad" name="cantidad" class="form-control" required>
                             </div>
                             <div class="form-group">
-                                <label for="precio_unit">Precio Unitario:</label>
+                                <label for="precio_unit">Precio por Kilogramo (p x kg):</label>
                                 <input type="number" step="0.01" id="precio_unit" name="precio_unit" class="form-control" required>
                             </div>
                             <div class="form-group">
@@ -96,6 +97,6 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="JS/InvenMateriaP.js"></script>
     <script src="JS/cerrarsesion.js"></script>
-    <script src="JS/validsesion.js"></script>
+    
 </body>
 </html>

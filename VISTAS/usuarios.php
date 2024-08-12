@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
@@ -56,6 +57,7 @@
                                     <option value="">Seleccione un rol</option>
                                 </select>
                             </div>
+                            <a href="roles.php" class="btn btn-primary btn-sm">Agregar un nuevo Rol</a>
                             <div class="form-group">
                                 <label for="usuario">Nombre de Usuario</label>
                                 <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Nombre de Usuario" required>
@@ -106,31 +108,6 @@
     <!-- Custom JS -->
     <script src="JS/usu.js"></script> <!-- Ruta al archivo JS -->
     <script src="JS/cerrarsesion.js"></script>
-    <script>
-        document.getElementById('form-registro-usuario').addEventListener('submit', function(event) {
-            const contrasenia = document.getElementById('contrasenia').value;
-            const passwordRegex = /^(?=.*[A-Z].*[A-Z].*[A-Z])(?=.*[a-z].*[a-z].*[a-z])(?=.*[0-9].*[0-9].*[0-9])(?=.*[!@#\$%\^&\*])/;
-
-            if (!passwordRegex.test(contrasenia)) {
-                alert('La contraseña debe contener al menos 3 mayúsculas, 3 minúsculas, 3 números y 1 carácter especial.');
-                event.preventDefault();
-            }
-
-
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(correo)) {
-                alert('Por favor, ingrese un correo electrónico válido.');
-                event.preventDefault();
-            }
-
-            const cedula = document.getElementById('cedula').value;
-            const cedulaRegex = /^[0-9]{10}$/; // Ejemplo para 10 dígitos
-            if (!cedulaRegex.test(cedula)) {
-                alert('Por favor, ingrese una cédula válida de 10 dígitos.');
-                event.preventDefault();
-            }
-
-        });
-    </script>
+   
 </body>
 </html>

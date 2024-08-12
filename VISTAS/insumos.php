@@ -7,6 +7,7 @@
     <title>Gestión de Insumos</title>
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="../Public/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
 </head>
@@ -45,6 +46,7 @@
                                     <option value="litros">Litros</option>
                                     <option value="gramos">Gramos</option>
                                     <option value="kilogramos">Kilogramos</option>
+                                    <option value="Libras">Libras</option>
                                     <option value="mililitros">Mililitros</option>
                                     <option value="metros">Metros</option>
                                     <option value="piezas">Piezas</option>

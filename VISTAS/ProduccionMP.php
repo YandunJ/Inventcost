@@ -1,4 +1,3 @@
-<?php include '../CONFIG/validar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,91 +6,105 @@
     <title>Producción de Materia Prima</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
     <link rel="stylesheet" href="../FILES/centrForm.css">
+    <style>
+.table td {
+    text-align: center; /* Centra todo el contenido en las celdas */
+}
+
+.form-check-input {
+    margin: 0; /* Elimina el margen para que no se desplace */
+}
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-           
-         <!-- Navbar -->
-         <?php include 'MODULOS/ModuloNavbar.php';?>
-        <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/MDAdminSidebar.php';?>
-        <!-- Content Wrapper -->
-        <div class="content-wrapper">
-            <section class="content">
-                <div class="container-fluid">
-                    <h1>Producción de Materia Prima</h1>
-                    <form id="produccionMateriaPrimaForm">
+
+    <!-- Navbar -->
+    <?php include 'MODULOS/ModuloNavbar.php';?>
+    <!-- Main Sidebar Container -->
+    <?php include 'MODULOS/MDAdminSidebar.php';?>
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <section class="content">
+            <div class="container-fluid">
+                <h1>Producción de Materia Prima</h1>
+
+                <!-- Contenedor para Fecha de Producción y Selección de Lote -->
+                <div class="row">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="fecha_produccion">Fecha de Producción:</label>
                             <input type="datetime-local" id="fecha_produccion" name="fecha_produccion" class="form-control" required>
                         </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="mp_id">Materia Prima:</label>
-                            <select id="mp_id" name="mp_id" class="form-control" required>
-                                <!-- Options will be populated dynamically from the backend -->
+                            <label for="lote">Seleccionar Lote:</label>
+                            <select id="lote" name="lote" class="form-control">
+                                <option value="Lote 1">Lote 1</option>
+                                <option value="Lote 2">Lote 2</option>
+                                <option value="Lote 3">Lote 3</option>
+                                <option value="Lote 4">Lote 4</option>
+                                <option value="Lote 5">Lote 5</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="cantidad_utilizada">Cantidad Utilizada:</label>
-                            <input type="number" step="0.01" id="cantidad_utilizada" name="cantidad_utilizada" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cantidad_obtenida">Cantidad Obtenida:</label>
-                            <input type="number" step="0.01" id="cantidad_obtenida" name="cantidad_obtenida" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="costo_total">Costo Total:</label>
-                            <input type="number" step="0.01" id="costo_total" name="costo_total" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="estado">Estado:</label>
-                            <select id="estado" name="estado" class="form-control" required>
-                                <option value="aprobado">Aprobado</option>
-                                <option value="no_aprobado">No Aprobado</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Agregar Producción</button>
-                    </form>
-                    <hr>
-                    <table id="produccionMateriaPrimaTable" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Fecha de Producción</th>
-                                <th>Materia Prima</th>
-                                <th>Cantidad Utilizada</th>
-                                <th>Cantidad Obtenida</th>
-                                <th>Costo Total</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Rows will be populated dynamically from the backend -->
-                        </tbody>
-                    </table>
+                    </div>
                 </div>
-            </section>
-        </div>
-        <!-- Footer -->
-        <footer class="main-footer">
-            <!-- Footer content here -->
-        </footer>
-    </div>
-    <!-- jQuery -->
-    <script src="../Public/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="../Public/dist/js/adminlte.min.js"></script>
-    <!-- Custom JS -->
-    <script src="JS/produccionMateriaPrima.js"></script>
 
-        <!-- Incluir el script de cierre de sesión -->
+            <!-- Contenedor para la tabla de selección de materia prima -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="mp_id">Seleccionar Materia Prima del Inventario:</label>
+                                    <table id="tablaSeleccionarMP" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha Entrada</th>
+                                                <th>Fruta</th>
+                                                <th>Proveedor</th>
+                                                <th>Stock</th>
+                                                <th>Precio Unitario</th>
+                                                
+                                                <th>Cantidad a Consumir (kg)</th>
+                                                <th>Seleccionar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Los datos se llenarán automáticamente -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                <button type="submit" class="btn btn-primary">Agregar Producción</button>
+            </div>
+        </section>
+    </div>
+    <!-- Footer -->
+    <footer class="main-footer">
+        <!-- Footer content here -->
+    </footer>
+</div>
+<!-- jQuery -->
+<script src="../Public/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE App -->
+<script src="../Public/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<!-- Custom JS -->
+<script src="JS/ProduccionMP.js"></script>
+
+<!-- Incluir el script de cierre de sesión -->
 <script src="JS/cerrarsesion.js"></script>
-<script src="JS/validsesion.js"></script>
+
 </body>
 </html>

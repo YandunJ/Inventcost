@@ -8,8 +8,7 @@
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
