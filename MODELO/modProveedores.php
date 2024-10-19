@@ -11,8 +11,12 @@ class Proveedores {
     public function acciones_proveedor($proveedor_id, $nombre_empresa, $representante, $direccion, $correo, $telefono) {
         $stmt = $this->db->prepare("CALL acciones_proveedor(?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("isssss", $proveedor_id, $nombre_empresa, $representante, $direccion, $correo, $telefono);
-        return $stmt->execute();
+        if (!$stmt->execute()) {
+            throw new Exception($stmt->error); // Lanza una excepción si hay un error
+        }
+        return true;
     }
+    
 
     public function pa_obtener_proveedores() {
         $result = $this->db->query("CALL pa_obtener_proveedores()");

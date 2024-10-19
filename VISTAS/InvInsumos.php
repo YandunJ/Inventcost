@@ -23,50 +23,62 @@
         <div class="content-wrapper">
             <!-- Main content -->
             <section class="content">
-                <div class="container-fluid">
-                    <h1>Inventario de Insumos</h1>
-                    <div class="form-container"> <!-- Contenedor para centrar el formulario -->
-                        <form id="inventinsumosForm">
+            <div class="container-fluid">
+            <h1 class="text-center">Gestión de Insumos</h1>
+            <div class="form-container"> <!-- Contenedor para centrar el formulario -->
+                    <form id="inventinsumosForm">
                         <input type="hidden" id="inventins_id" name="inventins_id">
 
-                            <div class="form-group">
-                                <label for="insumo_id">Insumo:</label>
-                                <select id="insumo_id" name="insumo_id" class="form-control" required></select>                                
+                        <div class="form-group">
+                            <label for="insumo_id">Insumo:</label>
+                            <select id="insumo_id" name="insumo_id" class="form-control" required>
+                                <option value="">Seleccione un insumo</option>
+                            </select>                                
+                        </div>
+                        <a href="insumos.php" class="btn btn-primary btn-sm">Agregar Insumos</a>
+                        
+                        <div class="form-group">
+                            <label for="proveedor_id">Proveedor:</label>
+                            <select id="proveedor_id" name="proveedor_id" class="form-control" required>
+                                <option value="">Seleccione un proveedor</option>
+                            </select>
+                        </div>
+                        <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
+                        
+                        <div class="form-group">
+                            <label for="fecha_cad">Fecha de Caducidad:</label>
+                            <input type="date" id="fecha_cad" name="fecha_cad" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="unidad_medida">Unidad de Medida:</label>
+                            <select id="unidad_medida" name="unidad_medida" class="form-control" required>
+                                <option value="u">Unidades (u)</option>
+                                <option value="kg">Kilogramos (kg)</option>
+                                <option value="l">Litros (l)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cantidad">Cantidad:</label>
+                            <input type="number" id="cantidad" name="cantidad" class="form-control" required placeholder="Ej: 100">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="precio_unitario">Precio Unitario:</label>
+                            <input type="number" id="precio_unitario" name="precio_unitario" class="form-control" required placeholder="Ej: 50.00" step="0.01">
                             </div>
-                            <a href="insumos.php" class="btn btn-primary btn-sm">Agregar Insumos</a>
-                            <div class="form-group">
-                                <label for="proveedor_id">Proveedor:</label>
-                                <select id="proveedor_id" name="proveedor_id" class="form-control" required></select>
-                            </div>
-                            <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
-                            <div class="form-group">
-                                <label for="fecha_cad">Fecha de Caducidad:</label>
-                                <input type="date" id="fecha_cad" name="fecha_cad" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="unidad_medida">Unidad de Medida:</label>
-                                <select id="unidad_medida" name="unidad_medida" class="form-control" required>
-                                    <option value="u">Unidades (u)</option>
-                                    <option value="kg">Kilogramos (kg)</option>
-                                    <option value="l">Litros (l)</option>
-                                    <!-- Agrega más opciones según sea necesario -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="cantidad">Cantidad:</label>
-                                <input type="number" id="cantidad" name="cantidad" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="precio_unitario">Precio Unitario:</label>
-                                <input type="number" id="precio_unitario" name="precio_unitario" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="precio_total">Precio Total:</label>
-                                <input type="number" id="precio_total" name="precio_total" class="form-control" required readonly>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
-                        </form>
-                    </div> <!-- Fin del contenedor del formulario -->
+                        
+                        <div class="form-group">
+                            <label for="precio_total">Precio Total:</label>
+                            <input type="number" id="precio_total" name="precio_total" class="form-control" required readonly>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
+                        <button type="button" class="btn btn-secondary" id="cancelarBtn">Cancelar</button> <!-- Botón Cancelar -->
+                    </form>
+                </div>
+                ->
 
                     <hr>
 
@@ -94,7 +106,7 @@
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- jQuery -->
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->

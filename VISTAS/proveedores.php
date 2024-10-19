@@ -28,31 +28,37 @@
                 <div class="container-fluid">
                 <h1 class="text-center">Registrar Proveedores</h1>
                 <div class="form-container">
-                    <form id="proveedorForm">
-                            <input type="hidden" id="proveedor_id" name="proveedor_id">
-                            <div class="form-group">
-                                <label for="nombre_empresa">Nombre Empresa</label>
-                                <input type="text" class="form-control" id="nombre_empresa" name="nombre_empresa" placeholder="Nombre Empresa" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="representante">Representante</label>
-                                <input type="text" class="form-control" id="representante" name="representante" placeholder="Representante" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="direccion">Dirección</label>
-                                <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Dirección" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="correo">Correo</label>
-                                <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo" required>
+                <form id="proveedorForm">
+                <input type="hidden" id="proveedor_id" name="proveedor_id">
+                    <div class="form-group">
+                        <label for="nombre_empresa">Nombre Empresa</label>
+                        <input type="text" class="form-control" id="nombre_empresa" name="nombre_empresa" placeholder="Empresa XYZ" required maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="representante">Representante</label>
+                        <input type="text" class="form-control" id="representante" name="representante" placeholder="Juan Pérez" required maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Av. Siempre Viva 742" required maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="correo">Correo</label>
+                        <input type="email" class="form-control" id="correo" name="correo" placeholder="empresa@correo.com" required maxlength="40">
+                    </div>
+                    <div class="form-group">
+                                
+                                <label><input type="radio" name="tipo_telefono" value="personal"> Personal</label><br>
+                                <label><input type="radio" name="tipo_telefono" value="convencional"> Convencional</label>
                             </div>
                             <div class="form-group">
                                 <label for="telefono">Teléfono</label>
                                 <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
                             </div>
-                            <button type="submit" class="btn btn-primary">Registrar Proveedor</button>
-                        
-                        </form>
+                    <button type="submit" class="btn btn-primary">Registrar Proveedor</button>
+                    <button type="button" class="btn btn-secondary" id="cancelButton">Cancelar</button>
+                </form>
+
                 </div>
 
                 <h2 class="text-center">Listado de Proveedores</h2>
@@ -77,7 +83,7 @@
             </section>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- jQuery -->
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
@@ -90,6 +96,6 @@
     <script src="JS/prov.js"></script> <!-- Ruta al archivo JS -->
 
     <script src="JS/cerrarsesion.js"></script>
-<script src="JS/validsesion.js"></script>
+
 </body>
 </html>

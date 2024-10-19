@@ -84,32 +84,66 @@ $(document).ready(function() {
             { data: 'estado' },
             { data: 'observaciones' },
             {
+                // Columna de botones de editar y eliminar
                 data: null,
                 render: function(data, type, row) {
                     return `
                     <button class="btn btn-info btn-sm edit-btn" data-id="${row.mp_id}">Editar</button>
-                    <button class="btn btn-success btn-sm approve-btn" data-id="${row.mp_id}">A</button>
-                    <button class="btn btn-danger btn-sm reject-btn" data-id="${row.mp_id}">X</button>
                     <button class="btn btn-danger btn-sm delete-btn" data-id="${row.mp_id}">Eliminar</button>
                     `;
                 }
+            },
+            {
+                // Columna de botones de aprobar y no aprobar
+                data: null,
+                render: function(data, type, row) {
+                    return `
+                        <button class="btn btn-success btn-sm approve-btn" data-id="${row.mp_id}">
+                            <i class="fas fa-check"></i> Aceptar
+                        </button>
+                        <button class="btn btn-danger btn-sm reject-btn" data-id="${row.mp_id}">
+                            <i class="fas fa-times"></i> Rechazar
+                        </button>
+                    `;
+                }
             }
+            
         ]
     });
 
 
-       // Botón de estado "A" (Aprobar)
-       $('#tablaMateriaPrimas').on('click', '.approve-btn', function() {
-        const mp_id = $(this).data('id');
-        cambiarEstado(mp_id, 1); // 1 para "aprobado"
+    // Botón de estado "A" (Aprobar)
+$('#tablaMateriaPrimas').on('click', '.approve-btn', function() {
+    const mp_id = $(this).data('id');
+    Swal.fire({
+        title: '¿Estás seguro de aprobar esta materia prima?',
+        text: "Esta acción se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, aprobar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            cambiarEstado(mp_id, 1); // 1 para "aprobado"
+        }
     });
-
-    // Botón de estado "X" (No Aprobar)
-    $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
-        const mp_id = $(this).data('id');
-        cambiarEstado(mp_id, 3); // 3 para "no_aprobado"
+});
+ // Botón de estado "X" (No Aprobar)
+$('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
+    const mp_id = $(this).data('id');
+    Swal.fire({
+        title: '¿Estás seguro de no aprobar esta materia prima?',
+        text: "Esta acción se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, no aprobar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            cambiarEstado(mp_id, 3); // 3 para "no_aprobado"
+        }
     });
-
+});
       // Al hacer clic en el botón de estado (Aprobar/No Aprobar)
       $('#tablaMateriaPrimas').on('click', '.status-btn',     function() {
         const mp_id = $(this).data('id');
@@ -165,98 +199,122 @@ $(document).ready(function() {
             }
         });
     }
-});
-$('#materiaPrimaForm').on('submit', function(event) {
-    event.preventDefault();
 
-    // Validaciones adicionales
-    const cantidad = parseFloat($('#cantidad').val()) || 0;
-    const precioUnit = parseFloat($('#precio_unit').val()) || 0;
-    const birx = parseFloat($('#birx').val()) || 0;
-    const fechaCad = new Date($('#fecha_cad').val());
-    const today = new Date();
 
-    if (cantidad <= 0) {
-        alert("La cantidad debe ser mayor a 0.");
-        return;
-    }
-    if (precioUnit <= 0) {
-        alert("El precio por kilogramo debe ser mayor a 0.");
-        return;
-    }
-    if (birx < 0) {
-        alert("El valor de Brix no puede ser negativo.");
-        return;
-    }
-    if (fechaCad < today) {
-        alert("La fecha límite de producción debe ser una fecha futura.");
-        return;
-    }
-
-    // Procesar el formulario
-    const formData = $(this).serialize();
+    $('#materiaPrimaForm').on('submit', function(event) {
+        event.preventDefault();
+    
+        // Validaciones adicionales
+        const cantidad = parseFloat($('#cantidad').val()) || 0;
+        const precioUnit = parseFloat($('#precio_unit').val()) || 0;
+        const birx = parseFloat($('#birx').val()) || 0;
+        const fechaCad = new Date($('#fecha_cad').val());
+        const today = new Date();
+    
+        if (cantidad <= 0) {
+            alert("La cantidad debe ser mayor a 0.");
+            return;
+        }
+        if (precioUnit <= 0) {
+            alert("El precio por kilogramo debe ser mayor a 0.");
+            return;
+        }
+        if (birx < 0) {
+            alert("El valor de Brix no puede ser negativo.");
+            return;
+        }
+        if (fechaCad < today) {
+            alert("La fecha límite de producción debe ser una fecha futura.");
+            return;
+        }
+    
+        // Mensaje de confirmación antes de guardar
+        const actionType = $('#mp_id').val() ? 'actualizar' : 'registrar';
+        Swal.fire({
+            title: `¿Estás seguro de que deseas ${actionType} la materia prima?`,
+            text: "Esta acción se puede confirmar más tarde.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: `Sí, ${actionType}`,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Procesar el formulario
+                const formData = $(this).serialize();
+                $.ajax({
+                    url: "../AJAX/ctrInvenMateriaP.php",
+                    type: "POST",
+                    data: formData + '&action=guardarMateriaPrima',
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Éxito!',
+                                `Materia prima ${actionType} exitosamente.`,
+                                'success'
+                            );
+                            $('#materiaPrimaForm')[0].reset();
+                            $('.btn-primary.btn-block').text('Agregar Materia Prima'); // Restablecer el texto del botón
+                            materiaPrimasTable.ajax.reload(); // Recargar la tabla
+                        } else {
+                            Swal.fire('Error', response.message, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Error', 'Ocurrió un error al registrar la materia prima.', 'error');
+                        console.error("Error: ", error);
+                        console.error("Response: ", xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+    
+      // Al hacer clic en el botón Editar
+$('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
+    const mp_id = $(this).data('id');
     $.ajax({
-        url: "../AJAX/ctrInvenMateriaP.php",
-        type: "POST",
-        data: formData + '&action=guardarMateriaPrima',
-        dataType: "json",
+        url: '../AJAX/ctrInvenMateriaP.php',
+        type: 'POST',
+        data: { action: 'obtenerMateriaPrima', mp_id: mp_id },
+        dataType: 'json',
         success: function(response) {
             if (response.status === 'success') {
-                const actionType = $('#mp_id').val() ? 'actualizada' : 'registrada';
-                alert(`Materia prima ${actionType} exitosamente.`);
-                $('#materiaPrimaForm')[0].reset();
-                $('.btn-primary.btn-block').text('Agregar Materia Prima'); // Restablecer el texto del botón
-                materiaPrimasTable.ajax.reload(); // Recargar la tabla
+                const data = response.data;
+                $('#fruta_nombre').val(data.fruta_nombre);
+                $('#proveedor_nombre').val(data.proveedor_nombre);
+                $('#cantidad').val(data.cantidad);
+                $('#precio_unit').val(data.precio_unit);
+                $('#precio_total').val(data.precio_total);
+                $('#birx').val(data.birx);
+                $('#presentacion').val(data.presentacion);
+                $('#observaciones').val(data.observaciones);
+                $('#mp_id').val(data.mp_id); // Establecer el mp_id
+                $('.btn-primary.btn-block').text('Actualizar Materia Prima'); // Cambiar el texto del botón
             } else {
-                alert('Error: ' + response.message);
+                Swal.fire('Error', response.message, 'error');
             }
         },
         error: function(xhr, status, error) {
-            alert("Ocurrió un error al registrar la materia prima.");
+            Swal.fire('Error', 'Ocurrió un error al obtener los datos.', 'error');
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
         }
     });
 });
-
-    // Al hacer clic en el botón Editar
-    $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
-        const mp_id = $(this).data('id');
-        $.ajax({
-            url: '../AJAX/ctrInvenMateriaP.php',
-            type: 'POST',
-            data: { action: 'obtenerMateriaPrima', mp_id: mp_id },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    const data = response.data;
-                    $('#fruta_nombre').val(data.fruta_nombre);
-                    
-                    $('#proveedor_nombre').val(data.proveedor_nombre);
-                    $('#cantidad').val(data.cantidad);
-                    $('#precio_unit').val(data.precio_unit);
-                    $('#precio_total').val(data.precio_total);
-                    $('#birx').val(data.birx);
-                    $('#presentacion').val(data.presentacion);
-                    $('#observaciones').val(data.observaciones);
-                    $('#mp_id').val(data.mp_id); // Establecer el mp_id
-                    $('.btn-primary.btn-block').text('Actualizar Materia Prima'); // Cambiar el texto del botón
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("Ocurrió un error al obtener los datos.");
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-            }
-        });
-    });
-
-    // Al hacer clic en el botón Eliminar
-    $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
-        const mp_id = $(this).data('id');
-        if (confirm('¿Estás seguro de que deseas eliminar este registro?')) {
+    
+       // Al hacer clic en el botón Eliminar
+$('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
+    const mp_id = $(this).data('id');
+    Swal.fire({
+        title: '¿Estás seguro de que deseas eliminar este registro?',
+        text: "Esta acción no se puede deshacer.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
             $.ajax({
                 url: '../AJAX/ctrInvenMateriaP.php',
                 type: 'POST',
@@ -264,19 +322,84 @@ $('#materiaPrimaForm').on('submit', function(event) {
                 dataType: 'json',
                 success: function(response) {
                     if (response.status === 'success') {
-                        alert('Registro eliminado exitosamente.');
+                        Swal.fire(
+                            'Eliminado!',
+                            'El registro ha sido eliminado.',
+                            'success'
+                        );
                         materiaPrimasTable.ajax.reload();
                     } else {
-                        alert('Error: ' + response.message);
+                        Swal.fire('Error', response.message, 'error');
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert("Ocurrió un error al eliminar el registro.");
+                    Swal.fire('Error', 'Ocurrió un error al eliminar el registro.', 'error');
                     console.error("Error: ", error);
                     console.error("Response: ", xhr.responseText);
                 }
             });
         }
     });
+});
 
-  
+    
+        let formModified = false;
+
+        // Detectar cambios en el formulario
+        $("#materiaPrimaForm input, #materiaPrimaFormselect").on("input change", function() {
+            formModified = true;
+        });
+        
+        // Evento beforeunload para detectar si se intenta cerrar o recargar la página
+        window.addEventListener("beforeunload", function(e) {
+            if (formModified) {
+                const confirmationMessage = "Tienes datos sin guardar. ¿Estás seguro de que deseas salir?";
+                e.returnValue = confirmationMessage; // Establece el mensaje
+                return confirmationMessage;
+            }
+        });
+        
+        // Capturar clics en el menú lateral
+        $("a").on("click", function(e) {
+            if (formModified) {
+                e.preventDefault(); // Prevenir la navegación
+                Swal.fire({
+                    title: "Tienes datos sin guardar",
+                    text: "¿Estás seguro de que deseas salir sin guardar?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, salir",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = $(this).attr("href"); // Redirigir si confirma
+                    }
+                });
+            }
+        });
+        
+        // El botón de cancelar regresa a la página anterior
+       // El botón de cancelar regresa a la página anterior
+            $("#cancelarBtn").on("click", function() {
+
+            if (formModified) {
+                Swal.fire({
+                    title: "Tienes datos sin guardar",
+                    text: "¿Estás seguro de que deseas salir sin guardar?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, salir",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.history.back(); // Regresa a la página anterior
+                    }
+                });
+            } else {
+                window.history.back(); // Regresa a la página anterior
+            }
+        });
+        
+
+
+});

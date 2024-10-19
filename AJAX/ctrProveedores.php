@@ -22,8 +22,12 @@ try {
             $correo = $_POST['correo'];
             $telefono = $_POST['telefono'];
             $proveedores = new Proveedores($db);
-            $result = $proveedores->acciones_proveedor($proveedor_id, $nombre_empresa, $representante, $direccion, $correo, $telefono);
-            $response = ['status' => $result ? 'success' : 'error'];
+
+          if ($proveedores->acciones_proveedor($proveedor_id, $nombre_empresa, $representante, $direccion, $correo, $telefono)) {
+                $response = ['status' => 'success'];
+            } else {
+                throw new Exception('No se pudo registrar el proveedor.');
+            }
             break;
 
         case 'getProveedores':
@@ -55,7 +59,8 @@ try {
             break;
     }
 } catch (Exception $e) {
-    $response['message'] = $e->getMessage();
+    $response['message'] = $e->getMessage(); // Esto debería capturar errores de SQL
+    error_log($e->getMessage()); // Log para que puedas revisar
 }
 
 header('Content-Type: application/json');

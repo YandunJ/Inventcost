@@ -53,29 +53,81 @@ $(document).ready(function() {
         ]
     });
 
+    function validarCedulaEcuatoriana(cedula) {
+        if (cedula.length !== 10) return false;
+        const digitoRegion = cedula.substring(0, 2);
+        if (digitoRegion < 1 || digitoRegion > 24) return false;
+
+        const coef = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        const verificador = parseInt(cedula.charAt(9), 10);
+        const suma = cedula.substring(0, 9).split('').reduce((acc, digit, index) => {
+            let valor = parseInt(digit, 10) * coef[index];
+            if (valor > 9) valor -= 9;
+            return acc + valor;
+        }, 0);
+
+        const resultado = (suma % 10 === 0) ? 0 : 10 - (suma % 10);
+        return resultado === verificador;
+    }
+
+    $('#cedula').on('blur', function() {
+        const cedula = $(this).val();
+        if (!validarCedulaEcuatoriana(cedula)) {
+            alert('Cédula inválida');
+            $(this).val('');
+        }
+    });
+
     // Manejar el envío del formulario para registrar/actualizar usuarios
     $('#form-registro-usuario').on('submit', function(event) {
         event.preventDefault();
         var formData = $(this).serialize();
         var action = $('#usu_id').val() ? 'actualizarUsuario' : 'registrarUsuario';
+        var mensajeConfirmacion = $('#usu_id').val() ? '¿Estás seguro de actualizar este usuario?' : '¿Estás seguro de registrar este usuario?';
 
-        $.ajax({
-            url: `../AJAX/ctrUsuario.php?action=${action}`,
-            method: 'POST',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    alert('Usuario registrado/actualizado con éxito');
-                    $('#form-registro-usuario')[0].reset();
-                    usuariosTable.ajax.reload();
-                    $('#btn-registro').text('Registrar Usuario');
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                alert('Error al procesar la solicitud: ' + textStatus);
+        // Mensaje de confirmación utilizando SweetAlert
+        Swal.fire({
+            title: 'Confirmación',
+            text: mensajeConfirmacion,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `../AJAX/ctrUsuario.php?action=${action}`,
+                    method: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Éxito!',
+                                'Usuario registrado/actualizado con éxito',
+                                'success'
+                            );
+                            $('#form-registro-usuario')[0].reset();
+                            usuariosTable.ajax.reload();
+                            $('#btn-registro').text('Registrar Usuario');
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Error: ' + response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Error!',
+                            'Error al procesar la solicitud: ' + textStatus,
+                            'error'
+                        );
+                    }
+                });
             }
         });
     });
@@ -84,25 +136,49 @@ $(document).ready(function() {
     $('#tablaUsuarios').on('click', '.btn-eliminar', function() {
         var usu_id = $(this).data('id');
 
-        if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-            $.ajax({
-                url: '../AJAX/ctrUsuario.php?action=eliminarUsuario',
-                method: 'POST',
-                data: { usu_id: usu_id },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('Usuario eliminado con éxito');
-                        usuariosTable.ajax.reload();
-                    } else {
-                        alert('Error: ' + response.message);
+        // Mensaje de confirmación utilizando SweetAlert
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Estás a punto de eliminar este usuario.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../AJAX/ctrUsuario.php?action=eliminarUsuario',
+                    method: 'POST',
+                    data: { usu_id: usu_id },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire(
+                                'Eliminado!',
+                                'Usuario eliminado con éxito',
+                                'success'
+                            );
+                            usuariosTable.ajax.reload();
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'Error: ' + response.message,
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        Swal.fire(
+                            'Error!',
+                            'Error al procesar la solicitud: ' + textStatus,
+                            'error'
+                        );
                     }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    alert('Error al procesar la solicitud: ' + textStatus);
-                }
-            });
-        }
+                });
+            }
+        });
     });
 
     // Evento para el botón de editar

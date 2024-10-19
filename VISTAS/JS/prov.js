@@ -26,14 +26,16 @@ $(document).ready(function() {
             }
         ]
     });
-    
 
     // Manejar el envío del formulario para registrar proveedores
     $('#proveedorForm').on('submit', function(e) {
         e.preventDefault();
-        
+
+        const proveedorId = $(this).data('proveedor_id'); // Obtener el ID del proveedor
+        const action = proveedorId ? 'updateProveedor' : 'addProveedor'; // Determinar acción
+
         const formData = {
-            proveedor_id: $('#proveedor_id').val(),
+            proveedor_id: proveedorId,
             nombre_empresa: $('#nombre_empresa').val(),
             representante: $('#representante').val(),
             direccion: $('#direccion').val(),
@@ -41,31 +43,51 @@ $(document).ready(function() {
             telefono: $('#telefono').val()
         };
 
-        $.ajax({
-            url: '../AJAX/ctrProveedores.php',
-            type: 'POST',
-            data: { action: 'addOrUpdateProveedor', ...formData },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    alert('Proveedor registrado exitosamente');
-                    proveedoresTable.ajax.reload();
-                    $('#proveedorForm')[0].reset(); // Limpiar el formulario
-                    // Cambiar el texto del botón de nuevo
-                    $('button[type="submit"]').text('Registrar Proveedor');
-                } else {
-                    alert('Error al registrar el proveedor: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-                console.error("Response:", xhr.responseText);
+        Swal.fire({
+            title: proveedorId ? "¿Está seguro de que desea actualizar este proveedor?" : "¿Está seguro de que desea registrar este proveedor?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: proveedorId ? "Sí, actualizar" : "Sí, registrar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../AJAX/ctrProveedores.php',
+                    type: 'POST',
+                    data: { action: action, ...formData },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: proveedorId ? 'Proveedor actualizado exitosamente' : 'Proveedor registrado exitosamente',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            proveedoresTable.ajax.reload();
+                            $('#proveedorForm')[0].reset();
+                            $('#proveedorForm').removeData('proveedor_id'); // Limpiar ID después de guardar
+                            $('button[type="submit"]').text('Registrar Proveedor');
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Error al registrar el proveedor',
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                        console.error("Response:", xhr.responseText);
+                    }
+                });
             }
         });
     });
 
     // Manejar el clic en el botón de editar
-  // Manejar el clic en el botón de editar
     $('#proveedoresTable tbody').on('click', '.btn-edit', function() {
         const proveedorId = $(this).data('id');
 
@@ -83,35 +105,124 @@ $(document).ready(function() {
                     $('#direccion').val(proveedor.direccion);
                     $('#correo').val(proveedor.correo);
                     $('#telefono').val(proveedor.telefono);
-                    
+
                     // Cambiar el texto del botón
                     $('button[type="submit"]').text('Actualizar Proveedor');
+                    $('#proveedorForm').data('proveedor_id', proveedorId); // Guardar ID en el formulario
                 } else {
-                    alert('Proveedor no encontrado');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al cargar proveedor: ' + response.message,
+                    });
                 }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error:", error);
             }
         });
     });
 
-
     // Manejar el clic en el botón de eliminar
     $('#proveedoresTable tbody').on('click', '.btn-delete', function() {
         const proveedorId = $(this).data('id');
-        if (confirm("¿Estás seguro de que deseas eliminar este proveedor?")) {
-            $.ajax({
-                url: '../AJAX/ctrProveedores.php',
-                type: 'POST',
-                data: { action: 'deleteProveedor', proveedor_id: proveedorId },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('Proveedor eliminado correctamente');
-                        proveedoresTable.ajax.reload();
-                    } else {
-                        alert('Error al eliminar proveedor: ' + response.message);
+
+        Swal.fire({
+            title: "¿Está seguro de que desea eliminar este proveedor?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../AJAX/ctrProveedores.php',
+                    type: 'POST',
+                    data: { action: 'deleteProveedor', proveedor_id: proveedorId },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Eliminado',
+                                text: 'El proveedor ha sido eliminado correctamente',
+                                confirmButtonText: 'Aceptar'
+                            }).then(() => {
+                                proveedoresTable.ajax.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Error al eliminar el proveedor',
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Hubo un problema con la solicitud: ' + error,
+                        });
                     }
+                });
+            }
+        });
+    });
+
+    // Manejar cambios en el formulario
+    let formModified = false;
+    $("#proveedorForm input").on("input change", function() {
+        formModified = true;
+    });
+
+    // Evento beforeunload para advertir si hay cambios no guardados
+    window.addEventListener("beforeunload", function(e) {
+        if (formModified) {
+            const confirmationMessage = "Tienes datos sin guardar. ¿Estás seguro de que deseas salir?";
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
+        }
+    });
+
+    // Capturar clics en el menú lateral
+    $("a").on("click", function(e) {
+        if (formModified) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Tienes datos sin guardar",
+                text: "¿Estás seguro de que deseas salir sin guardar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, salir",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = $(this).attr("href");
                 }
             });
+        }
+    });
+
+    // El botón de cancelar regresa a la página anterior
+    $("#cancelButton").on("click", function() {
+        if (formModified) {
+            Swal.fire({
+                title: "Tienes datos sin guardar",
+                text: "¿Estás seguro de que deseas salir sin guardar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, salir",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.history.back(); // Regresa a la página anterior
+                }
+            });
+        } else {
+            window.history.back(); // Regresa a la página anterior
         }
     });
 });

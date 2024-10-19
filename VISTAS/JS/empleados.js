@@ -27,7 +27,25 @@ $(document).ready(function() {
         ]
     });
 
-    // Manejar el envío del formulario para registrar empleados
+    function validarCedulaEcuatoriana(cedula) {
+        if (cedula.length !== 10) return false;
+
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let suma = 0;
+
+        for (let i = 0; i < 9; i++) {
+            let digito = parseInt(cedula[i]) * coeficientes[i];
+            if (digito > 9) digito -= 9;
+            suma += digito;
+        }
+
+        const digitoVerificadorCalculado = (10 - (suma % 10)) % 10;
+        const digitoVerificador = parseInt(cedula[9]);
+
+        return digitoVerificadorCalculado === digitoVerificador;
+    }
+
+    // Manejar el envío del formulario para registrar o actualizar empleados
     $('#employeeForm').on('submit', function(e) {
         e.preventDefault();
         
@@ -41,25 +59,57 @@ $(document).ready(function() {
             direccion: $('#direccion').val()
         };
 
-        $.ajax({
-            url: '../AJAX/ctrEmpleados.php',
-            type: 'POST',
-            data: { action: 'addOrUpdateEmpleado', ...formData },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    alert('Empleado registrado exitosamente');
-                    employeesTable.ajax.reload();
-                    $('#employeeForm')[0].reset();
-                    $('#emp_id').val(''); // Limpiar el ID del empleado
-                    $('button[type="submit"]').text('Agregar Empleado');
-                } else {
-                    alert('Error al registrar el empleado: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error:", error);
-                console.error("Response:", xhr.responseText);
+        if (!validarCedulaEcuatoriana(formData.cedula)) {
+            $('#cedulaError').text('Cédula inválida. Por favor, verifique e intente nuevamente.');
+            return;
+        } else {
+            $('#cedulaError').text('');
+        }
+
+        const isUpdate = formData.emp_id !== ''; // Verifica si es una actualización
+        const actionText = isUpdate ? 'actualizar' : 'registrar';
+
+        Swal.fire({
+            title: `¿Estás seguro de ${actionText} este empleado?`,
+            text: `Se va a ${actionText} la información del empleado.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: `Sí, ${actionText}`,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../AJAX/ctrEmpleados.php',
+                    type: 'POST',
+                    data: { action: 'addOrUpdateEmpleado', ...formData },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Éxito',
+                                text: isUpdate ? 'Empleado actualizado exitosamente' : 'Empleado registrado exitosamente',
+                            });
+                            employeesTable.ajax.reload();
+                            $('#employeeForm')[0].reset();
+                            $('#emp_id').val('');
+                            $('button[type="submit"]').text('Agregar Empleado');
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error: ' + response.message,
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error inesperado',
+                            text: xhr.responseText,
+                        });
+                    }
+                });
             }
         });
     });
@@ -86,7 +136,11 @@ $(document).ready(function() {
                     
                     $('button[type="submit"]').text('Actualizar Empleado');
                 } else {
-                    alert('Empleado no encontrado');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Empleado no encontrado',
+                    });
                 }
             }
         });
@@ -95,27 +149,47 @@ $(document).ready(function() {
     // Manejar el clic en el botón de eliminar
     $('#employeesTable tbody').on('click', '.btn-delete', function() {
         const empId = $(this).data('id');
-        const cedula = $(this).closest('tr').find('td:eq(1)').text(); // Obtener la cédula del empleado
+        const cedula = $(this).closest('tr').find('td:eq(1)').text(); 
 
-        if (confirm("¿Estás seguro de que deseas eliminar este empleado?")) {
-            $.ajax({
-                url: '../AJAX/ctrEmpleados.php',
-                type: 'POST',
-                data: { action: 'deleteEmpleado', emp_id: empId, cedula: cedula },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        alert('Empleado eliminado correctamente');
-                        employeesTable.ajax.reload();
-                    } else {
-                        alert('Error al eliminar empleado: ' + response.message);
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../AJAX/ctrEmpleados.php',
+                    type: 'POST',
+                    data: { action: 'deleteEmpleado', emp_id: empId, cedula: cedula },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Eliminado',
+                                text: 'Empleado eliminado correctamente',
+                            });
+                            employeesTable.ajax.reload();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'Error al eliminar empleado: ' + response.message,
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error inesperado',
+                            text: xhr.responseText,
+                        });
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error:", error);
-                    console.error("Response:", xhr.responseText);
-                }
-            });
-        }
+                });
+            }
+        });
     });
 });

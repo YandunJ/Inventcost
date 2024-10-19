@@ -13,7 +13,7 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
-</head> 
+</head>
 <body>
 <div class="wrapper">
     <!-- Navbar -->
@@ -28,20 +28,22 @@
                 <h1 class="text-center">Agregar Rol</h1>
                 <div class="form-container">
                     <form id="roleForm">
-                        <div class="form-group">
+                    <div class="form-group">
                             <label for="rol_nombre">Nombre del Rol:</label>
-                            <input type="text" id="rol_nombre" name="rol_nombre" class="form-control" required>
+                            <input type="text" id="rol_nombre" name="rol_nombre" class="form-control" required maxlength="25" placeholder="Ej. Administrador">
                         </div>
                         <div class="form-group">
-                            <label for="rol_descripcio
-                            n">Descripción del Rol:</label>
-                            <input type="text" id="rol_descripcion" name="rol_descripcion" class="form-control" required>
+                            <label for="rol_descripcion">Descripción del Rol:</label>
+                            <input type="text" id="rol_descripcion" name="rol_descripcion" class="form-control" required maxlength="50" placeholder="Ej. Acceso total al sistema">
                         </div>
+
                         <div class="form-group">
                             <label for="rol_area_trabajo">Permisos en el Sistema:</label>
                             <select id="rol_area_trabajo" name="rol_area_trabajo" class="form-control" required></select>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Agregar Rol</button>
+                        <button type="submit" class="btn btn-primary ">Agregar Rol</button>
+                        <button type="button" class="btn btn-secondary " id="cancelButton">Cancelar</button>
+
                     </form>
                 </div>
 
@@ -68,7 +70,10 @@
     </div>
     <!-- /.content-wrapper -->
 </div>
+
 <!-- ./wrapper -->
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- jQuery -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
@@ -82,6 +87,6 @@
 <script src="JS/roles.js"></script> <!-- Ruta al archivo JS -->
 <!-- Incluir el script de cierre de sesión -->
 <script src="JS/cerrarsesion.js"></script>
-<script src="JS/validsesion.js"></script>
+
 </body>
 </html>

@@ -22,13 +22,13 @@
                     <h1 class="text-center">Gestión de Insumos</h1>
                     <div class="form-container">
                         <form id="insumoForm">
-                            <div class="form-group">
+                        <div class="form-group">
                                 <label for="nombre">Nombre del Insumo:</label>
-                                <input type="text" id="nombre" name="nombre" class="form-control" required>
+                                <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="50" placeholder="Ej: Azúcar">
                             </div>
                             <div class="form-group">
                                 <label for="descripcion">Descripción:</label>
-                                <input type="text" id="descripcion" name="descripcion" class="form-control">
+                                <input type="text" id="descripcion" name="descripcion" class="form-control" maxlength="100" placeholder="Ej: Azúcar blanca refinada">
                             </div>
                             <div class="form-group">
                                 <label for="destinado_a">Destinado a:</label>
@@ -53,6 +53,8 @@
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-primary">Agregar Insumo</button>
+                            <button type="button" class="btn btn-secondary " id="cancelButton">Cancelar</button>
+
                         </form>
                     </div>
                     <hr>
@@ -74,7 +76,7 @@
                 </div>
             </section>
         </div>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="../Public/plugins/jquery/jquery.min.js"></script>
         <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>

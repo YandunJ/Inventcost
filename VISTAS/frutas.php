@@ -26,20 +26,22 @@
             <section class="content">
                 <div class="container-fluid">
                     <h1 class="text-center">Gestión de Frutas</h1>
-                        <div class="form-container">
-                            <form id="fruitForm">
-                                <div class="form-group">
-                                    <label for="nombre">Nombre de la Fruta:</label>
-                                    <input type="text" id="nombre" name="nombre" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="descripcion">Descripción:</label>
-                                    <textarea id="descripcion" name="descripcion" class="form-control" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Agregar Fruta</button>
-                            </form>
+                    <div class="form-container">
+                        <form id="fruitForm">
+                            <div class="form-group">
+                                <label for="nombre">Nombre de la Fruta:</label>
+                                <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Manzana">
+                            </div>
+                            <div class="form-group">
+                                <label for="descripcion">Descripción:</label>
+                                <textarea id="descripcion" name="descripcion" class="form-control" required placeholder="Breve descripcion de nueva fruta Ej:  Fruta roja y dulce, rica en vitaminas."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Agregar Fruta</button>
+                            <button type="submit" class="btn btn-secondary" id="cancelButton">Cancelar</button>
 
+                        </form>
                     </div>
+
                     <hr>
 
                     <table id="fruitsTable" class="table table-bordered table-hover">
@@ -62,7 +64,7 @@
         <!-- /.content-wrapper -->
 
       
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- jQuery -->
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->

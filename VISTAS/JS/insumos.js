@@ -35,36 +35,59 @@ $(document).ready(function() {
             nombre: $('#nombre').val(),
             descripcion: $('#descripcion').val(),
             unidad_medida: $('#unidad_medida').val(),
-            destino: $('#destinado_a').val() // Cambié a "destinado_a"
+            destino: $('#destinado_a').val()
         };
 
         if (editing) {
             formData.insumo_id = currentId;
         }
 
-        $.ajax({
-            url: '../AJAX/ctrInsumos.php',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    alert(editing ? 'Insumo actualizado correctamente' : 'Insumo registrado correctamente');
-                    $('#insumoForm')[0].reset();
-                    table.ajax.reload();
-                    editing = false;
-                    currentId = null;
-                    $('#insumoForm button[type="submit"]').text('Agregar Insumo');
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
-                alert('Error en la solicitud AJAX: ' + textStatus);
+        Swal.fire({
+            title: editing ? '¿Actualizar Insumo?' : '¿Agregar Insumo?',
+            text: editing ? '¿Está seguro de que desea actualizar este insumo?' : '¿Está seguro de que desea agregar este insumo?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../AJAX/ctrInsumos.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: editing ? 'Insumo actualizado correctamente' : 'Insumo registrado correctamente'
+                            });
+                            $('#insumoForm')[0].reset();
+                            table.ajax.reload();
+                            editing = false;
+                            currentId = null;
+                            $('#insumoForm button[type="submit"]').text('Agregar Insumo');
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error en la solicitud',
+                            text: 'Error en la solicitud AJAX: ' + textStatus
+                        });
+                    }
+                });
             }
         });
     });
+
 
     $('#insumosTable tbody').on('click', 'button', function() {
         var action = $(this).hasClass('editInsumo') ? 'edit' : 'delete';
@@ -73,34 +96,56 @@ $(document).ready(function() {
         if (action === 'edit') {
             $('#nombre').val(data.nombre);
             $('#descripcion').val(data.descripcion);
-            $('#unidad_medida').val(data.unidad_medida); // Cargar unidad de medida
-            $('#destinado_a').val(data.destinado_a); // Cargar destino
+            $('#unidad_medida').val(data.unidad_medida);
+            $('#destinado_a').val(data.destinado_a);
             editing = true;
             currentId = data.insumo_id;
             $('#insumoForm button[type="submit"]').text('Actualizar Insumo');
         } else if (action === 'delete') {
-            if (confirm('¿Estás seguro de que quieres eliminar este insumo?')) {
-                $.ajax({
-                    url: '../AJAX/ctrInsumos.php',
-                    type: 'POST',
-                    data: { action: 'deleteInsumo', insumo_id: data.insumo_id },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            alert('Insumo eliminado correctamente');
-                            table.ajax.reload();
-                        } else {
-                            alert('Error: ' + response.message);
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Estás a punto de eliminar este insumo.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '../AJAX/ctrInsumos.php',
+                        type: 'POST',
+                        data: { action: 'deleteInsumo', insumo_id: data.insumo_id },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire(
+                                    'Eliminado!',
+                                    'Insumo eliminado correctamente',
+                                    'success'
+                                );
+                                table.ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error en la solicitud',
+                                text: 'Error en la solicitud AJAX: ' + textStatus
+                            });
                         }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
-                        alert('Error en la solicitud AJAX: ' + textStatus);
-                    }
-                });
-            }
+                    });
+                }
+            });
         }
     });
+
 
     $.ajax({
         url: '../AJAX/ctrInsumos.php',
@@ -119,6 +164,61 @@ $(document).ready(function() {
             alert('Error en la solicitud AJAX: ' + textStatus);
         }
     });
+
     
     
+    let formModified = false;
+
+    // Detectar cambios en el formulario
+    $("#insumoForm input, #insumoForm select").on("input change", function() {
+        formModified = true;
+    });
+
+    // Evento beforeunload para detectar si se intenta cerrar o recargar la página
+    window.addEventListener("beforeunload", function(e) {
+        if (formModified) {
+            const confirmationMessage = "Tienes datos sin guardar. ¿Estás seguro de que deseas salir?";
+            e.returnValue = confirmationMessage; // Establece el mensaje
+            return confirmationMessage;
+        }
+    });
+
+    // Capturar clics en el menú lateral
+    $("a").on("click", function(e) {
+        if (formModified) {
+            e.preventDefault(); // Prevenir la navegación
+            Swal.fire({
+                title: "Tienes datos sin guardar",
+                text: "¿Estás seguro de que deseas salir sin guardar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, salir",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = $(this).attr("href"); // Redirigir si confirma
+                }
+            });
+        }
+    });
+
+    // El botón de cancelar regresa a la página anterior
+    $("#cancelButton").on("click", function() {
+        if (formModified) {
+            Swal.fire({
+                title: "Tienes datos sin guardar",
+                text: "¿Estás seguro de que deseas salir sin guardar?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Sí, salir",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.history.back(); // Regresa a la página anterior
+                }
+            });
+        } else {
+            window.history.back(); // Regresa a la página anterior
+        }
+    });
 });

@@ -28,33 +28,38 @@
                 <h1 class="text-center">Gestión de Empleados</h1>
                      <div class="form-container">
 
-                        <form id="employeeForm">
-                            <div class="form-group">
-                                <label for="cedula">Cédula:</label>
-                                <input type="text" id="cedula" name="cedula" class="form-control" placeholder="Cédula" required>
-                            </div>
+                     <form id="employeeForm">
+                     <input type="hidden" id="emp_id" name="emp_id" value="">
+
+                     <div class="form-group">
+                            <label for="cedula">Cédula:</label>
+                            <input type="text" id="cedula" name="cedula" class="form-control" placeholder="123456789" pattern="\d{10}" title="La cédula debe contener 10 dígitos" required>
+                            <small id="cedulaError" class="text-danger"></small>
+                        </div>
                             <div class="form-group">
                                 <label for="nombre">Nombre:</label>
-                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre"  required>
+                                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Juan" pattern="[A-Za-z\s]+" title="El nombre solo puede contener letras y espacios" required>
                             </div>
                             <div class="form-group">
                                 <label for="apellido">Apellido:</label>
-                                <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido" required>
+                                <input type="text" id="apellido" name="apellido" class="form-control" placeholder="Pérez" pattern="[A-Za-z\s]+" title="El apellido solo puede contener letras y espacios" required>
                             </div>
                             <div class="form-group">
                                 <label for="telefono">Teléfono:</label>
-                                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Teléfono" required>
+                                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="0987654321" pattern="\d{7,15}" title="El teléfono debe contener entre 7 y 15 dígitos" required>
                             </div>
                             <div class="form-group">
                                 <label for="correo">Correo:</label>
-                                <input type="email" id="correo" name="correo" class="form-control" placeholder="Correo electrónico" required>
+                                <input type="email" id="correo" name="correo" class="form-control" placeholder="juan.perez@example.com" required>
                             </div>
                             <div class="form-group">
                                 <label for="direccion">Dirección:</label>
-                                <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Dirección" required>
+                                <input type="text" id="direccion" name="direccion" class="form-control" placeholder="Calle 123" minlength="5" maxlength="100" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Agregar Empleado</button>
                         </form>
+
+
                      </div>
 
                 <hr>
@@ -82,7 +87,7 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- jQuery -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
@@ -95,6 +100,6 @@
 <!-- Custom JS -->
 <script src="JS/empleados.js"></script>
 <script src="JS/cerrarsesion.js"></script>
-<script src="JS/validsesion.js"></script>
+
 </body>
 </html>
