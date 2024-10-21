@@ -46,11 +46,7 @@
                         <label for="correo">Correo</label>
                         <input type="email" class="form-control" id="correo" name="correo" placeholder="empresa@correo.com" required maxlength="40">
                     </div>
-                    <div class="form-group">
-                                
-                                <label><input type="radio" name="tipo_telefono" value="personal"> Personal</label><br>
-                                <label><input type="radio" name="tipo_telefono" value="convencional"> Convencional</label>
-                            </div>
+                   
                             <div class="form-group">
                                 <label for="telefono">Teléfono</label>
                                 <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
