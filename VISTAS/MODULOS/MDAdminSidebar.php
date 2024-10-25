@@ -34,9 +34,9 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <!-- Other menu items -->
                        
                         <li class="nav-item">
-                            <a href="frutas.php" class="nav-link">
+                            <a href="InventCatalogo.php" class="nav-link">
                                 <i class="nav-icon fas fa-apple-alt"></i>
-                                <p>Catalogo Frutas</p>
+                                <p>Catalogo Inventario</p>
                             </a>
                         </li>
 

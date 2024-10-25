@@ -118,7 +118,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="frutas.php" class="nav-link">
+                            <a href="InventCatalogo.php" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>Materia Prima</p>
                             </a>

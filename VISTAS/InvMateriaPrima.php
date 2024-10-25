@@ -38,7 +38,7 @@
                                     <option value="">Seleccione una fruta</option>
                                 </select>                                
                             </div>
-                            <a href="frutas.php" class="btn btn-primary btn-sm">Agregar Fruta</a>
+                            <a href="InventCatalogo.php" class="btn btn-primary btn-sm">Agregar Fruta</a>
                             <div class="form-group">
                                 <label for="fecha_cad">Fecha Limite de Producción:</label>
                                 <input type="date" id="fecha_cad" name="fecha_cad" class="form-control" required>

@@ -1,24 +1,62 @@
 $(document).ready(function() {
-    // Inicializar DataTable
-    var table = $('#fruitsTable').DataTable({
+        
+    $(document).ready(function() {
+        // Cargar categorías en el select box
+        $.ajax({
+            url: "../AJAX/ctrInvCatalogo.php",
+            type: "POST",
+            data: { action: 'getCategorias' },
+            dataType: "json",
+            success: function(response) {
+                if (Array.isArray(response)) {
+                    let options = "";
+                    response.forEach(function(categoria) {
+                        options += `<option value="${categoria.id_categoria}">${categoria.nombre_categoria}</option>`;
+                    });
+                    $("#categoria_select").html(options);
+                } else {
+                    console.error("Error loading categories: ", response);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
+    });
+    
+
+    var table = $('#inventoryTable').DataTable({
         "ajax": {
-            "url": "../AJAX/ctrFrutas.php",
+            "url": "../AJAX/ctrInvCatalogo.php",
             "type": "POST",
-            "data": { action: "obtenerFrutas" }
+            "data": { action: "obtenerArticulos" }, // Corregido
+            "dataSrc": function(json) {
+                console.log(json);  // Verifica qué se está recibiendo desde el servidor
+                return json.data;
+            }
         },
         "columns": [
-            { "data": "fruta_id" },
-            { "data": "nombre" },
+            { "data": "id_articulo" },
+            { "data": "nombre_articulo" },
             { "data": "descripcion" },
+            { "data": "id_categoria" }, // Nuevo
+            { "data": "unidad_medida" },
+            { "data": "estado" }, // Nuevo
+            { "data": "fecha_creacion" }, // Nuevo
+            { "data": "stock" },
             {
                 "data": null,
-                "defaultContent": `
-                    <button class="editFruit btn btn-warning btn-sm">Editar</button>
-                    <button class="deleteFruit btn btn-danger btn-sm">Eliminar</button>
-                `
+               "defaultContent": `
+                        <button class="editItem btn btn-warning btn-sm">Editar</button>
+                        <button class="deleteArticle btn btn-danger btn-sm">Eliminar</button>
+                    `
+
             }
         ]
     });
+    
+
 
     var editing = false;
     var currentId = null;
@@ -29,37 +67,34 @@ $(document).ready(function() {
         var regex = /^[A-Za-z\s]+$/;
         return regex.test(name);
     }
-
- // Manejar la acción de agregar fruta
- $('#fruitForm').on('submit', function(e) {
+// Manejar la acción de agregar o actualizar artículo
+$('#inventoryForm').on('submit', function(e) {
     e.preventDefault();
 
-    var nombre = $('#nombre').val();
+    // Obtenemos los valores del formulario
+    let id_articulo = $('#id_articulo').val();
+    let nombre = $('#nombre').val();
+    let descripcion = $('#descripcion').val();
+    let id_categoria = $('#categoria_select').val();
+    let unidad_medida = $('#unidad_medida').val();
     
-    // Validar el nombre antes de proceder
-    if (!validateFruitName(nombre)) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Error de validación',
-            text: 'El nombre de la fruta solo puede contener letras y espacios.'
-        });
-        return; // Detener el proceso si hay un error
-    }
+    // Acción a enviar: agregar o actualizar
+    let action = id_articulo == 0 ? 'addArticulo' : 'addArticulo';
+    let opcion = id_articulo == 0 ? 1 : 2; // opción 1 para inserción, 2 para actualización
 
-    var action = editing ? 'updateFruta' : 'addFruta';
-    var formData = {
+    // Configuramos los datos para la petición AJAX
+    let formData = {
         action: action,
-        opcion: editing ? 2 : 1, // opción 1 para inserción, opción 2 para actualización
+        opcion: opcion,
+        id_articulo: id_articulo,
         nombre: nombre,
-        descripcion: $('#descripcion').val()
+        descripcion: descripcion,
+        id_categoria: id_categoria,
+        unidad_medida: unidad_medida
     };
 
-    if (editing) {
-        formData.fruta_id = currentId;
-    }
-
     $.ajax({
-        url: '../AJAX/ctrFrutas.php',
+        url: '../AJAX/ctrInvCatalogo.php',
         type: 'POST',
         data: formData,
         dataType: 'json',
@@ -67,17 +102,15 @@ $(document).ready(function() {
             if (response.status === 'success') {
                 Swal.fire({
                     icon: 'success',
-                    title: editing ? 'Actualización exitosa' : 'Registro exitoso',
-                    text: editing ? 'Fruta actualizada correctamente' : 'Fruta registrada correctamente'
+                    title: id_articulo == 0 ? 'Artículo registrado' : 'Artículo actualizado',
+                    text: response.message
                 });
-                // Limpiar el formulario
-                $('#fruitForm')[0].reset();
-                // Recargar la tabla de frutas
-                table.ajax.reload();
-                // Resetear el estado de edición
-                editing = false;
-                currentId = null;
-                $('#fruitForm button[type="submit"]').text('Agregar Fruta');
+                // Resetear el formulario
+                $('#inventoryForm')[0].reset();
+                $('#id_articulo').val(0); // Reseteamos el id a 0 (modo de inserción)
+                $('#formSubmitButton').text('Agregar Artículo');
+                // Recargar la tabla de inventario
+                $('#inventoryTable').DataTable().ajax.reload();
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -86,36 +119,42 @@ $(document).ready(function() {
                 });
             }
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('Error en la solicitud AJAX:', textStatus, errorThrown);
+        error: function(xhr, status, error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error en la solicitud',
-                text: 'Error en la solicitud AJAX: ' + textStatus
+                text: 'Error en la solicitud AJAX: ' + status
             });
         }
     });
 });
 
+$('#inventoryTable').on('click', '.editItem', function() {
+    let data = table.row($(this).parents('tr')).data();
+    
+    // Cargar datos en los campos del formulario
+    $('#id_articulo').val(data.id_articulo);
+    $('#nombre').val(data.nombre_articulo);
+    $('#descripcion').val(data.descripcion);
+    $('#categoria_select').val(data.id_categoria);
+    $('#unidad_medida').val(data.unidad_medida);
 
-  // Editar y eliminar frutas
-  $('#fruitsTable tbody').on('click', 'button', function() {
-    var action = $(this).hasClass('editFruit') ? 'edit' : 'delete';
+    // Cambiar el texto del botón de enviar para reflejar "Actualizar"
+    $('#formSubmitButton').text('Actualizar Artículo');
+    editing = true;
+});
+
+
+// Eliminar artículo de inventario
+$('#inventoryTable tbody').on('click', 'button', function() {
+    var action = $(this).hasClass('deleteArticle') ? 'delete' : 'edit';
     var data = table.row($(this).parents('tr')).data();
 
-    if (action === 'edit') {
-        // Llenar el formulario con los datos de la fruta
-        $('#nombre').val(data.nombre);
-        $('#descripcion').val(data.descripcion);
-        // Cambiar el estado de edición y guardar el id actual
-        editing = true;
-        currentId = data.fruta_id;
-        $('#fruitForm button[type="submit"]').text('Actualizar Fruta');
-    } else if (action === 'delete') {
-        // Mensaje de confirmación utilizando SweetAlert
+    if (action === 'delete') {
+        // Confirmación antes de eliminar
         Swal.fire({
             title: '¿Estás seguro?',
-            text: 'Estás a punto de eliminar esta fruta.',
+            text: 'Estás a punto de eliminar este artículo de inventario.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
@@ -125,19 +164,18 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '../AJAX/ctrFrutas.php',
+                    url: '../AJAX/ctrInvCatalogo.php',
                     type: 'POST',
-                    data: { action: 'deleteFruta', fruta_id: data.fruta_id },
+                    data: { action: 'deleteArticulo', articulo_id: data.id_articulo },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
                             Swal.fire(
-                                'Eliminada!',
-                                'Fruta eliminada correctamente',
+                                'Eliminado!',
+                                'El artículo fue eliminado correctamente.',
                                 'success'
                             );
-                            // Recargar la tabla de frutas
-                            table.ajax.reload();
+                            table.ajax.reload(); // Recarga la tabla para reflejar los cambios
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -159,6 +197,7 @@ $(document).ready(function() {
         });
     }
 });
+
 
 let formModified = false;
 
