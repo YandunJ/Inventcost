@@ -1,11 +1,13 @@
 <?php
-// AJAX/ctrInvenMateriaP.php
+// AJAX/ctrInventario.php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once "../CONFIG/conexion.php";
-require_once "../MODELO/modInvenMateriaP.php";
+require_once "../MODELO/modInvFrutas.php";
+// aqui cambiar el nombre y uso para cargar los articulos de cateaogo inventario
 require_once "../MODELO/sbmateria.php";
+
 
 $conn = (new Cls_DataConnection())->FN_getConnect();
 
@@ -43,7 +45,7 @@ function cargarFrutas() {
     $frutas = $materiaPrima->obtenerFrutas();
 
     if (!$frutas) {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener las frutas']);
+        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los arti colas']);
     } else {
         echo json_encode(['status' => 'success', 'data' => $frutas]);
     }
@@ -60,6 +62,7 @@ function cargarProveedores() {
         echo json_encode(['status' => 'success', 'data' => $proveedores]);
     }
 }
+ 
 
 function guardarMateriaPrima() {
     global $conn;
@@ -113,26 +116,18 @@ function actualizarMateriaPrima() {
 }
 
 
-
-
 function cargarMateriaPrima() {
     global $conn;
-    $sql = "CALL fpulpas.pa_obt_materia_prima()";
-    $result = $conn->query($sql);
+    $materiaPrima = new MateriaPrima($conn);
 
-    if (!$result) {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los registros de materia prima']);
-        return;
+    try {
+        // Llamada al método del modelo para obtener datos para el DataTable
+        $data = $materiaPrima->obtenerInventarioMP(); 
+        echo json_encode(['status' => 'success', 'data' => $data]);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
-
-    $data = [];
-    while ($row = $result->fetch_assoc()) {
-        $data[] = $row;
-    }
-
-    echo json_encode(['status' => 'success', 'data' => $data]);
 }
-
 
 function obtenerMateriaPrima() {
     global $conn;
@@ -173,6 +168,5 @@ function cambiarEstadoMateriaPrima() {
     $stmt->close();
 }
 
-
-
+ 
 ?>

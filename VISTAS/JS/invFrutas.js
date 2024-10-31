@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Cargar frutas y proveedores
     $.ajax({
-        url: "../AJAX/ctrInvenMateriaP.php",
+        url: "../AJAX/ctrInvFrutas.php",
         type: "POST",
         data: { action: 'cargarFrutas' },
         dataType: "json",
@@ -9,7 +9,7 @@ $(document).ready(function() {
             if (response.status === 'success' && Array.isArray(response.data)) {
                 let options = '<option value="">Seleccione una fruta</option>';
                 response.data.forEach(function(fruta) {
-                    options += `<option value="${fruta.fruta_id}">${fruta.nombre}</option>`;
+                    options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
                 });
                 $("#fruta_id").html(options);
             } else {
@@ -25,7 +25,7 @@ $(document).ready(function() {
     });
 
     $.ajax({
-        url: "../AJAX/ctrInvenMateriaP.php",
+        url: "../AJAX/ctrInvFrutas.php",
         type: "POST",
         data: { action: 'cargarProveedores' },
         dataType: "json",
@@ -59,7 +59,7 @@ $(document).ready(function() {
      // Inicializar DataTable
      const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         ajax: {
-            url: '../AJAX/ctrInvenMateriaP.php',
+            url: '../AJAX/ctrInvFrutas.php',
             type: 'POST',
             data: { action: 'cargarMateriaPrima' },
             dataSrc: function(json) {
@@ -72,44 +72,27 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'mp_id' },
-            { data: 'fruta_nombre' },
-            { data: 'fecha_hora_ing' },
-            { data: 'fecha_cad' },
-            { data: 'proveedor_nombre' },
-            { data: 'cantidad' },
-            { data: 'precio_unit' },
-            { data: 'precio_total' },
-            { data: 'birx' },
-            { data: 'estado' },
-            { data: 'observaciones' },
+            { data: 'ID' },
+            { data: 'Fecha' },
+            { data: 'Hora' },
+            { data: 'Lote' },
+            { data: 'Proveedor' },
+            { data: 'Artículo' },
+            { data: 'Cantidad_Disponible' },
+            { data: 'Estado' },
+            { data: 'Precio_Total' },
             {
-                // Columna de botones de editar y eliminar
                 data: null,
                 render: function(data, type, row) {
                     return `
-                    <button class="btn btn-info btn-sm edit-btn" data-id="${row.mp_id}">Editar</button>
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="${row.mp_id}">Eliminar</button>
-                    `;
-                }
-            },
-            {
-                // Columna de botones de aprobar y no aprobar
-                data: null,
-                render: function(data, type, row) {
-                    return `
-                        <button class="btn btn-success btn-sm approve-btn" data-id="${row.mp_id}">
-                            <i class="fas fa-check"></i> Aceptar
-                        </button>
-                        <button class="btn btn-danger btn-sm reject-btn" data-id="${row.mp_id}">
-                            <i class="fas fa-times"></i> Rechazar
-                        </button>
+                        <button class="btn btn-info btn-sm edit-btn" data-id="${row.ID}">Editar</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.ID}">Eliminar</button>
                     `;
                 }
             }
-            
         ]
     });
+    
 
 
     // Botón de estado "A" (Aprobar)

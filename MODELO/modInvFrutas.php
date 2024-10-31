@@ -1,5 +1,5 @@
         <?php
-        // MODELO/InvenMateriaP.php
+        // MODELO/Inventario.php
         class MateriaPrima {
             private $conn;
 
@@ -16,20 +16,23 @@
             } 
             
 
-
-            public function obtenerMateriaPrima() {
-                $sql = "CALL pa_obt_materia_prima()";
+            public function obtenerInventarioMP() {
+                // Llamada al procedimiento almacenado que proporciona los datos resumidos para el DataTable
+                $sql = "CALL sp_Obt_inven_MP()";
                 $result = $this->conn->query($sql);
+            
                 if (!$result) {
                     throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
                 }
+            
                 $data = [];
                 while ($row = $result->fetch_assoc()) {
                     $data[] = $row;
                 }
+            
                 return $data;
             }
-
+            
             public function obtenerMateriaPrimaPorId($mp_id) {
                 $stmt = $this->conn->prepare("SELECT * FROM materia_prima WHERE mp_id = ?");
                 $stmt->bind_param("i", $mp_id);

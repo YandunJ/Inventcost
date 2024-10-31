@@ -8,7 +8,7 @@ class MateriaPrimaModel {
     }
 
     public function obtenerFrutas() {
-        $query = "SELECT fruta_id, nombre FROM frutas";
+        $query = "SELECT id_articulo, nombre_articulo FROM invent_catalogo where id_categoria = 1";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();

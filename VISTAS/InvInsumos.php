@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="../FILES/centrForm.css">
+    <link rel="stylesheet" href="../FILES/InvMPform.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -29,27 +29,57 @@
                     <form id="inventinsumosForm">
                         <input type="hidden" id="inventins_id" name="inventins_id">
 
-                        <div class="form-group">
-                            <label for="insumo_id">Insumo:</label>
-                            <select id="insumo_id" name="insumo_id" class="form-control" required>
-                                <option value="">Seleccione un insumo</option>
-                            </select>                                
-                        </div>
-                        <a href="insumos.php" class="btn btn-primary btn-sm">Agregar Insumos</a>
+
+
+                    <!-- Fecha y Hora -->
+                    <div class="form-section">
+                                <div class="form-group">
+                                    <label for="fecha">Fecha de Ingreso:</label>
+                                    <input type="date" id="fecha" name="fecha" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hora">Hora de Ingreso:</label>
+                                    <input type="time" id="hora" name="hora" class="form-control" required>
+                                </div>
+                            </div>
+
+                        <div class="form-section">
+                            <div class="form-group">
+                                <label for="insumo_id">Insumo:</label>
+                                <select id="insumo_id" name="insumo_id" class="form-control" required>
+                                    <option value="">Seleccione un insumo</option>
+                                </select>              
+
+                                <p><a href="InventCatalogo.php">Revise o agregue nuevo insumos al catalogo</a></p>
+                            </div>
+                            
                         
-                        <div class="form-group">
-                            <label for="proveedor_id">Proveedor:</label>
-                            <select id="proveedor_id" name="proveedor_id" class="form-control" required>
-                                <option value="">Seleccione un proveedor</option>
-                            </select>
+                            <div class="form-group">
+                                <label for="proveedor_id">Proveedor:</label>
+                                <select id="proveedor_id" name="proveedor_id" class="form-control" required>
+                                    <option value="">Seleccione un proveedor</option>
+                                </select>
+                                <p><a href="proveedores.php">Revise o agregue un nuevo porveedor</a></p>
+                            </div>
                         </div>
-                        <a href="proveedores.php" class="btn btn-primary btn-sm">Agregar Proveedor</a>
+
                         
-                        <div class="form-group">
-                            <label for="fecha_cad">Fecha de Caducidad:</label>
-                            <input type="date" id="fecha_cad" name="fecha_cad" class="form-control" required>
-                        </div>
-                        
+                          <!-- Número de Lote -->
+                          <div class="form-section">
+                                <div class="form-group">
+                                    <label for="numero_lote">N Lote:</label>
+                                    <input type="text" id="numero_lote" name="numero_lote" class="form-control" required>
+                                </div>
+                                                            <!-- Cantidad Ingresada y Unidad de Medida -->
+
+                                <div class="form-group">
+                                    <label for="cantidad_ingresada">Cantidad Ingresada:</label>
+                                    <input type="number" step="0.01" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" required>
+
+                                </div>
+                            </div>
+
+
                         <div class="form-group">
                             <label for="unidad_medida">Unidad de Medida:</label>
                             <select id="unidad_medida" name="unidad_medida" class="form-control" required>
@@ -64,16 +94,18 @@
                             <input type="number" id="cantidad" name="cantidad" class="form-control" required placeholder="Ej: 100">
                         </div>
                         
-                        <div class="form-group">
-                            <label for="precio_unitario">Precio Unitario:</label>
-                            <input type="number" id="precio_unitario" name="precio_unitario" class="form-control" required placeholder="Ej: 50.00" step="0.01">
+                      <!-- Precio Unitario y Precio Total -->
+                      <div class="form-section">
+                                <div class="form-group">
+                                    <label for="precio_unitario">Precio Unitario:</label>
+                                    <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="precio_total">Precio Total:</label>
+                                    <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" readonly>
+                                </div>
                             </div>
-                        
-                        <div class="form-group">
-                            <label for="precio_total">Precio Total:</label>
-                            <input type="number" id="precio_total" name="precio_total" class="form-control" required readonly>
-                        </div>
-                        
+
                         <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
                         <button type="button" class="btn btn-secondary" id="cancelarBtn">Cancelar</button> <!-- Botón Cancelar -->
                     </form>
@@ -115,7 +147,7 @@
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <!-- Custom JS -->
-    <script src="JS/InvenInsumos.js"></script>
+    <!--  <script src="JS/InvenInsumos.js"></script> -->
     <script src="JS/cerrarsesion.js"></script>
 
     

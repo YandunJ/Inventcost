@@ -41,15 +41,9 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         </li>
 
                         <li class="nav-item">
-                            <a href="InvMateriaPrima.php" class="nav-link">
+                            <a href="InvFrutas.php" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
-                                <p>Compra Materia Prima</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="insumos.php" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p>Catalogo Insumos</p>
+                                <p>Lotes Frutas</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -58,6 +52,13 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <p>Compra Insumos</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="insumos.php" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>Catalogo Insumos</p>
+                            </a>
+                        </li>
+                    
                          
                         <!-- New dropdown for production modules -->
                         <li class="nav-item has-treeview">

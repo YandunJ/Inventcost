@@ -1,0 +1,47 @@
+
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .form-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .form-group {
+        width: 48%;
+        margin-bottom: 5px;
+    }
+    .form-group label {
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+    .form-control {
+        height: 30px;
+        font-size: 0.85rem;
+        padding: 4px;
+    }
+    .form-actions {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+}
+    
+
+
+
+
