@@ -85,13 +85,75 @@ $(document).ready(function() {
                 data: null,
                 render: function(data, type, row) {
                     return `
-                        <button class="btn btn-info btn-sm edit-btn" data-id="${row.ID}">Editar</button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.ID}">Eliminar</button>
+                        <div class="btn-group">
+                                  <button class="btn btn-info btn-sm details-btn" data-id="${row.ID}">
+                                <i class="fas fa-info-circle"></i> Detalles
+                            </button>
+                            <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                                <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
+                                    <i class="fas fa-trash-alt"></i> Eliminar
+                                </a>
+                            </div>
+                  
+                        </div>
                     `;
                 }
             }
         ]
     });
+
+    
+
+    $('#tablaMateriaPrimas').on('click', '.details-btn', function() {
+        const loteID = $(this).data('id');
+        cargarDetallesLote(loteID);
+    });
+    function cargarDetallesLote(loteID) {
+        $.ajax({
+            url: '../AJAX/ctrInvFrutas.php',
+            type: 'POST',
+            data: { action: 'obtenerDetalleLote', lote_id: loteID },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    // Llenar el modal con los datos recibidos
+                    $('#detalleFecha').text(response.data.Fecha);
+                    $('#detalleHora').text(response.data.Hora);
+                    $('#detalleLote').text(response.data.Numero_Lote);
+                    $('#detalleProveedor').text(response.data.Proveedor);
+                    $('#detalleArticulo').text(response.data.Artículo);
+                    $('#detalleCantidadIngresada').text(response.data.Cantidad_Ingresada); // Nuevo
+                    $('#detalleCantidadRestante').text(response.data.Cantidad_Restante);
+                    $('#detalleUnidadMedida').text(response.data.Unidad_Medida); // Nuevo
+                    $('#detallePresentacion').text(response.data.Presentación); // Nuevo
+                    $('#detallePrecioUnitario').text(response.data.Precio_Unitario); // Nuevo
+                    $('#detallePrecioTotal').text(response.data.Precio_Total);
+                    $('#detalleEstado').text(response.data.Estado);
+                    $('#detalleBrix').text(response.data.Brix);
+                    $('#detallePesoUnitario').text(response.data.Peso_Unitario);
+                    $('#detalleBultos').text(response.data.Bultos_Canastas);
+                    $('#detalleObservacion').text(response.data.Observación);
+                    $('#detalleAprobacion').text(response.data.Aprobación);
+    
+                    // Mostrar el modal
+                    $('#detalleModal').modal('show');
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('Error en la solicitud AJAX.');
+            }
+        });
+    }
+    
+    
     
 
 
@@ -286,9 +348,9 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
     });
 });
     
-       // Al hacer clic en el botón Eliminar
+// Al hacer clic en el botón Eliminar
 $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
-    const mp_id = $(this).data('id');
+    const id_inv = $(this).data('id'); // Cambiado a id_inv
     Swal.fire({
         title: '¿Estás seguro de que deseas eliminar este registro?',
         text: "Esta acción no se puede deshacer.",
@@ -299,9 +361,9 @@ $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '../AJAX/ctrInvenMateriaP.php',
+                url: '../AJAX/ctrInvFrutas.php',
                 type: 'POST',
-                data: { action: 'eliminarMateriaPrima', mp_id: mp_id },
+                data: { action: 'eliminarMateriaPrima', id_inv: id_inv }, // Cambiado a id_inv
                 dataType: 'json',
                 success: function(response) {
                     if (response.status === 'success') {

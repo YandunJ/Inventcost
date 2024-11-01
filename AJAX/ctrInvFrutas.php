@@ -34,7 +34,11 @@ switch ($action) {
         break;
     case 'cambiarEstadoMateriaPrima':
         cambiarEstadoMateriaPrima();
-            break;
+        break;
+    case 'obtenerDetalleLote':
+        obtenerDetalleLote();
+        break;
+            
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -141,18 +145,35 @@ function obtenerMateriaPrima() {
     }
 }
 
-
 function eliminarMateriaPrima() {
-    global $conn;
-    $mp_id = $_POST['mp_id'];
+    $id_inv = $_POST['id_inv'];  // Recibe el ID de inventario desde la solicitud
     $materiaPrima = new MateriaPrima();
+
     try {
-        $materiaPrima->eliminar($mp_id);
-        echo json_encode(['status' => 'success']);
+        $materiaPrima->eliminar($id_inv);  // Llama al método de eliminación en el modelo
+        echo json_encode(['status' => 'success']);  // Responde con éxito si la eliminación se realiza correctamente
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);  // Muestra el mensaje de error en caso de falla
+    }
+}
+
+function obtenerDetalleLote() {
+    global $conn;
+    $lote_id = $_POST['lote_id'];
+    $materiaPrima = new MateriaPrima();
+
+    try {
+        $data = $materiaPrima->obtenerDetalleLote($lote_id);
+        if ($data) {
+            echo json_encode(['status' => 'success', 'data' => $data]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'No se encontraron detalles para el lote especificado.']);
+        }
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
 
 function cambiarEstadoMateriaPrima() {
     global $conn;

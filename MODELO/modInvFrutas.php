@@ -44,13 +44,31 @@
             }
             
             public function eliminar($mp_id) {
-                $sql = "CALL pa_eliminar_materia_prima(?)";
+                $sql = "CALL sp_EliminarRegistroMP(?)";
                 $stmt = $this->conn->prepare($sql);
                 $stmt->bind_param("i", $mp_id);
                 if (!$stmt->execute()) {
                     throw new Exception($stmt->error);
                 }
             }
+
+            public function obtenerDetalleLote($lote_id) {
+                $sql = "CALL sp_DetalleLote(?)";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bind_param("i", $lote_id);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                if (!$result) {
+                    throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
+                }
+                
+                $data = $result->fetch_assoc();
+                $stmt->close();
+                
+                return $data;
+            }
+            
 
             
         }

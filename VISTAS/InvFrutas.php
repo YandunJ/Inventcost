@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/InvMPform.css">
-
+    <link rel="stylesheet" href="../FILES/InvMPModal.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -138,6 +138,69 @@
                 </div>
             </section>
         </div>
+
+        <!-- Modal de Detalles -->
+<div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalleModalLabel">Detalles del Lote</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+    <!-- Sección de Información General -->
+    <div class="modal-section">
+        <div class="modal-section-title">Información General</div>
+        <p><strong>Fecha de Ingreso:</strong> <span id="detalleFecha"></span></p>
+        <p><strong>Hora de Ingreso:</strong> <span id="detalleHora"></span></p>
+        <p><strong>Número de Lote:</strong> <span id="detalleLote"></span></p>
+        <p><strong>Proveedor:</strong> <span id="detalleProveedor"></span></p>
+    </div>
+
+    <!-- Sección de Detalles de Artículo -->
+    <div class="modal-section">
+        <div class="modal-section-title">Detalles de Artículo</div>
+        <p><strong>Artículo:</strong> <span id="detalleArticulo"></span></p>
+        <p><strong>Cantidad Ingresada:</strong> <span id="detalleCantidadIngresada"></span></p>
+        <p><strong>Cantidad Disponible:</strong> <span id="detalleCantidadRestante"></span></p>
+        <p><strong>Unidad de Medida:</strong> <span id="detalleUnidadMedida"></span></p>
+        <p><strong>Presentación:</strong> <span id="detallePresentacion"></span></p>
+    </div>
+
+    <!-- Sección de Precios -->
+    <div class="modal-section">
+        <div class="modal-section-title">Precios</div>
+        <p><strong>Precio Unitario:</strong> <span id="detallePrecioUnitario"></span></p>
+        <p><strong>Precio Total:</strong> <span id="detallePrecioTotal"></span></p>
+    </div>
+
+    <!-- Sección de Información Adicional -->
+    <div class="modal-section">
+        <div class="modal-section-title">Información Adicional</div>
+        <p><strong>Estado:</strong> <span id="detalleEstado"></span></p>
+        <p><strong>Brix:</strong> <span id="detalleBrix"></span></p>
+        <p><strong>Peso Unitario:</strong> <span id="detallePesoUnitario"></span></p>
+        <p><strong>Bultos o Canastas:</strong> <span id="detalleBultos"></span></p>
+    </div>
+
+    <!-- Sección de Observaciones y Aprobación -->
+    <div class="modal-section">
+        <div class="modal-section-title">Observaciones y Aprobación</div>
+        <p><strong>Observación:</strong> <span id="detalleObservacion"></span></p>
+        <p><strong>Aprobación del Lote:</strong> <span id="detalleAprobacion"></span></p>
+    </div>
+</div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
            <!-- Main Footer -->
            <footer class="main-footer">
