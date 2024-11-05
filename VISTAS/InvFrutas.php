@@ -24,7 +24,7 @@
 
                     <div class="form-container">
                         <form id="materiaPrimaForm">
-                            <input type="hidden" id="mp_id" name="mp_id">
+                            <input type="hidden" id="id_inv" name="id_inv">
 
                             <!-- Fecha y Hora -->
                             <div class="form-section">
@@ -81,11 +81,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="precio_total">Precio Total:</label>
-                                    <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" readonly>
+                                    <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" required>
                                 </div>
                             </div>
 
-                            <!-- Brix y Presentación -->
+                           
+                            <!-- Brix, Presentación, Bultos o Canastas, Peso Unitario -->
                             <div class="form-section">
                                 <div class="form-group">
                                     <label for="brix">Brix:</label>
@@ -97,6 +98,17 @@
                                         <option value="cajas">Cajas</option>
                                         <option value="bultos">Bultos</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <div class="form-group">
+                                    <label for="bultos_o_canastas">Bultos o Canastas:</label>
+                                    <input type="number" id="bultos_o_canastas" name="bultos_o_canastas" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="peso_unitario">Peso Unitario (Kg):</label>
+                                    <input type="number" step="0.01" id="peso_unitario" name="peso_unitario" class="form-control" required>
                                 </div>
                             </div>
 

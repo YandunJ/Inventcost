@@ -1,5 +1,5 @@
         <?php
-        // MODELO/Inventario.php
+        // MODELO/modInvFrutas.php
         class MateriaPrima {
             private $conn;
 
@@ -8,12 +8,43 @@
                 $this->conn = $conexion->FN_getConnect();
             }
 
-            public function insertar($mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones) {
-                $stmt = $this->conn->prepare("CALL invent_materia_prima(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisidddsss', $mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones);
-                $stmt->execute();
+            public function guardarOActualizarInventarioMateriaPrima(
+                $id_inv,
+                $fecha,
+                $hora,
+                $id_articulo,
+                $proveedor_id,
+                $numero_lote,
+                $unidad_medida,
+                $cantidad_ingresada,
+                $cantidad_restante,
+                $precio_unitario,
+                $presentacion,
+                $estado,
+                $bultos_o_canastas,
+                $peso_unitario,
+                $brix,
+                $observacion,
+                $decision
+            ) {
+                // Preparación de la llamada al SP con bind_param
+                $stmt = $this->conn->prepare("CALL acc_Invent_MP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param(
+                    'issiiisdddsisdsis',
+                    $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
+                    $unidad_medida, $cantidad_ingresada, $cantidad_restante, $precio_unitario,
+                    $presentacion, $estado, $bultos_o_canastas, $peso_unitario, $brix, $observacion, $decision
+                );
+        
+                $result = $stmt->execute();
+                if (!$result) {
+                    throw new Exception("Error en ejecución: " . $stmt->error);
+                }
                 $stmt->close();
-            } 
+        
+                return $result;
+            }
+        
             
 
             public function obtenerInventarioMP() {
@@ -68,6 +99,14 @@
                 
                 return $data;
             }
+            
+// ---------FUNCION DE SISTEMA NATERIOR SIN USAR -----
+            public function insertar($mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones) {
+                $stmt = $this->conn->prepare("CALL invent_materia_prima(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param('iisidddsss', $mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones);
+                $stmt->execute();
+                $stmt->close();
+            } 
             
 
             

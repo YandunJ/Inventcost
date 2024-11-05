@@ -1,5 +1,5 @@
 <?php
-// AJAX/ctrInventario.php
+// AJAX/ctrInvFrutas.php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -67,35 +67,46 @@ function cargarProveedores() {
     }
 }
  
-
 function guardarMateriaPrima() {
     global $conn;
     $materiaPrima = new MateriaPrima($conn);
 
-    $mp_id = isset($_POST['mp_id']) && $_POST['mp_id'] !== '' ? $_POST['mp_id'] : null; // Asegúrate de obtener correctamente el ID
-    $fruta_id = $_POST['fruta_id'];
-    $fecha_cad = $_POST['fecha_cad'];
+    $id_inv = isset($_POST['id_inv']) && $_POST['id_inv'] !== '' ? $_POST['id_inv'] : null;
+    $fecha = $_POST['fecha'];
+    $hora = $_POST['hora'];
+    $id_articulo = $_POST['id_articulo'];
     $proveedor_id = $_POST['proveedor_id'];
-    $cantidad = $_POST['cantidad'];
-    $precio_unit = $_POST['precio_unit'];
-    $precio_total = $_POST['precio_total'];
-    $birx = $_POST['birx'];
+    $numero_lote = $_POST['numero_lote'];
+    $unidad_medida = isset($_POST['unidad_medida']) && $_POST['unidad_medida'] !== '' ? $_POST['unidad_medida'] : 'kg';
+    $cantidad_ingresada = $_POST['cantidad_ingresada'];
+    $cantidad_restante = $_POST['cantidad_restante'];
+    $precio_unitario = $_POST['precio_unitario'];
     $presentacion = $_POST['presentacion'];
-    $observaciones = $_POST['observaciones'];
+    $estado = isset($_POST['estado']) && $_POST['estado'] !== '' ? $_POST['estado'] : 'disponible';
+    $bultos_o_canastas = $_POST['bultos_o_canastas'];
+    $peso_unitario = $_POST['peso_unitario'];
+    $brix = $_POST['brix'];
+    $observacion = $_POST['observacion'];
+    $decision = isset($_POST['decision']) && $_POST['decision'] !== '' ? $_POST['decision'] : 'no aprobado';
 
     try {
-        if ($mp_id) { // Si hay mp_id, se está actualizando
-            $materiaPrima->insertar($mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones);
-        } else { // Si no hay mp_id, se está insertando
-            $materiaPrima->insertar(null, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones);
+        // Cambiar el nombre de la función en el modelo para reflejar que maneja tanto inserción como actualización
+        $result = $materiaPrima->guardarOActualizarInventarioMateriaPrima(
+            $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote, 
+            $unidad_medida, $cantidad_ingresada, $cantidad_restante, $precio_unitario, 
+            $presentacion, $estado, $bultos_o_canastas, $peso_unitario, $brix, 
+            $observacion, $decision
+        );
+
+        if ($result) {
+            echo json_encode(['status' => 'success', 'message' => 'Registro guardado correctamente']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'No se pudo guardar el registro']);
         }
-        echo json_encode(['status' => 'success']);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
-
 function actualizarMateriaPrima() {
     global $conn;
     $materiaPrima = new MateriaPrima($conn);
