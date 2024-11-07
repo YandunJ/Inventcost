@@ -7,44 +7,47 @@
                 $conexion = new Cls_DataConnection();
                 $this->conn = $conexion->FN_getConnect();
             }
-
-            public function guardarOActualizarInventarioMateriaPrima(
-                $id_inv,
+            public function guardarInventarioMateriaPrima(
                 $fecha,
                 $hora,
                 $id_articulo,
                 $proveedor_id,
                 $numero_lote,
-                $unidad_medida,
                 $cantidad_ingresada,
-                $cantidad_restante,
                 $precio_unitario,
                 $presentacion,
-                $estado,
                 $bultos_o_canastas,
                 $peso_unitario,
                 $brix,
-                $observacion,
-                $decision
+                $observacion
             ) {
-                // Preparación de la llamada al SP con bind_param
-                $stmt = $this->conn->prepare("CALL acc_Invent_MP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                // Preparación de la llamada al SP ac_InsertarMP
+                $stmt = $this->conn->prepare("CALL ac_InsertarMP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                
+                if (!$stmt) {
+                    throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                }
+            
+                // Vinculación de parámetros
                 $stmt->bind_param(
-                    'issiiisdddsisdsis',
-                    $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
-                    $unidad_medida, $cantidad_ingresada, $cantidad_restante, $precio_unitario,
-                    $presentacion, $estado, $bultos_o_canastas, $peso_unitario, $brix, $observacion, $decision
+                    'ssiiisdsidss',  // Corrige los tipos de parámetros
+                    $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
+                    $cantidad_ingresada, $precio_unitario, $presentacion,
+                    $bultos_o_canastas, $peso_unitario, $brix, $observacion
                 );
-        
+                
+                
+            
+                // Ejecución y verificación de resultados
                 $result = $stmt->execute();
                 if (!$result) {
-                    throw new Exception("Error en ejecución: " . $stmt->error);
+                    throw new Exception("Error en la ejecución: " . $stmt->error);
                 }
+            
                 $stmt->close();
-        
                 return $result;
             }
-        
+            
             
 
             public function obtenerInventarioMP() {

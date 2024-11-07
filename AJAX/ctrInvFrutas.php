@@ -66,47 +66,42 @@ function cargarProveedores() {
         echo json_encode(['status' => 'success', 'data' => $proveedores]);
     }
 }
- 
-function guardarMateriaPrima() {
-    global $conn;
-    $materiaPrima = new MateriaPrima($conn);
+    
+    function guardarMateriaPrima() {
+        try {
+            $materiaPrima = new MateriaPrima();
 
-    $id_inv = isset($_POST['id_inv']) && $_POST['id_inv'] !== '' ? $_POST['id_inv'] : null;
-    $fecha = $_POST['fecha'];
-    $hora = $_POST['hora'];
-    $id_articulo = $_POST['id_articulo'];
-    $proveedor_id = $_POST['proveedor_id'];
-    $numero_lote = $_POST['numero_lote'];
-    $unidad_medida = isset($_POST['unidad_medida']) && $_POST['unidad_medida'] !== '' ? $_POST['unidad_medida'] : 'kg';
-    $cantidad_ingresada = $_POST['cantidad_ingresada'];
-    $cantidad_restante = $_POST['cantidad_restante'];
-    $precio_unitario = $_POST['precio_unitario'];
-    $presentacion = $_POST['presentacion'];
-    $estado = isset($_POST['estado']) && $_POST['estado'] !== '' ? $_POST['estado'] : 'disponible';
-    $bultos_o_canastas = $_POST['bultos_o_canastas'];
-    $peso_unitario = $_POST['peso_unitario'];
-    $brix = $_POST['brix'];
-    $observacion = $_POST['observacion'];
-    $decision = isset($_POST['decision']) && $_POST['decision'] !== '' ? $_POST['decision'] : 'no aprobado';
+            // Captura los valores de los campos del formulario
+            $fecha = $_POST['fecha'];
+            $hora = $_POST['hora'];
+            $id_articulo = $_POST['id_articulo'];
+            $proveedor_id = $_POST['proveedor_id'];
+            $numero_lote = $_POST['numero_lote'];
+            $cantidad_ingresada = $_POST['cantidad_ingresada'];
+            $precio_unitario = $_POST['precio_unitario'];
+            $presentacion = $_POST['presentacion'];  // Asegúrate de incluir este campo en el formulario
+            $bultos_o_canastas = $_POST['bultos_o_canastas'];
+            $peso_unitario = $_POST['peso_unitario'];
+            $brix = $_POST['brix'];
+            $observacion = $_POST['observacion'];
 
-    try {
-        // Cambiar el nombre de la función en el modelo para reflejar que maneja tanto inserción como actualización
-        $result = $materiaPrima->guardarOActualizarInventarioMateriaPrima(
-            $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote, 
-            $unidad_medida, $cantidad_ingresada, $cantidad_restante, $precio_unitario, 
-            $presentacion, $estado, $bultos_o_canastas, $peso_unitario, $brix, 
-            $observacion, $decision
-        );
+            // Llamada al método para guardar los datos en la base de datos
+            $result = $materiaPrima->guardarInventarioMateriaPrima(
+                $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
+                $cantidad_ingresada, $precio_unitario, $presentacion,
+                $bultos_o_canastas, $peso_unitario, $brix, $observacion
+            );
 
-        if ($result) {
-            echo json_encode(['status' => 'success', 'message' => 'Registro guardado correctamente']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'No se pudo guardar el registro']);
+            echo json_encode([
+                'status' => $result ? 'success' : 'error',
+                'message' => $result ? 'Registro guardado correctamente' : 'No se pudo guardar el registro'
+            ]);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
-}
+
+
 function actualizarMateriaPrima() {
     global $conn;
     $materiaPrima = new MateriaPrima($conn);

@@ -11,7 +11,7 @@ $(document).ready(function() {
                 response.data.forEach(function(fruta) {
                     options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
                 });
-                $("#fruta_id").html(options);
+                $("#id_articulo").html(options);
             } else {
                 alert("Error al cargar las frutas.");
                 console.error("Error loading frutas: ", response);
@@ -23,7 +23,7 @@ $(document).ready(function() {
             console.error("Response: ", xhr.responseText);
         }
     });
-
+    
     $.ajax({
         url: "../AJAX/ctrInvFrutas.php",
         type: "POST",
@@ -48,14 +48,24 @@ $(document).ready(function() {
         }
     });
 
-    // Calcular el precio total
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        const date = today.toISOString().split('T')[0];
+        const time = today.toTimeString().split(' ')[0].slice(0, 5); // Solo horas y minutos
+
+        document.getElementById("fecha").value = date;
+        document.getElementById("hora").value = time;
+    });
+    
+/*
     $('#cantidad, #precio_unit').on('input', function() {
         const cantidad = parseFloat($('#cantidad').val()) || 0;
         const precioUnit = parseFloat($('#precio_unit').val()) || 0;
         const precioTotal = cantidad * precioUnit;
         $('#precio_total').val(precioTotal.toFixed(2));
     });
-
+*/
      // Inicializar DataTable
      const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         ajax: {
@@ -108,7 +118,7 @@ $(document).ready(function() {
         ]
     });
 
-    
+   
 
     $('#tablaMateriaPrimas').on('click', '.details-btn', function() {
         const loteID = $(this).data('id');
@@ -153,7 +163,18 @@ $(document).ready(function() {
         });
     }
     
-    
+/*
+document.getElementById('cantidad_ingresada').addEventListener('input', calcularPrecioTotal);
+document.getElementById('precio_unitario').addEventListener('input', calcularPrecioTotal);
+
+function calcularPrecioTotal() {
+    const cantidad = parseFloat(document.getElementById('cantidad_ingresada').value) || 0;
+    const precioUnitario = parseFloat(document.getElementById('precio_unitario').value) || 0;
+    const precioTotal = cantidad * precioUnitario;
+    document.getElementById('precio_total').value = precioTotal.toFixed(2);
+}
+
+  */  
     
 
 
@@ -245,41 +266,41 @@ $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
         });
     }
 
-// Enviar formulario de registro de materia prima
-$('#materiaPrimaForm').on('submit', function(event) {
-    event.preventDefault();
-
-    const formData = $(this).serializeArray();
-    formData.push({ name: 'action', value: 'registrarMateriaPrima' });
-
-    // Enviar datos por AJAX
-    $.ajax({
-        url: "../AJAX/ctrInvFrutas.php",
-        type: "POST",
-        data: formData,
-        dataType: "json",
-        success: function(response) {
-            if (response.status === 'success') {
-                Swal.fire(
-                    'Éxito!',
-                    'Materia prima registrada exitosamente.',
-                    'success'
-                );
-                $('#materiaPrimaForm')[0].reset();
-                $('#mp_id').val(''); // Limpiar el campo oculto de ID
-                $('.btn-primary').text('Agregar Materia Prima'); // Restablecer el texto del botón
-                $('#tablaMateriaPrimas').DataTable().ajax.reload(); // Recargar la tabla
-            } else {
-                Swal.fire('Error', response.message, 'error');
+    $('#materiaPrimaForm').on('submit', function(event) {
+        event.preventDefault();
+    
+        const formData = $(this).serializeArray(); // Obtén los datos del formulario
+        formData.push({ name: 'action', value: 'guardarMateriaPrima' });
+    
+        $.ajax({
+            url: '../AJAX/ctrInvFrutas.php',
+            type: "POST",
+            data: formData,
+            dataType: "json",
+            success: function(response) {
+                if (response.status === 'success') {
+                    Swal.fire(
+                        'Éxito!',
+                        'Materia prima registrada exitosamente.',
+                        'success'
+                    );
+                    $('#materiaPrimaForm')[0].reset();
+                    $('#id_inv').val(''); // Limpiar el campo oculto de ID
+                    $('.btn-primary').text('Agregar Materia Prima'); // Restablecer el texto del botón
+                    materiaPrimasTable.ajax.reload(); // Recargar la tabla
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
             }
-        },
-        error: function(xhr, status, error) {
-            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
-            console.error("Error: ", error);
-            console.error("Response: ", xhr.responseText);
-        }
+        });
     });
-});
+    
+
 
     // Cargar datos al hacer clic en el botón Editar
 $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {

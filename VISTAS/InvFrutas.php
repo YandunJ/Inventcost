@@ -42,11 +42,12 @@
                                     <div class="form-section">
                                         <div class="form-group">
                                             <label for="id_articulo">Fruta:</label>
-                                            <select id="fruta_id" name="fruta_id" class="form-control" required>
+                                            <select id="id_articulo" name="id_articulo" class="form-control" required>
                                                 <option value="">Seleccione una fruta</option>
                                             </select>
-                                            <p><a href="InventCatalogo.php">Revise o agregue nuevas frutas al catalogo</a></p>
+                                            <p><a href="InventCatalogo.php">Revise o agregue nuevas frutas al catálogo</a></p>
                                         </div>
+
                                         <div class="form-group">
                                             <label for="proveedor_id">Proveedor:</label>
                                             <select id="proveedor_id" name="proveedor_id" class="form-control" required>
@@ -79,26 +80,26 @@
                                     <label for="precio_unitario">Precio Unitario:</label>
                                     <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="precio_total">Precio Total:</label>
-                                    <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" required>
-                                </div>
+                            <!-- CAMPO Precio total ELIMINADO -->
+
+
                             </div>
 
                            
                             <!-- Brix, Presentación, Bultos o Canastas, Peso Unitario -->
                             <div class="form-section">
-                                <div class="form-group">
-                                    <label for="brix">Brix:</label>
-                                    <input type="number" step="0.01" id="brix" name="brix" class="form-control" required>
-                                </div>
-                                <div class="form-group">
+                            <div class="form-group">
                                     <label for="presentacion">Presentación:</label>
                                     <select id="presentacion" name="presentacion" class="form-control" required>
                                         <option value="cajas">Cajas</option>
                                         <option value="bultos">Bultos</option>
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="brix">Brix:</label>
+                                    <input type="number" step="0.01" id="brix" name="brix" class="form-control" required>
+                                </div>
+                               
                             </div>
 
                             <div class="form-section">
@@ -122,7 +123,7 @@
 
                             <!-- Botones -->
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Agregar Materia Prima</button>
+                                <button type="submit" class="btn btn-primary">Agregar</button>
                                 <button type="button" class="btn btn-secondary" id="cancelarBtn">Cancelar</button>
                             </div>
                         </form>
@@ -204,7 +205,7 @@
         <p><strong>Aprobación del Lote:</strong> <span id="detalleAprobacion"></span></p>
     </div>
 </div>
-
+ 
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
