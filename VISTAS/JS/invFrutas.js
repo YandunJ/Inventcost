@@ -30,8 +30,8 @@ $(document).ready(function() {
         data: { action: 'cargarProveedores' },
         dataType: "json",
         success: function(response) {
+            let options = '<option value="">Seleccione un proveedor</option>';
             if (response.status === 'success' && Array.isArray(response.data)) {
-                let options = '<option value="">Seleccione un proveedor</option>';
                 response.data.forEach(function(proveedor) {
                     options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
                 });
@@ -47,7 +47,9 @@ $(document).ready(function() {
             console.error("Response: ", xhr.responseText);
         }
     });
+    
 
+    
     
     document.addEventListener("DOMContentLoaded", function () {
         const today = new Date();
@@ -300,11 +302,9 @@ $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
         });
     });
     
-
-
-    // Cargar datos al hacer clic en el botón Editar
+// Cargar datos al hacer clic en el botón Editar
 $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
-    const id_inv = $(this).data('id');
+    const id_inv = $(this).data('id'); // Asegura que el id es correcto
     $.ajax({
         url: '../AJAX/ctrInvFrutas.php',
         type: 'POST',
@@ -315,17 +315,18 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
                 const data = response.data;
                 $('#fecha').val(data.fecha);
                 $('#hora').val(data.hora);
-                $('#fruta_id').val(data.fruta_id);
+                $('#id_articulo').val(data.id_articulo);
                 $('#proveedor_id').val(data.proveedor_id);
                 $('#numero_lote').val(data.numero_lote);
                 $('#cantidad_ingresada').val(data.cantidad_ingresada);
                 $('#precio_unitario').val(data.precio_unitario);
-                $('#precio_total').val(data.precio_total);
+                $('#bultos_o_canastas').val(data.bultos_o_canastas);
                 $('#brix').val(data.brix);
                 $('#presentacion').val(data.presentacion);
+                $('#peso_unitario').val(data.peso_unitario);
                 $('#observacion').val(data.observacion);
-                $('#id_inv').val(data.id_inv); // Establecer el id_inv para identificar el registro en la actualización
-                $('.btn-primary').text('Actualizar Materia Prima'); // Cambiar el texto del botón
+                $('#id_inv').val(data.id_inv); // Verifica que se establece correctamente
+                $('.form-actions .btn-primary').text('Guardar cambios').data('isEditing', true);
             } else {
                 Swal.fire('Error', response.message, 'error');
             }
@@ -337,6 +338,33 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
         }
     });
 });
+
+// Enviar el formulario para agregar o actualizar la materia prima
+$('.form-actions .btn-primary').on('click', function(event) {
+    event.preventDefault();
+    const isEditing = $(this).data('isEditing');
+    const action = isEditing ? 'actualizarMateriaPrima' : 'guardarMateriaPrima';
+    $.ajax({
+        url: '../AJAX/ctrInvFrutas.php',
+        type: 'POST',
+        data: $('#materiaPrimaForm').serialize() + `&action=${action}`,
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                Swal.fire('Éxito', isEditing ? 'Registro actualizado correctamente' : 'Registro agregado correctamente', 'success');
+                materiaPrimasTable.ajax.reload();
+                $('#materiaPrimaForm')[0].reset();
+                $('.form-actions .btn-primary').text('Agregar').data('isEditing', false);
+            } else {
+                Swal.fire('Error', response.message, 'error');
+            }
+        },
+        error: function(xhr, status, error) {
+            Swal.fire('Error', 'Ocurrió un error al guardar los datos.', 'error');
+        }
+    });
+});
+
 
 // Al hacer clic en el botón Eliminar
 $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {

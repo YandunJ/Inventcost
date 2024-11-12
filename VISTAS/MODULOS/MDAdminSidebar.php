@@ -49,7 +49,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <li class="nav-item">
                             <a href="InvInsumos.php" class="nav-link">
                                 <i class="nav-icon fas fa-warehouse"></i>
-                                <p>Compra Insumos</p>
+                                <p>Lotes Insumos</p>
                             </a>
                         </li>
                         <li class="nav-item">

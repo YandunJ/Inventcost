@@ -9,7 +9,7 @@ class InsumosModel {
     }
 
     public function obtenerInsumos() {
-        $query = "SELECT insumo_id, nombre FROM insumos";
+        $query = "SELECT id_articulo, nombre_articulo FROM invent_catalogo where id_categoria = 2";
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         $result = $stmt->get_result();

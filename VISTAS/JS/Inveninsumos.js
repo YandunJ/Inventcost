@@ -9,9 +9,9 @@ $(document).ready(function() {
             if (response.status === 'success' && Array.isArray(response.data)) {
                 let options = '<option value="">Seleccione un insumo</option>';
                 response.data.forEach(function(insumo) {
-                    options += `<option value="${insumo.insumo_id}">${insumo.nombre}</option>`;
+                    options += `<option value="${insumo.id_articulo}">${insumo.nombre_articulo}</option>`;
                 });
-                $("#insumo_id").html(options);
+                $("#id_articulo").html(options);
             } else {
                 alert("Error al cargar los insumos.");
                 console.error("Error loading insumos: ", response);

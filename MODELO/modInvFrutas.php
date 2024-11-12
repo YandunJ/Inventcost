@@ -66,16 +66,49 @@
             
                 return $data;
             }
-            
-            public function obtenerMateriaPrimaPorId($mp_id) {
-                $stmt = $this->conn->prepare("SELECT * FROM materia_prima WHERE mp_id = ?");
-                $stmt->bind_param("i", $mp_id);
+            public function obtenerMateriaPrimaPorId($id_inv) {
+                $stmt = $this->conn->prepare("CALL Obt_MP_por_id(?)");
+                
+                if (!$stmt) {
+                    throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                }
+        
+                $stmt->bind_param("i", $id_inv);
                 $stmt->execute();
                 $result = $stmt->get_result();
+        
+                if (!$result) {
+                    throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
+                }
+        
                 $data = $result->fetch_assoc();
                 $stmt->close();
                 return $data;
             }
+        
+            // Método para actualizar un registro (usando el procedimiento ActualizarMP actualizado)
+            public function actualizarMateriaPrima(
+                $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote, $cantidad_ingresada, 
+                $precio_unitario, $presentacion, $brix, $bultos_o_canastas, $peso_unitario, $observacion
+            ) {
+                $stmt = $this->conn->prepare("CALL ActualizarMP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                if (!$stmt) {
+                    throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                }
+                $stmt->bind_param(
+                    'issisdsdsidds', 
+                    $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
+                    $cantidad_ingresada, $precio_unitario, $presentacion, $brix,
+                    $bultos_o_canastas, $peso_unitario, $observacion
+                );
+                $result = $stmt->execute();
+                if (!$result) {
+                    throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
+                }
+                $stmt->close();
+                return $result;
+            }
+            
             
             public function eliminar($mp_id) {
                 $sql = "CALL sp_EliminarRegistroMP(?)";

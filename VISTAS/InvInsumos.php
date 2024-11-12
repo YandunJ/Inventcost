@@ -45,9 +45,9 @@
 
                         <div class="form-section">
                             <div class="form-group">
-                                <label for="insumo_id">Insumo:</label>
-                                <select id="insumo_id" name="insumo_id" class="form-control" required>
-                                    <option value="">Seleccione un insumo</option>
+                                <label for="id_articulo">Insumo:</label>
+                                <select id="id_articulo" name="id_articulo" class="form-control" required>
+                                <option value="">Seleccione un insumo</option>
                                 </select>              
 
                                 <p><a href="InventCatalogo.php">Revise o agregue nuevo insumos al catalogo</a></p>
@@ -146,8 +146,8 @@
     <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <!-- Custom JS -->
-    <!--  <script src="JS/InvenInsumos.js"></script> -->
+    <!-- Custom JS <script src="JS/InvenInsumos.js"></script> -->
+     
     <script src="JS/cerrarsesion.js"></script>
 
     
