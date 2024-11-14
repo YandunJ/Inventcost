@@ -67,3 +67,6 @@ END //
 DELIMITER ;
 
 call fpulpas.sp_DetalleLote(1);
+
+
+SELECT COUNT(*) FROM inventario WHERE numero_lote = 'L12345';

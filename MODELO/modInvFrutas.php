@@ -166,15 +166,5 @@
                 return $data;
             }
             
-// ---------FUNCION DE SISTEMA NATERIOR SIN USAR -----
-            public function insertar($mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones) {
-                $stmt = $this->conn->prepare("CALL invent_materia_prima(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->bind_param('iisidddsss', $mp_id, $fruta_id, $fecha_cad, $proveedor_id, $cantidad, $precio_unit, $precio_total, $birx, $presentacion, $observaciones);
-                $stmt->execute();
-                $stmt->close();
-            } 
-            
-
-            
         }
         ?>

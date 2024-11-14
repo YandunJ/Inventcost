@@ -1,10 +1,10 @@
 <?php
-//AJAX/ctrInvenInsumos.php
+//AJAX/ctrInvInsumos.php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once "../CONFIG/conexion.php";
-require_once "../MODELO/modInvenInsumos.php"; // Asegúrate de que este archivo exista
+require_once "../MODELO/modInvInsumos.php"; // Asegúrate de que este archivo exista
 require_once "../MODELO/sbinsumos.php"; // El modelo de insumos
 
 $conn = (new Cls_DataConnection())->FN_getConnect();

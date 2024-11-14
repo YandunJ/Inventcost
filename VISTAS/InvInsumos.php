@@ -26,13 +26,12 @@
             <div class="container-fluid">
             <h1 class="text-center">Gestión de Insumos</h1>
             <div class="form-container"> <!-- Contenedor para centrar el formulario -->
-                    <form id="inventinsumosForm">
-                        <input type="hidden" id="inventins_id" name="inventins_id">
+            
+                        <form id="materiaPrimaForm">
+                            <input type="hidden" id="id_inv" name="id_inv">
 
-
-
-                    <!-- Fecha y Hora -->
-                    <div class="form-section">
+                            <!-- Fecha y Hora -->
+                            <div class="form-section">
                                 <div class="form-group">
                                     <label for="fecha">Fecha de Ingreso:</label>
                                     <input type="date" id="fecha" name="fecha" class="form-control" required>
@@ -43,74 +42,97 @@
                                 </div>
                             </div>
 
-                        <div class="form-section">
-                            <div class="form-group">
-                                <label for="id_articulo">Insumo:</label>
+                          <!-- Fruta y Proveedor -->
+                                    <div class="form-section">
+                                        <div class="form-group">
+                                        <label for="id_articulo">Insumo:</label>
                                 <select id="id_articulo" name="id_articulo" class="form-control" required>
-                                <option value="">Seleccione un insumo</option>
-                                </select>              
-
-                                <p><a href="InventCatalogo.php">Revise o agregue nuevo insumos al catalogo</a></p>
-                            </div>
-                            
-                        
-                            <div class="form-group">
-                                <label for="proveedor_id">Proveedor:</label>
-                                <select id="proveedor_id" name="proveedor_id" class="form-control" required>
-                                    <option value="">Seleccione un proveedor</option>
+                                    <option value="">Seleccione un insumo</option>
                                 </select>
-                                <p><a href="proveedores.php">Revise o agregue un nuevo porveedor</a></p>
+                                <p><a href="InventCatalogo.php">Revise o agregue nuevo insumos al catálogo</a></p>
                             </div>
-                        </div>
+                                        <div class="form-group">
+                                            <label for="proveedor_id">Proveedor:</label>
+                                            <select id="proveedor_id" name="proveedor_id" class="form-control" required>
+                                                <option value="">Seleccione un proveedor</option>
+                                            </select>
+                                            <p><a href="proveedores.php">Revise o agregue un nuevo porveedor</a></p>
+                                        </div>
+                                    </div>
 
-                        
-                          <!-- Número de Lote -->
-                          <div class="form-section">
+                            <!-- Número de Lote -->
+                            <div class="form-section">
                                 <div class="form-group">
                                     <label for="numero_lote">N Lote:</label>
                                     <input type="text" id="numero_lote" name="numero_lote" class="form-control" required>
                                 </div>
+                                                            <!-- Cantidad Ingresada y Unidad de Medida --> 
+                            </div>
+                              <!-- Número de Lote -->
+                              <div class="form-section">
+                            
                                                             <!-- Cantidad Ingresada y Unidad de Medida -->
 
                                 <div class="form-group">
-                                    <label for="cantidad_ingresada">Cantidad Ingresada:</label>
+                                    <label for="cantidad_ingresada">Cantidad Ingresada :</label>
                                     <input type="number" step="0.01" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" required>
 
                                 </div>
+                                <div class="form-group">
+                                <label for="unidad_medida">Unidad de Medida:</label>
+                                <select id="unidad_medida" name="unidad_medida" class="form-control" required>
+                                    <option value="u">Unidades (u)</option>
+                                    <option value="kg">Kilogramos (kg)</option>
+                                    <option value="l">Litros (l)</option>
+                                </select>
+                            </div>
                             </div>
 
+                            
+                         
 
-                        <div class="form-group">
-                            <label for="unidad_medida">Unidad de Medida:</label>
-                            <select id="unidad_medida" name="unidad_medida" class="form-control" required>
-                                <option value="u">Unidades (u)</option>
-                                <option value="kg">Kilogramos (kg)</option>
-                                <option value="l">Litros (l)</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="cantidad">Cantidad:</label>
-                            <input type="number" id="cantidad" name="cantidad" class="form-control" required placeholder="Ej: 100">
-                        </div>
-                        
-                      <!-- Precio Unitario y Precio Total -->
-                      <div class="form-section">
+                            <!-- Precio Unitario y Precio Total -->
+                            <div class="form-section">
                                 <div class="form-group">
                                     <label for="precio_unitario">Precio Unitario:</label>
                                     <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" required>
                                 </div>
-                                <div class="form-group">
-                                    <label for="precio_total">Precio Total:</label>
-                                    <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" readonly>
+                            <!-- CAMPO Precio total ELIMINADO -->
+                            <div class="form-group">
+                                    <label for="presentacion">Presentación:</label>
+                                    <select id="presentacion" name="presentacion" class="form-control" required>
+                                        <option value="cajas">Cajas</option>
+                                        <option value="bultos">Bultos</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                           
+                            <!-- Brix, Presentación, Bultos o Canastas, Peso Unitario -->
+                            <div class="form-section">
+                       
+                        
+                               
+                            </div>
+
+                           
+                            <!-- Observaciones -->
+                            <div class="form-section">
+                                
+                                    <label for="observacion">Observaciones:</label>
+                                    <textarea id="observacion" name="observacion" class="form-control"></textarea>
                                 </div>
                             </div>
 
-                        <button type="submit" class="btn btn-primary">Agregar al Inventario</button>
-                        <button type="button" class="btn btn-secondary" id="cancelarBtn">Cancelar</button> <!-- Botón Cancelar -->
-                    </form>
-                </div>
-                ->
+
+                            <!-- Botones -->
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Agregar</button>
+                                <button type="button" class="btn btn-secondary" id="cancelarBtn">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>
 
                     <hr>
 
@@ -146,8 +168,8 @@
     <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <!-- Custom JS <script src="JS/InvenInsumos.js"></script> -->
-     
+    <!-- Custom JS  -->
+    <script src="JS/invInsumos.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 
     

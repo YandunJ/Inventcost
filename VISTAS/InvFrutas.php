@@ -115,7 +115,7 @@
 
                             <!-- Observaciones -->
                             <div class="form-section">
-                                <div class="form-group full">
+                                
                                     <label for="observacion">Observaciones:</label>
                                     <textarea id="observacion" name="observacion" class="form-control"></textarea>
                                 </div>

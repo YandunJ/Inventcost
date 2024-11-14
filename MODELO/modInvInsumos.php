@@ -1,5 +1,5 @@
 <?php
-// MODELO/InvenInsumos.php
+// MODELO/InvInsumos.php
 class InventarioInsumos {
     private $conn;
 
