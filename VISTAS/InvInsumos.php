@@ -27,7 +27,7 @@
             <h1 class="text-center">Gestión de Insumos</h1>
             <div class="form-container"> <!-- Contenedor para centrar el formulario -->
             
-                        <form id="materiaPrimaForm">
+                        <form id="InsumosForm">
                             <input type="hidden" id="id_inv" name="id_inv">
 
                             <!-- Fecha y Hora -->
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
 
-                          <!-- Fruta y Proveedor -->
+                          <!-- Insumo y Proveedor -->
                                     <div class="form-section">
                                         <div class="form-group">
                                         <label for="id_articulo">Insumo:</label>
@@ -79,13 +79,10 @@
 
                                 </div>
                                 <div class="form-group">
-                                <label for="unidad_medida">Unidad de Medida:</label>
-                                <select id="unidad_medida" name="unidad_medida" class="form-control" required>
-                                    <option value="u">Unidades (u)</option>
-                                    <option value="kg">Kilogramos (kg)</option>
-                                    <option value="l">Litros (l)</option>
-                                </select>
-                            </div>
+                                    <label for="unidad_medida">Unidad de Medida:</label>
+                                    <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
+                                </div>
+
                             </div>
 
                             
@@ -117,12 +114,7 @@
                             </div>
 
                            
-                            <!-- Observaciones -->
-                            <div class="form-section">
-                                
-                                    <label for="observacion">Observaciones:</label>
-                                    <textarea id="observacion" name="observacion" class="form-control"></textarea>
-                                </div>
+                         
                             </div>
 
 
@@ -135,25 +127,28 @@
                     </div>
 
                     <hr>
-
                     <table id="inventarioInsumosdt" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Insumo</th>
-                                <th>Proveedor</th>
-                                <th>Fecha de Ingreso</th>
-                                <th>Fecha de Caducidad</th>
-                                <th>Unidad de Medida</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unitario</th>
-                                <th>Precio Total</th>
-                                <th>Acciones</th>
+    <thead>
+        <tr>
+
+                            <th>ID</th>
+                            <th>Insumo</th>
+                            <th>Proveedor</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Ud Medida</th>
+                            <th>Cantidad</th>
+                            <th>Stock</th>
+                            <th>Precio Unitario</th>
+                            <th>Precio Total</th>
+                            <th>Presentación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <!-- Rows will be populated dynamically from the backend -->
-                        </tbody>1
+                        </tbody>
                     </table>
                 </div>
             </section>

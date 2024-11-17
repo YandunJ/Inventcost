@@ -20,224 +20,76 @@ CREATE TABLE inventario (
     FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
 );
 
+INSERT INTO inventario (fecha, hora, id_articulo, proveedor_id, numero_lote, unidad_medida, cantidad_ingresada, cantidad_restante, precio_unitario, presentacion, estado)
+VALUES 
+('2023-11-24', '10:30:00', 4, 3, 'LOT231124', 'unidades', 100.00, 100.00, 15.50, 'Caja de 10kg', 'disponible');
+
+
+call fpulpas.sp_Obt_inven_MP();
 
 
 DELIMITER //
-CREATE PROCEDURE acc_Invent_MP (
-    IN p_id_inv INT,                -- Para identificar si se registra o actualiza
-    IN p_fecha DATE,
-    IN p_hora TIME,
-    IN p_id_articulo INT,
-    IN p_proveedor_id INT,
-    IN p_numero_lote VARCHAR(50),
-    IN p_unidad_medida VARCHAR(20),             -- Unidad de medida (será 'kg' si no se proporciona)
-    IN p_cantidad_ingresada DECIMAL(10, 2),
-    IN p_cantidad_restante DECIMAL(10, 2),
-    IN p_precio_unitario DECIMAL(10, 2),
-    IN p_presentacion VARCHAR(50),
-    IN p_estado ENUM('disponible', 'stock bajo', 'agotado'), -- Estado inicial (será 'disponible' si no se proporciona)
-    IN p_bultos_o_canastas INT,                 -- Campos específicos de invent_detalle_MP
-    IN p_peso_unitario DECIMAL(10, 2),
-    IN p_brix DECIMAL(5, 2),
-    IN p_observacion TEXT,
-    IN p_decision ENUM('aprobado', 'no aprobado') -- Estado de aprobación inicial (será 'no aprobado' si no se proporciona)
-)
-BEGIN
-    DECLARE v_id_inv INT;
 
-    -- Asignación de valores predeterminados para los campos opcionales
-    SET p_unidad_medida = IFNULL(p_unidad_medida, 'kg');
-    SET p_estado = IFNULL(p_estado, 'disponible');
-    SET p_decision = IFNULL(p_decision, 'no aprobado');
-
-    IF p_id_inv IS NULL THEN
-        -- Inserción en la tabla inventario
-        INSERT INTO inventario (
-            fecha, hora, id_articulo, proveedor_id, numero_lote, 
-            unidad_medida, cantidad_ingresada, cantidad_restante, 
-            precio_unitario, presentacion, estado
-        ) VALUES (
-            p_fecha, p_hora, p_id_articulo, p_proveedor_id, p_numero_lote, 
-            p_unidad_medida, p_cantidad_ingresada, p_cantidad_restante, 
-            p_precio_unitario, p_presentacion, p_estado
-        );
-
-        -- Capturar el id generado
-        SET v_id_inv = LAST_INSERT_ID();
-
-        -- Inserción en la tabla invent_detalle_MP
-        INSERT INTO invent_detalle_MP (
-            id_inv, bultos_o_canastas, peso_unitario, brix, observacion, decision
-        ) VALUES (
-            v_id_inv, p_bultos_o_canastas, p_peso_unitario, p_brix, p_observacion, p_decision
-        );
-
-    ELSE
-        -- Actualización en la tabla inventario
-        UPDATE inventario
-        SET
-            fecha = p_fecha,
-            hora = p_hora,
-            id_articulo = p_id_articulo,
-            proveedor_id = p_proveedor_id,
-            numero_lote = p_numero_lote,
-            unidad_medida = p_unidad_medida,
-            cantidad_ingresada = p_cantidad_ingresada,
-            cantidad_restante = p_cantidad_restante,
-            precio_unitario = p_precio_unitario,
-            presentacion = p_presentacion,
-            estado = p_estado
-        WHERE id_inv = p_id_inv;
-
-        -- Actualización en la tabla invent_detalle_MP
-        UPDATE invent_detalle_MP
-        SET
-            bultos_o_canastas = p_bultos_o_canastas,
-            peso_unitario = p_peso_unitario,
-            brix = p_brix,
-            observacion = p_observacion,
-            decision = p_decision
-        WHERE id_inv = p_id_inv;
-
-    END IF;
-END//
-DELIMITER ;
-
-
-CALL ac_InsertarMP(
-    '2024-11-05',             -- Fecha de ingreso
-    '12:30:00',               -- Hora de ingreso
-    1,                        -- ID de artículo (fruta)
-    2,                        -- ID del proveedor
-    'L12345',                 -- Número de lote
-    100.00,                   -- Cantidad ingresada en kg
-    1.50,                     -- Precio unitario
-    'cajas',                  -- Presentación
-    10,                       -- Bultos o canastas
-    1.00,                     -- Peso unitario de cada bulto o canasta en kg
-    12.5,                     -- Brix
-    'Fruta fresca, buen estado' -- Observaciones
-);
---  !!!!!!!!!!!!!!!!!!!!! actulizar un regsitro de iventario !!!!!!!!!!!!!!!!!!!!!!!
-DELIMITER //
-CREATE PROCEDURE ActualizarMP (
-    IN p_id_inv INT,
-    IN p_fecha DATE,
-    IN p_hora TIME,
-    IN p_id_articulo INT,
-    IN p_proveedor_id INT,
-    IN p_numero_lote VARCHAR(50),
-    IN p_cantidad_ingresada DECIMAL(10,2),
-    IN p_precio_unitario DECIMAL(10,2),
-    IN p_presentacion VARCHAR(50),
-    IN p_brix DECIMAL(5,2),
-    IN p_bultos_o_canastas INT,
-    IN p_peso_unitario DECIMAL(10,2),
-    IN p_observacion TEXT
-)
-BEGIN
-    -- Actualizar tabla inventario con los campos en el mismo orden del formulario
-    UPDATE inventario
-    SET 
-        fecha = p_fecha,
-        hora = p_hora,
-        id_articulo = p_id_articulo,
-        proveedor_id = p_proveedor_id,
-        numero_lote = p_numero_lote,
-        cantidad_ingresada = p_cantidad_ingresada,
-        precio_unitario = p_precio_unitario,
-        presentacion = p_presentacion
-    WHERE id_inv = p_id_inv;
-    
-    -- Actualizar tabla invent_detalle_mp con los campos en el mismo orden del formulario
-    UPDATE invent_detalle_mp
-    SET 
-        brix = p_brix,
-        bultos_o_canastas = p_bultos_o_canastas,
-        peso_unitario = p_peso_unitario,
-        observacion = p_observacion
-    WHERE id_inv = p_id_inv;
-END//
-DELIMITER ;
-
-
-	
---  OBTENER POR ID MP  !!!!!!!!!!!!!!!!!!!!!!!
-DELIMITER //
-CREATE PROCEDURE Obt_MP_por_id(
-    IN p_id_inv INT
-)
+CREATE PROCEDURE sp_Obt_inven_INS()
 BEGIN
     SELECT 
-        i.id_inv,
-        i.fecha,
-        i.hora,
-        i.id_articulo,
-        i.proveedor_id,
-        i.numero_lote,
-        i.cantidad_ingresada,
-        i.precio_unitario,
-        i.presentacion,
-        d.brix,
-        d.bultos_o_canastas,
-        d.peso_unitario,
-        d.observacion
-    FROM inventario i
-    JOIN invent_detalle_mp d ON i.id_inv = d.id_inv
-    WHERE i.id_inv = p_id_inv;
+        inv.id_inv AS ID,
+        inv.fecha AS Fecha,
+        inv.hora AS Hora,
+        inv.numero_lote AS Lote,
+        prov.nombre_empresa AS Proveedor,
+        cat.nombre_articulo AS Insumo,
+        inv.unidad_medida AS Unidad_Medida,
+        inv.cantidad_ingresada AS Cantidad,
+        inv.cantidad_restante AS Cantidad_Restante,
+        inv.precio_unitario AS Precio_Unitario,
+        inv.precio_total AS Precio_Total,
+        inv.presentacion AS Presentacion,
+        inv.estado AS Estado
+    FROM 
+        inventario inv
+    JOIN 
+        proveedores prov ON inv.proveedor_id = prov.proveedor_id
+    JOIN 
+        invent_catalogo cat ON inv.id_articulo = cat.id_articulo
+    WHERE 
+        cat.id_categoria = 2; -- Filtra solo los registros de Insumos
+END//
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_EliminarRegistroMP`(IN p_id_inv INT)
+BEGIN
+    -- Primero eliminar el registro relacionado en invent_detalle_MP si existe
+    DELETE FROM invent_detalle_MP
+    WHERE id_inv = p_id_inv;
+
+    -- Luego eliminar el registro principal en inventario
+    DELETE FROM inventario
+    WHERE id_inv = p_id_inv;
+END$$
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE sp_EliminarINS(IN p_id_inv INT)
+BEGIN
+
+    DELETE FROM inventario
+    WHERE id_inv = p_id_inv;
 END//
 DELIMITER ;
 
-
-call fpulpas.Obt_MP_por_id(1);
 
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ac_InsertarMP`(
-    IN p_fecha DATE,
-    IN p_hora TIME,
-    IN p_id_articulo INT,
-    IN p_proveedor_id INT,
-    IN p_numero_lote VARCHAR(50),
-    IN p_cantidad_ingresada DECIMAL(10, 2),
-    IN p_precio_unitario DECIMAL(10, 2),
-    IN p_presentacion VARCHAR(50),
-    IN p_bultos_o_canastas INT,
-    IN p_peso_unitario DECIMAL(10, 2),
-    IN p_brix DECIMAL(5, 2),
-    IN p_observacion TEXT
-)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `elim_invCatalogo`(IN p_id_articulo INT)
 BEGIN
-    DECLARE v_id_inv INT;
-
-    -- Inicio de la transacción
-    START TRANSACTION;
-
-    -- Inserción en la tabla inventario (sin `precio_total` ya que es una columna generada)
-    INSERT INTO inventario (
-        fecha, hora, id_articulo, proveedor_id, numero_lote,
-        cantidad_ingresada, cantidad_restante, 
-        precio_unitario, presentacion
-    ) VALUES (
-        p_fecha, p_hora, p_id_articulo, p_proveedor_id, p_numero_lote,
-        p_cantidad_ingresada, p_cantidad_ingresada, -- `cantidad_restante` inicial
-        p_precio_unitario, p_presentacion
-    );
-
-    -- Obtener el último ID insertado en inventario
-    SET v_id_inv = LAST_INSERT_ID();
-
-    -- Inserción en la tabla invent_detalle_MP
-    INSERT INTO invent_detalle_MP (
-        id_inv, bultos_o_canastas, peso_unitario, 
-        brix, observacion
-    ) VALUES (
-        v_id_inv, p_bultos_o_canastas, p_peso_unitario, 
-        p_brix, p_observacion
-    );
-
-    -- Confirmación de la transacción
-    COMMIT;
+    DELETE FROM invent_catalogo WHERE id_articulo = p_id_articulo;
 END$$
 DELIMITER ;
+
+
+
+
 

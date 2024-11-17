@@ -40,11 +40,34 @@
     grid-template-rows: repeat(5, 1fr);
     gap: 8px;
 }
-    
 
+/* Ajusta el tamaño de fuente y espaciado */
+#inventarioInsumosdt {
+    font-size: 12px; /* Tamaño de la fuente para que se vea más pequeño */
+}
 
+#inventarioInsumosdt thead th {
+    padding: 6px 8px; /* Ajusta el padding de los encabezados */
+    font-weight: bold; /* Mantiene el encabezado visible */
+    font-size: 11px;
+}
 
+#inventarioInsumosdt tbody td {
+    padding: 4px 6px; /* Ajusta el padding de las celdas */
+}
 
+/* Opcional: Reduce los márgenes entre filas */
+#inventarioInsumosdt tbody tr {
+    line-height: 1.2; /* Reduce el alto de línea */
+}
+
+/* Elimina bordes y estilos de caja si buscas un estilo más sencillo */
+.dataTables_wrapper .dataTables_paginate .paginate_button,
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    padding: 4px 6px;
+    font-size: 12px;
+}
 
 
 

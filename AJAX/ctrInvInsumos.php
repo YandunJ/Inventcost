@@ -31,6 +31,10 @@ switch ($action) {
         case 'cargarInsumoId':
             cargarInsumoId();
                 break;
+        case 'obtenerUnidadMedida':
+            obtenerUnidadMedida();
+                break;
+                
       
         default:
             echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
@@ -62,38 +66,37 @@ function cargarProveedores() {
     }
 }
 
-
 function guardarInsumo() {
     global $conn;
     $insumosModel = new InventarioInsumos();
 
-    $inventins_id = isset($_POST['inventins_id']) && $_POST['inventins_id'] !== '' ? $_POST['inventins_id'] : null;
-    $insumo_id = $_POST['insumo_id'];
-    $proveedor_id = $_POST['proveedor_id'];
-    $fecha_cad = $_POST['fecha_cad'];
-    $unidad_medida = $_POST['unidad_medida'];
-    $cantidad = $_POST['cantidad'];
-    $precio_unitario = $_POST['precio_unitario'];
-    $precio_total = $_POST['precio_total'];
+    // Capturar datos del formulario y ajustar nombres según el SP y la tabla
+    $id_articulo = $_POST['id_articulo'];       // Correspondiente a p_id_articulo
+    $proveedor_id = $_POST['proveedor_id'];     // Correspondiente a p_proveedor_id
+    $fecha = $_POST['fecha'];                   // Correspondiente a p_fecha
+    $hora = $_POST['hora'];                     // Correspondiente a p_hora
+    $numero_lote = $_POST['numero_lote'];       // Correspondiente a p_numero_lote
+    $cantidad_ingresada = $_POST['cantidad_ingresada']; // Correspondiente a p_cantidad_ingresada
+    $presentacion = $_POST['presentacion'];     // Correspondiente a p_presentacion
+    $precio_unitario = $_POST['precio_unitario']; // Correspondiente a p_precio_unitario
 
     try {
-        $insumosModel->insertarActualizar($inventins_id, $insumo_id, $proveedor_id, $fecha_cad, $unidad_medida, $cantidad, $precio_unitario, $precio_total);
-        echo json_encode(['status' => 'success']);
+        // Llamada al método de inserción con los parámetros necesarios
+        $insumosModel->insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario);
+        echo json_encode(['status' => 'success', 'message' => 'Insumo agregado exitosamente']);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
-
 function cargarInsumosTabla() {
     global $conn;
-    $insumosModel = new InventarioInsumos();
-    $data = $insumosModel->obtenerInvenInsumos(); // Asegúrate de que este método esté definido en el modelo
-
-    if ($data) {
+    header('Content-Type: application/json');
+    $insumosModel = new InventarioInsumos($conn);
+    try {
+        $data = $insumosModel->obtenerInvenInsumos();
         echo json_encode(['status' => 'success', 'data' => $data]);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los insumos del inventario.']);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 
@@ -111,14 +114,35 @@ function cargarInsumoId() {
 }
 
 function eliminarInsumo() {
-    global $conn;
-    $inventins_id = $_POST['inventins_id'];
-    $insumosModel = new InventarioInsumos();
+    $id_inv = $_POST['id_inv'];  // Recibe el ID de inventario desde la solicitud
+    $insumosModel = new  InventarioInsumos();
     try {
-        $insumosModel->eliminar($inventins_id);
+        $insumosModel->eliminar($id_inv);
         echo json_encode(['status' => 'success']);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+}
+
+function obtenerUnidadMedida() {
+    global $conn;
+    $id_articulo = isset($_POST['id_articulo']) ? $_POST['id_articulo'] : '';
+
+    if ($id_articulo) {
+        $query = "SELECT unidad_medida FROM invent_catalogo WHERE id_articulo = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $id_articulo);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $unidad = $result->fetch_assoc();
+
+        if ($unidad) {
+            echo json_encode(['status' => 'success', 'unidad_medida' => $unidad['unidad_medida']]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Unidad de medida no encontrada']);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'ID de artículo no válido']);
     }
 }
 

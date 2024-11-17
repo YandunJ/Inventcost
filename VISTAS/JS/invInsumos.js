@@ -1,7 +1,7 @@
 $(document).ready(function() {
     // Cargar insumos y proveedores
     $.ajax({
-        url: "../AJAX/ctrInvenInsumos.php",
+        url: "../AJAX/ctrInvInsumos.php",
         type: "POST",
         data: { action: 'cargarInsumos' },
         dataType: "json",
@@ -25,7 +25,7 @@ $(document).ready(function() {
     });
 
     $.ajax({
-        url: "../AJAX/ctrInvenInsumos.php",
+        url: "../AJAX/ctrInvInsumos.php",
         type: "POST",
         data: { action: 'cargarProveedores' },
         dataType: "json",
@@ -45,6 +45,35 @@ $(document).ready(function() {
             alert("Ocurrió un error al cargar los proveedores.");
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
+        }
+    });
+
+
+    $('#id_articulo').change(function() {
+        let idArticulo = $(this).val();
+
+        if (idArticulo) {
+            $.ajax({
+                url: "../AJAX/ctrInvInsumos.php",
+                type: "POST",
+                data: { action: 'obtenerUnidadMedida', id_articulo: idArticulo },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $('#unidad_medida').val(response.unidad_medida);
+                    } else {
+                        alert("Error al cargar la unidad de medida.");
+                        console.error("Error loading unit: ", response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ocurrió un error al cargar la unidad de medida.");
+                    console.error("Error: ", error);
+                    console.error("Response: ", xhr.responseText);
+                }
+            });
+        } else {
+            $('#unidad_medida').val(''); // Limpiar el campo si no hay selección
         }
     });
 
@@ -77,47 +106,63 @@ $('#cantidad, #precio_unitario').on('input', function() {
 
 
     // Inicializar DataTable
-    const insumosTable = $('#inventarioInsumosdt').DataTable({
-        ajax: {
-            url: '../AJAX/ctrInvenInsumos.php',
-            type: 'POST',
-            data: { action: 'cargarInsumosTabla' },
-            dataSrc: function(json) {
-                if (json.status === 'success') {
-                    return json.data;
-                } else {
-                    alert('Error: ' + json.message);
-                    return [];
+    
+        const insumosTable = $('#inventarioInsumosdt').DataTable({
+            ajax: {
+                url: '../AJAX/ctrInvInsumos.php',
+                type: 'POST',
+                data: { action: 'cargarInsumosTabla' },
+                dataSrc: function(json) {
+                    if (json.status === 'success') {
+                        return json.data;
+                    } else {
+                        alert('Error: ' + json.message);
+                        return [];
+                    }
                 }
-            }
-        },
-        columns: [
-            { data: 'inventins_id' },
-            { data: 'insumo_nombre' },
-            { data: 'proveedor_nombre' },
-            { data: 'fecha_hora_ing' },
-            { data: 'fecha_cad' },
-            { data: 'unidad_medida' },
-            { data: 'cantidad' },
-            { data: 'precio_unitario' },
-            { data: 'precio_total' },
-            {
-                data: null,
-                render: function(data, type, row) {
-                    return `
-                    <button class="btn btn-info btn-sm edit-btn" data-id="${row.inventins_id}">Editar</button>
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="${row.inventins_id}">Eliminar</button>
-                    `;
+            },
+            columns: [
+                { data: 'ID' },
+                { data: 'Insumo' },
+                { data: 'Proveedor' },
+                { data: 'Fecha' },
+                { data: 'Hora' },
+                { data: 'Unidad_Medida' },
+                { data: 'Cantidad' },
+                { data: 'Cantidad_Restante' },
+                { data: 'Precio_Unitario' },
+                { data: 'Precio_Total' },
+                { data: 'Presentacion' },
+                { data: 'Estado' },
+                {
+                    data: null,
+                    render: function(data, type, row) {
+                        return `
+                            <div class="btn-group">
+                                <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </a>
+                                    <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    }
                 }
-            }
-        ]
-    });
-
+            ]
+        });
+    
+    
    // Al hacer clic en el botón Agregar/Actualizar
-   $('#inventinsumosForm').on('submit', function(event) {
-    event.preventDefault();
-    const formData = $(this).serialize();
-    const actionType = $('#inventins_id').val() ? 'actualizar' : 'registrar';
+   $('#InsumosForm').on('submit', function(event) {
+    event.preventDefault(); // Previene la recarga de la página
+    const formData = $(this).serialize(); // Asegúrate de que los nombres coincidan en el formulario HTML
+    const actionType = $('#id_inv').val() ? 'actualizar' : 'registrar';
 
     Swal.fire({
         title: `¿Estás seguro de que deseas ${actionType} este insumo?`,
@@ -128,16 +173,14 @@ $('#cantidad, #precio_unitario').on('input', function() {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "../AJAX/ctrInvenInsumos.php",
+                url: "../AJAX/ctrInvInsumos.php",
                 type: "POST",
                 data: formData + '&action=guardarInsumo',
                 dataType: "json",
                 success: function(response) {
                     if (response.status === 'success') {
-                        const successMessage = `Insumo ${actionType}ado exitosamente.`;
-                        Swal.fire('Éxito', successMessage, 'success');
-                        $('#inventinsumosForm')[0].reset();
-                        $('.btn-primary.btn-block').text('Agregar Insumo'); // Restablecer el texto del botón
+                        Swal.fire('Éxito', `Insumo ${actionType}ado exitosamente.`, 'success');
+                        $('#insumoForm')[0].reset();
                         insumosTable.ajax.reload(); // Recargar la tabla
                     } else {
                         Swal.fire('Error', response.message, 'error');
@@ -153,12 +196,11 @@ $('#cantidad, #precio_unitario').on('input', function() {
     });
 });
 
-
     // Al hacer clic en el botón Editar
     $('#inventarioInsumosdt').on('click', '.edit-btn', function() {
         const inventins_id = $(this).data('id');
         $.ajax({
-            url: '../AJAX/ctrInvenInsumos.php',
+            url: '../AJAX/ctrInvInsumos.php',
             type: 'POST',
             data: { action: 'cargarInsumoId', inventins_id: inventins_id },
             dataType: 'json',
@@ -188,9 +230,8 @@ $('#cantidad, #precio_unitario').on('input', function() {
 
     // Al hacer clic en el botón Eliminar
     $('#inventarioInsumosdt').on('click', '.delete-btn', function() {
-        const inventins_id = $(this).data('id');
-        
-        // Implementación de SweetAlert para confirmar la eliminación
+        const id_inv = $(this).data('id');
+    
         Swal.fire({
             title: '¿Estás seguro?',
             text: "No podrás revertir esta acción.",
@@ -201,32 +242,20 @@ $('#cantidad, #precio_unitario').on('input', function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '../AJAX/ctrInvenInsumos.php',
+                    url: '../AJAX/ctrInvInsumos.php',
                     type: 'POST',
-                    data: { action: 'eliminarInsumo', inventins_id: inventins_id },
+                    data: { action: 'eliminarInsumo', id_inv: id_inv },
                     dataType: 'json',
                     success: function(response) {
                         if (response.status === 'success') {
-                            Swal.fire(
-                                'Eliminado',
-                                'El registro ha sido eliminado.',
-                                'success'
-                            );
-                            insumosTable.ajax.reload();
+                            Swal.fire('Eliminado', 'El registro ha sido eliminado.', 'success');
+                            insumosTable.ajax.reload(null, false); // Recarga la tabla sin reiniciar la paginación
                         } else {
-                            Swal.fire(
-                                'Error',
-                                'Hubo un problema al eliminar el registro.',
-                                'error'
-                            );
+                            Swal.fire('Error', 'Hubo un problema al eliminar el registro.', 'error');
                         }
                     },
                     error: function(xhr, status, error) {
-                        Swal.fire(
-                            'Error',
-                            'Ocurrió un error al eliminar el registro.',
-                            'error'
-                        );
+                        Swal.fire('Error', 'Ocurrió un error al eliminar el registro.', 'error');
                         console.error("Error: ", error);
                         console.error("Response: ", xhr.responseText);
                     }
