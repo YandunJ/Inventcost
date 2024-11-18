@@ -22,7 +22,7 @@
                     <div class="form-group">
                         <label for="produccion_id">Producción:</label>
                         <select id="produccion_id" name="produccion_id" class="form-control" required>
-                            <!-- Options will be populated dynamically from the backend -->
+                            <!-- Opciones llenadas dinámicamente -->
                         </select>
                     </div>
                     <hr>
@@ -31,13 +31,14 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre del Insumo</th>
-                                <th>Cantidad</th>
-                                <th>Precio</th>
+                                <th>Cantidad Disponible</th>
+                                <th>Cantidad a Usar</th>
+                                <th>Precio Unitario</th>
                                 <th>Seleccionar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Rows will be populated dynamically from the backend -->
+                            <!-- Filas llenadas dinámicamente -->
                         </tbody>
                     </table>
                     <button type="submit" class="btn btn-primary">Registrar Consumo de Insumos</button>
@@ -46,7 +47,7 @@
         </section>
     </div>
     <footer class="main-footer">
-        <!-- Footer content here -->
+        <!-- Contenido del pie de página -->
     </footer>
 </div>
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
@@ -54,22 +55,21 @@
 <script src="../Public/dist/js/adminlte.min.js"></script>
 <script>
     $(document).ready(function() {
-        // Populate the select box with dummy data
+        // Datos de ejemplo para producciones
         const producciones = [
             { id: 1, nombre: 'Producción 1' },
-            { id: 2, nombre: 'Producción 2' },
-            { id: 3, nombre: 'Producción 3' }
+            { id: 2, nombre: 'Producción 2' }
         ];
         
         producciones.forEach(produccion => {
             $('#produccion_id').append(new Option(produccion.nombre, produccion.id));
         });
 
-        // Populate the table with dummy data
+        // Datos de ejemplo para insumos
         const insumos = [
-            { id: 1, nombre: 'Saborizante', cantidad: 10, precio: 5.00 },
-            { id: 2, nombre: 'Acido Citrico', cantidad: 20, precio: 7.50 },
-            { id: 3, nombre: 'Cofia', cantidad: 15, precio: 6.25 }
+            { id: 1, nombre: 'Saborizante', disponible: 50, precio: 5.00 },
+            { id: 2, nombre: 'Acido Citrico', disponible: 30, precio: 7.50 },
+            { id: 3, nombre: 'Cofia', disponible: 20, precio: 6.25 }
         ];
 
         insumos.forEach(insumo => {
@@ -77,18 +77,27 @@
                 <tr>
                     <td>${insumo.id}</td>
                     <td>${insumo.nombre}</td>
-                    <td>${insumo.cantidad}</td>
+                    <td>${insumo.disponible} kg</td>
+                    <td><input type="number" class="cantidad-usar" data-id="${insumo.id}" min="0" max="${insumo.disponible}" step="0.1"></td>
                     <td>${insumo.precio}</td>
-                    <td><input type="checkbox" name="insumo" value="${insumo.id}"></td>
+                    <td><input type="checkbox" name="insumo" value="${insumo.id}" class="check-insumo"></td>
                 </tr>
             `);
         });
 
-        // Handle form submission
+        // Manejo del formulario
         $('#produccionInsumosForm').submit(function(e) {
             e.preventDefault();
-            // Here you would handle the form submission to the backend
-            alert('Consumo de insumos registrado');
+
+            // Recoge la información seleccionada
+            const seleccionados = [];
+            $('.check-insumo:checked').each(function() {
+                const id = $(this).val();
+                const cantidad = $(`.cantidad-usar[data-id="${id}"]`).val();
+                seleccionados.push({ id, cantidad });
+            });
+
+            alert('Insumos seleccionados:\n' + JSON.stringify(seleccionados, null, 2));
         });
     });
 </script>
