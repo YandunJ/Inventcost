@@ -21,6 +21,12 @@ switch ($action) {
         case 'guardarInsumo':
             guardarInsumo();
             break;
+         case 'cargarInsumoId':
+            cargarInsumoId();
+            break;
+        case 'actualizarInsumo':
+            actualizarInsumo();
+            break;
         case 'cargarInsumosTabla':
             cargarInsumosTabla();
             break;
@@ -28,9 +34,7 @@ switch ($action) {
         case 'eliminarInsumo':
             eliminarInsumo();
             break;
-        case 'cargarInsumoId':
-            cargarInsumoId();
-                break;
+      
         case 'obtenerUnidadMedida':
             obtenerUnidadMedida();
                 break;
@@ -104,12 +108,40 @@ function cargarInsumosTabla() {
 function cargarInsumoId() {
     global $conn;
     $inventins_id = $_POST['inventins_id'];
-    $insumosModel = new InventarioInsumos();
-    $data = $insumosModel->obtenerInvenInsumoPorId($inventins_id);
-    if ($data) {
-        echo json_encode(['status' => 'success', 'data' => $data]);
+    
+    $modelo = new InventarioInsumos();
+    $insumo = $modelo->obtenerInsumoPorID($inventins_id);
+    
+    if ($insumo) {
+        echo json_encode(['status' => 'success', 'data' => $insumo]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudo obtener el insumo.']);
+        echo json_encode(['status' => 'error', 'message' => 'Insumo no encontrado']);
+    }
+}
+
+function actualizarInsumo() {
+    global $insumo;
+
+    $id_inv = $_POST['id_inv'];
+    $id_articulo = $_POST['id_articulo'];
+    $proveedor_id = $_POST['proveedor_id'];
+    $fecha = $_POST['fecha'];
+    $hora = $_POST['hora'];
+    $numero_lote = $_POST['numero_lote'];
+    $cantidad_ingresada = $_POST['cantidad_ingresada'];
+    $presentacion = $_POST['presentacion'];
+    $precio_unitario = $_POST['precio_unitario'];
+
+    try {
+        $resultado = $insumo->actualizarInsumo($id_inv, $id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario);
+        
+        if ($resultado) {
+            echo json_encode(['status' => 'success', 'message' => 'Insumo actualizado correctamente.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Error al actualizar el insumo.']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 

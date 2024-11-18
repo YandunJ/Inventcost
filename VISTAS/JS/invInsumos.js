@@ -180,7 +180,9 @@ $('#cantidad, #precio_unitario').on('input', function() {
                 success: function(response) {
                     if (response.status === 'success') {
                         Swal.fire('Éxito', `Insumo ${actionType}ado exitosamente.`, 'success');
-                        $('#insumoForm')[0].reset();
+                        $('#InsumosForm')[0].reset();
+                        console.log("Valor de presentación:", $("#presentacion").val());
+
                         insumosTable.ajax.reload(); // Recargar la tabla
                     } else {
                         Swal.fire('Error', response.message, 'error');
@@ -197,37 +199,66 @@ $('#cantidad, #precio_unitario').on('input', function() {
 });
 
     // Al hacer clic en el botón Editar
-    $('#inventarioInsumosdt').on('click', '.edit-btn', function() {
-        const inventins_id = $(this).data('id');
+
+$('#inventarioInsumosdt').on('click', '.edit-btn', function() {
+    const inventins_id = $(this).data('id');
+    $.ajax({
+        url: '../AJAX/ctrInvInsumos.php',
+        type: 'POST',
+        data: { action: 'cargarInsumoId', inventins_id: inventins_id },
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                const data = response.data;
+                $('#id_inv').val(data.id_inv);
+                $('#id_articulo').val(data.id_articulo);
+                $('#proveedor_id').val(data.proveedor_id);
+                $('#fecha').val(data.fecha);
+                $('#hora').val(data.hora);
+                $('#numero_lote').val(data.numero_lote);
+                $('#unidad_medida').val(data.unidad_medida); // Cargar unidad de medida
+                $('#cantidad_ingresada').val(data.cantidad_ingresada);
+                $('#presentacion').val(data.presentacion);
+                $('#precio_unitario').val(data.precio_unitario);
+                $('#submitInsumo').text('Actualizar Insumo');
+            } else {
+                alert('Error: ' + response.message);
+            }
+        }
+    });
+});
+
+    
+    $('#submitInsumo').on('click', function() {
+        const formData = {
+            action: 'actualizarInsumo',
+            id_inv: $('#id_inv').val(),
+            id_articulo: $('#id_articulo').val(),
+            proveedor_id: $('#proveedor_id').val(),
+            fecha: $('#fecha').val(),
+            hora: $('#hora').val(),
+            numero_lote: $('#numero_lote').val(),
+            cantidad_ingresada: $('#cantidad_ingresada').val(),
+            presentacion: $('#presentacion').val(),
+            precio_unitario: $('#precio_unitario').val()
+        };
+    
         $.ajax({
             url: '../AJAX/ctrInvInsumos.php',
             type: 'POST',
-            data: { action: 'cargarInsumoId', inventins_id: inventins_id },
+            data: formData,
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    const data = response.data;
-                    $('#insumo_id').val(data.insumo_id);
-                    $('#fecha_cad').val(data.fecha_cad);
-                    $('#proveedor_id').val(data.proveedor_id);
-                    $('#unidad_medida').val(data.unidad_medida);
-                    $('#cantidad').val(data.cantidad);
-                    $('#precio_unitario').val(data.precio_unitario);
-                    $('#precio_total').val(data.precio_total);
-                    $('#inventins_id').val(data.inventins_id); // Establecer el inventins_id
-                    $('.btn-primary.btn-block').text('Actualizar Insumo'); // Cambiar el texto del botón
+                    alert('Insumo actualizado correctamente.');
+                    location.reload(); // Recarga la tabla de insumos
                 } else {
                     alert('Error: ' + response.message);
                 }
-            },
-            error: function(xhr, status, error) {
-                alert("Ocurrió un error al obtener los datos.");
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
             }
         });
     });
-
+    
     // Al hacer clic en el botón Eliminar
     $('#inventarioInsumosdt').on('click', '.delete-btn', function() {
         const id_inv = $(this).data('id');
@@ -249,7 +280,9 @@ $('#cantidad, #precio_unitario').on('input', function() {
                     success: function(response) {
                         if (response.status === 'success') {
                             Swal.fire('Eliminado', 'El registro ha sido eliminado.', 'success');
-                            insumosTable.ajax.reload(null, false); // Recarga la tabla sin reiniciar la paginación
+                            console.log("Recargando DataTable...");
+                            insumosTable.ajax.reload(null, false);
+
                         } else {
                             Swal.fire('Error', 'Hubo un problema al eliminar el registro.', 'error');
                         }

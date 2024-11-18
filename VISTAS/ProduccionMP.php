@@ -57,6 +57,29 @@
                     </div>
                 </div>
 
+
+<div class="section">
+    <h2 onclick="toggleSection('inventorySelection')">Selección de Lotes de Inventario</h2>
+    <div id="inventorySelection" class="section-content">
+        <table class="table">
+            <tr>
+                <th>Seleccionar</th>
+                <th>Lote</th>
+                <th>Cantidad Restante</th>
+                <th>Unidad</th>
+            </tr>
+            <!-- Datos de ejemplo -->
+            <tr>
+                <td><input type="checkbox"></td>
+                <td>Lote 001</td>
+                <td>50 kg</td>
+                <td>kg</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
             <!-- Contenedor para la tabla de selección de materia prima -->
                         <div class="row">
                             <div class="col-md-12">

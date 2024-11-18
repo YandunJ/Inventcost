@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+
     <link rel="stylesheet" href="../FILES/InvMPform.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -162,7 +164,10 @@
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+
     <!-- Custom JS  -->
     <script src="JS/invInsumos.js"></script>
     <script src="JS/cerrarsesion.js"></script>
