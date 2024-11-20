@@ -1,0 +1,103 @@
+/* Estilos para tablas compactas */
+#tablaSeleccionarMP {
+    font-size: 12px; /* Reduce el tamaño de la fuente */
+    text-align: center; /* Centra el contenido */
+}
+
+#tablaSeleccionarMP th, 
+#tablaSeleccionarMP td {
+    padding: 5px; /* Reduce el espacio dentro de las celdas */
+    text-align: center; /* Centra todo el contenido */
+    vertical-align: middle; /* Asegura que el contenido esté alineado verticalmente */
+}
+
+#tablaSeleccionarMP th {
+    background-color: #f4f6f9; /* Color de fondo para los encabezados */
+    font-weight: bold;
+    border-bottom: 2px solid #dee2e6; /* Línea más marcada en el encabezado */
+}
+
+#tablaSeleccionarMP tbody tr:hover {
+    background-color: #e9ecef; /* Fondo al pasar el cursor por una fila */
+}
+
+#tablaSeleccionarMP tbody tr td input {
+    font-size: 12px; /* Ajusta el tamaño de los inputs */
+    padding: 2px; /* Reduce el relleno */
+    width: 80%; /* Reduce el ancho de los inputs */
+    margin: 0 auto; /* Centra los inputs */
+}
+
+#tablaSeleccionarMP .form-check-input {
+    margin: 0; /* Reduce el margen del checkbox */
+    transform: scale(0.8); /* Ajusta el tamaño del checkbox */
+}
+
+.form-check-input {
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Estilos específicos para los checkboxes */
+#tablaSeleccionarMP tbody tr td {
+    position: relative; /* Asegura que los elementos estén dentro de su celda */
+}
+
+#tablaSeleccionarMP tbody tr td .form-check-input {
+    position: absolute;
+    top: 50%; /* Centra verticalmente */
+    left: 10%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta la posición al centro */
+    margin: 0; /* Elimina márgenes innecesarios */
+    transform: scale(1.9); /* Opcional: ajusta el tamaño del checkbox */
+}
+
+/* Estilos para tablas compactas */
+#tablaSeleccionarINS {
+    font-size: 12px; /* Reduce el tamaño de la fuente */
+    text-align: center; /* Centra el contenido */
+}
+
+#tablaSeleccionarINS th, 
+#tablaSeleccionarINS td {
+    padding: 5px; /* Reduce el espacio dentro de las celdas */
+    text-align: center; /* Centra todo el contenido */
+    vertical-align: middle; /* Asegura que el contenido esté alineado verticalmente */
+}
+
+#tablaSeleccionarINS th {
+    background-color: #f4f6f9; /* Color de fondo para los encabezados */
+    font-weight: bold;
+    border-bottom: 2px solid #dee2e6; /* Línea más marcada en el encabezado */
+}
+
+#tablaSeleccionarINS tbody tr:hover {
+    background-color: #e9ecef; /* Fondo al pasar el cursor por una fila */
+}
+
+#tablaSeleccionarINS tbody tr td input {
+    font-size: 12px; /* Ajusta el tamaño de los inputs */
+    padding: 2px; /* Reduce el relleno */
+    width: 80%; /* Reduce el ancho de los inputs */
+    margin: 0 auto; /* Centra los inputs */
+}
+
+#tablaSeleccionarINS .form-check-input {
+    margin: 0; /* Reduce el margen del checkbox */
+    transform: scale(0.8); /* Ajusta el tamaño del checkbox */
+}
+
+/* Estilos específicos para los checkboxes */
+#tablaSeleccionarINS tbody tr td {
+    position: relative; /* Asegura que los elementos estén dentro de su celda */
+}
+
+#tablaSeleccionarINS tbody tr td .form-check-input {
+    position: absolute;
+    top: 50%; /* Centra verticalmente */
+    left: 10%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta la posición al centro */
+    margin: 0; /* Elimina márgenes innecesarios */
+    transform: scale(1.9); /* Opcional: ajusta el tamaño del checkbox */
+}

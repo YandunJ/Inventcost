@@ -1,5 +1,6 @@
 <?php
 // MODELO/modProduccionMP.php
+
 class ProduccionMateriaPrima {
     private $conn;
 
@@ -9,7 +10,7 @@ class ProduccionMateriaPrima {
     } 
 
     public function obtenerMateriaPrima() {
-        $sql = "CALL MateriaPrimaparaProduccion()"; // Llama al SP que ya tienes
+        $sql = "CALL sp_Obt_inven_MP()"; // Llama al SP directamente
         $result = $this->conn->query($sql);
         if (!$result) {
             throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
@@ -20,6 +21,5 @@ class ProduccionMateriaPrima {
         }
         return $data;
     }
-    
 }
 ?>

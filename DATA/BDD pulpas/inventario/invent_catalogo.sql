@@ -92,3 +92,22 @@ SELECT id_articulo, nombre_articulo FROM invent_catalogo where id_categoria = 1;
 DESCRIBE invent_catalogo;
 DESCRIBE proveedores;
 DESCRIBE invent_detalle_MP;
+
+
+DELIMITER //
+
+CREATE TRIGGER actualizar_stock
+AFTER INSERT ON inventario
+FOR EACH ROW
+BEGIN
+    -- Sumar todas las cantidades ingresadas para el artículo correspondiente
+    UPDATE invent_catalogo AS cat
+    SET cat.stock = (
+        SELECT SUM(inv.cantidad_ingresada)
+        FROM inventario AS inv
+        WHERE inv.id_articulo = NEW.id_articulo
+    )
+    WHERE cat.id_articulo = NEW.id_articulo;
+END //
+
+DELIMITER ;

@@ -23,7 +23,7 @@ CREATE TABLE inventario (
 
 DELIMITER //
 
-CREATE PROCEDURE ObtINS_por_id(IN p_inventins_id INT)
+CREATE PROCEDURE Obt_INS_por_id(IN p_inventins_id INT)
 BEGIN
     SELECT 
         id_inv, 
@@ -35,6 +35,7 @@ BEGIN
         unidad_medida, 
         cantidad_ingresada, 
         presentacion, 
+        unidad_medida,
         precio_unitario, 
         precio_total
     FROM 
@@ -44,6 +45,8 @@ BEGIN
 END //
 
 DELIMITER ;
+
+call fpulpas.Obt_INS_por_id(1);
 
 DELIMITER //
 
