@@ -25,6 +25,57 @@ $(document).ready(function() {
         });
     });
     
+    
+    $(document).ready(function() {
+        // Cargar unidades de medida en el select box
+        $.ajax({
+            url: "../AJAX/ctrInvCatalogo.php",
+            type: "POST",
+            data: { action: 'getUnidadesMedida' },
+            dataType: "json",
+            success: function(response) {
+                if (Array.isArray(response)) {
+                    let options = "<option value=''>Seleccione una unidad</option>";
+                    response.forEach(function(unidad) {
+                        options += `<option value="${unidad.uni_id}">${unidad.uni_nombre}</option>`;
+                    });
+                    $("#unidad_medida").html(options);
+                } else {
+                    console.error("Error loading units of measure: ", response);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
+    });
+    
+    
+    
+    $.ajax({
+        url: "../AJAX/ctrInvFrutas.php",
+        type: "POST",
+        data: { action: 'cargarProveedores' },
+        dataType: "json",
+        success: function(response) {
+            let options = '<option value="">Seleccione un proveedor</option>';
+            if (response.status === 'success' && Array.isArray(response.data)) {
+                response.data.forEach(function(proveedor) {
+                    options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
+                });
+                $("#proveedor_id").html(options);
+            } else {
+                alert("Error al cargar los proveedores.");
+                console.error("Error loading proveedores: ", response);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Ocurrió un error al cargar los proveedores.");
+            console.error("Error: ", error);
+            console.error("Response: ", xhr.responseText);
+        }
+    });
 
     var table = $('#inventoryTable').DataTable({
         "ajax": {
@@ -40,23 +91,22 @@ $(document).ready(function() {
             { "data": "id_articulo" },
             { "data": "nombre_articulo" },
             { "data": "descripcion" },
-            { "data": "id_categoria" }, // Nuevo
+            { "data": "categoria" }, // Cambiado para usar el alias 'categoria'
+            { "data": "proveedor" },
             { "data": "unidad_medida" },
-            { "data": "estado" }, // Nuevo
-            { "data": "fecha_creacion" }, // Nuevo
+             // Cambiado para usar el alias 'unidad_medida'
+            { "data": "estado" },
+            { "data": "fecha_creacion" },
             { "data": "stock" },
             {
                 "data": null,
-               "defaultContent": `
-                        <button class="editItem btn btn-warning btn-sm">Editar</button>
-                        <button class="deleteArticle btn btn-danger btn-sm">Eliminar</button>
-                    `
-
+                "defaultContent": `
+                    <button class="editItem btn btn-warning btn-sm">Editar</button>
+                    <button class="deleteArticle btn btn-danger btn-sm">Eliminar</button>
+                `
             }
         ]
     });
-    
-
 
     var editing = false;
     var currentId = null;

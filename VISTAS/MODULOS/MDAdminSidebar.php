@@ -52,15 +52,16 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <p>Lotes Insumos</p>
                             </a>
                         </li>
+                     
                         <li class="nav-item">
-                            <a href="insumos.php" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p>Catalogo Insumos</p>
-                            </a>
-                        </li>
+                                    <a href="ProduccionMP.php" class="nav-link">
+                                        <i class="nav-icon fas fa-industry"></i>
+                                        <p>Produccion</p>
+                                    </a>
+                                </li>
                     
                          
-                        <!-- New dropdown for production modules -->
+                        <!-- New dropdown for production modules 
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-industry"></i>
@@ -83,11 +84,17 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                     </a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a href="producto.php" class="nav-link">
                                 <i class="nav-icon fas fa-box-open"></i>
                                 <p>Producto Terminado</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="insumos.php" class="nav-link">
+                                <i class="nav-icon fas fa-boxes"></i>
+                                <p>Catalogo Insumos</p>
                             </a>
                         </li>
 

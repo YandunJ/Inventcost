@@ -9,7 +9,8 @@ CREATE TABLE invent_catalogo(
     estado ENUM('disponible', 'stock bajo', 'agotado') DEFAULT 'disponible',
     fecha_creacion DATE NOT NULL,
     stock INT DEFAULT 0,
-    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria)
+    FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
+    FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
 );
 
 

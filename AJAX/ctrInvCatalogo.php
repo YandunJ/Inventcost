@@ -30,6 +30,14 @@ try {
                 $result = $categorias->getCategorias();
                 $response = $result;
                 break;
+                
+                case 'getUnidadesMedida':
+                    
+                    $unidadesMedida = new Categorias($db);
+                    $result = $unidadesMedida->getUnidadesMedida();
+                    $response = $result;
+                    break;
+                
             
                 case 'addArticulo':
                     $opcion = $_POST['opcion'];
