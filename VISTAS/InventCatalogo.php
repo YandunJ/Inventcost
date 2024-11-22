@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="../Public/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <link rel="stylesheet" href="../FILES/Table-Compact.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -24,15 +27,15 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1 class="text-center">Gestión de Artículos de Inventario</h1>
+                    <h3 class="text-center">Catálogo Frutas e Insumos    </h3>
 
                     <!-- Botón para abrir el modal -->
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario">
-                        Agregar Artículo
+                        Agregar 
                     </button>
 
                     <!-- Tabla de inventario -->
-                    <table id="inventoryTable" class="table table-bordered table-hover">
+                    <table id="inventoryTable" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -108,6 +111,8 @@
         <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>
         <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
         <script src="../Public/dist/js/adminlte.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
         <script src="JS/invCat.js"></script>
     </div>
 </body>

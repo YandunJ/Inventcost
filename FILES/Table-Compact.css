@@ -1,0 +1,53 @@
+/* Estilo base para tablas compactas */
+.table-compact {
+    font-size: 12px; /* Reduce el tamaño de la fuente */
+    text-align: center; /* Centra el contenido */
+}
+
+.table-compact th,
+.table-compact td {
+    padding: 5px; /* Reduce el espacio dentro de las celdas */
+    text-align: center; /* Centra todo el contenido */
+    vertical-align: middle; /* Asegura que el contenido esté alineado verticalmente */
+}
+
+.table-compact th {
+    background-color: #f4f6f9; /* Color de fondo para los encabezados */
+    font-weight: bold;
+    border-bottom: 2px solid #dee2e6; /* Línea más marcada en el encabezado */
+}
+
+.table-compact tbody tr:hover {
+    background-color: #e9ecef; /* Fondo al pasar el cursor por una fila */
+}
+
+/* Inputs dentro de las tablas compactas */
+.table-compact tbody tr td input {
+    font-size: 12px; /* Ajusta el tamaño de los inputs */
+    padding: 2px; /* Reduce el relleno */
+    width: 80%; /* Reduce el ancho de los inputs */
+    margin: 0 auto; /* Centra los inputs */
+}
+
+/* Checkboxes */
+.table-compact .form-check-input {
+    margin: 0; /* Reduce el margen del checkbox */
+    transform: scale(0.8); /* Ajusta el tamaño del checkbox */
+}
+
+/* Centrado de checkboxes en celdas */
+.table-compact tbody tr td {
+    position: relative; /* Asegura que los elementos estén dentro de su celda */
+}
+
+.table-compact tbody tr td .form-check-input {
+    position: absolute;
+    top: 50%; /* Centra verticalmente */
+    left: 50%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta la posición al centro */
+}
+
+/* Opcional: clase para ajustar el tamaño del checkbox */
+.table-compact .checkbox-large {
+    transform: scale(1.5); /* Tamaño más grande */
+}

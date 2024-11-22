@@ -12,6 +12,7 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/columForm2.css">
+    <link rel="stylesheet" href="../FILES/Table-Compact.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -93,7 +94,7 @@
                     </form>
                 </div>
                     <hr>
-                    <table id="tablaUsuarios" class="table table-bordered table-hover">
+                    <table id="tablaUsuarios" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
                                 <th>ID</th>

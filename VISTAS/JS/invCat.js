@@ -117,81 +117,67 @@ $(document).ready(function() {
         var regex = /^[A-Za-z\s]+$/;
         return regex.test(name);
     }
-// Manejar la acción de agregar o actualizar artículo
-$('#inventoryForm').on('submit', function(e) {
+  // Manejar la acción de agregar o actualizar artículo
+  $('#inventoryForm').on('submit', function (e) {
     e.preventDefault();
 
-    // Obtenemos los valores del formulario
-    let id_articulo = $('#id_articulo').val();
+    // Validar los campos
     let nombre = $('#nombre').val();
     let descripcion = $('#descripcion').val();
-    let id_categoria = $('#categoria_select').val();
-    let unidad_medida = $('#unidad_medida').val();
-    
-    // Acción a enviar: agregar o actualizar
-    let action = id_articulo == 0 ? 'addArticulo' : 'addArticulo';
-    let opcion = id_articulo == 0 ? 1 : 2; // opción 1 para inserción, 2 para actualización
+    if (!nombre || !descripcion) {
+        Swal.fire('Error', 'Los campos Nombre y Descripción son obligatorios.', 'error');
+        return;
+    }
 
-    // Configuramos los datos para la petición AJAX
+    let id_articulo = $('#id_articulo').val();
+    let action = id_articulo == 0 ? 'addArticulo' : 'updateArticulo';
+
+    // Configurar datos para AJAX
     let formData = {
         action: action,
-        opcion: opcion,
         id_articulo: id_articulo,
         nombre: nombre,
         descripcion: descripcion,
-        id_categoria: id_categoria,
-        unidad_medida: unidad_medida
+        id_categoria: $('#categoria_select').val(),
+        proveedor_id: $('#proveedor_id').val(),
+        unidad_medida: $('#unidad_medida').val()
     };
 
+    // Enviar solicitud AJAX
     $.ajax({
         url: '../AJAX/ctrInvCatalogo.php',
         type: 'POST',
         data: formData,
         dataType: 'json',
-        success: function(response) {
+        success: function (response) {
             if (response.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: id_articulo == 0 ? 'Artículo registrado' : 'Artículo actualizado',
-                    text: response.message
-                });
-                // Resetear el formulario
+                Swal.fire('Éxito', response.message, 'success');
                 $('#inventoryForm')[0].reset();
-                $('#id_articulo').val(0); // Reseteamos el id a 0 (modo de inserción)
-                $('#formSubmitButton').text('Agregar Artículo');
-                // Recargar la tabla de inventario
-                $('#inventoryTable').DataTable().ajax.reload();
+                $('#modalFormulario').modal('hide');
+                table.ajax.reload(); // Recargar la tabla
             } else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: response.message
-                });
+                Swal.fire('Error', response.message, 'error');
             }
         },
-        error: function(xhr, status, error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error en la solicitud',
-                text: 'Error en la solicitud AJAX: ' + status
-            });
+        error: function () {
+            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
         }
     });
 });
 
-$('#inventoryTable').on('click', '.editItem', function() {
+// Cargar datos en el formulario al editar
+$('#inventoryTable').on('click', '.editItem', function () {
     let data = table.row($(this).parents('tr')).data();
-    
-    // Cargar datos en los campos del formulario
+
     $('#id_articulo').val(data.id_articulo);
     $('#nombre').val(data.nombre_articulo);
     $('#descripcion').val(data.descripcion);
     $('#categoria_select').val(data.id_categoria);
+    $('#proveedor_id').val(data.proveedor_id);
     $('#unidad_medida').val(data.unidad_medida);
 
-    // Cambiar el texto del botón de enviar para reflejar "Actualizar"
-    $('#formSubmitButton').text('Actualizar Artículo');
-    editing = true;
+    $('#formSubmitButton').text('Actualizar ');
+    $('#modalFormulario').modal('show');
 });
 
 

@@ -9,19 +9,17 @@ class InvCatalogo {
         $this->conn = $db;
     }
 
-    public function addOrUpdateArticulo($opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $unidad_medida, $estado, $stock) {
+    public function addOrUpdateArticulo($opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $proveedor_id, $uni_id, $stock) {
         $query = "CALL acc_invent_catalogo(?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-
-        // sanitize
+    
+        // Sanitize inputs
         $nombre_articulo = htmlspecialchars(strip_tags($nombre_articulo));
         $descripcion = htmlspecialchars(strip_tags($descripcion));
-        $unidad_medida = htmlspecialchars(strip_tags($unidad_medida));
-        $estado = htmlspecialchars(strip_tags($estado));
-
-        // bind values
-        $stmt->bind_param('ississi', $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $unidad_medida, $estado, $stock);
-
+    
+        // Bind values
+        $stmt->bind_param('issiiii', $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $proveedor_id, $uni_id, $stock);
+    
         try {
             if ($stmt->execute()) {
                 return true;
@@ -31,6 +29,7 @@ class InvCatalogo {
         }
         return false;
     }
+    
 
     public function getArticulos() {
         $query = "CALL obt_invCatalogo()";

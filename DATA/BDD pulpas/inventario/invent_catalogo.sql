@@ -1,22 +1,46 @@
 SELECT * FROM fpulpas.invent_catalogo;
 
-CREATE TABLE invent_catalogo(
+CREATE TABLE invent_catalogo (
     id_articulo INT AUTO_INCREMENT PRIMARY KEY,
     nombre_articulo VARCHAR(100) NOT NULL,
     descripcion TEXT,
     id_categoria INT,
-    unidad_medida VARCHAR(50) NOT NULL,
+    proveedor_id INT NOT NULL,
+    uni_id INT NOT NULL,
     estado ENUM('disponible', 'stock bajo', 'agotado') DEFAULT 'disponible',
     fecha_creacion DATE NOT NULL,
     stock INT DEFAULT 0,
     FOREIGN KEY (id_categoria) REFERENCES categorias(id_categoria),
-    FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
+    FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id),
+    FOREIGN KEY (uni_id) REFERENCES unidades_medida(uni_id)
 );
 
 
-INSERT INTO invent_catalogo (nombre_articulo, descripcion, id_categoria, unidad_medida, estado, fecha_creacion, stock)
+CREATE TABLE unidades_medida (
+    uni_id INT AUTO_INCREMENT PRIMARY KEY,
+    uni_nombre VARCHAR(50) NOT NULL UNIQUE,
+    uni_abreviacion VARCHAR(10) NOT NULL
+);
+
+INSERT INTO unidades_medida (uni_nombre, uni_abreviacion) VALUES
+('Kilogramos', 'kg'),
+('Gramos', 'g'),
+('Litros', 'lt'),
+('Mililitros', 'ml'),
+('Unidades', 'u');
+
+
+INSERT INTO unidades_medida (nombre_unidad, descripcion) VALUES
+('Kilogramos', 'Medida de peso utilizada para productos sólidos'),
+('Litros', 'Medida de volumen utilizada para líquidos'),
+('Unidades', 'Cantidad individual de artículos'),
+('Gramos', 'Medida de peso más pequeña');
+
+
+
+INSERT INTO invent_catalogo (nombre_articulo, descripcion, id_categoria,proveedor_id, uni_id, estado, fecha_creacion, stock)
 VALUES
-    ('Manzana Roja', 'Manzanas rojas frescas para producción de pulpa', 1, 'kilogramos', 'disponible', '2024-10-06', 0),
+    ('Manzana Roja', 'Manzanas rojas frescas para producción de pulpa', 1, 1, '1', 'disponible', '2024-10-06', 0);
     ('Piña', 'Piñas frescas para producción de pulpa', 1, 'unidades', 'disponible', '2024-10-06', 0),
     ('Banana', 'Bananas maduras para producción de pulpa', 1, 'racimos', 'disponible', '2024-10-06', 0),
     ('Cofia', 'Cofia desechable para personal de producción', 2, 'unidades', 'disponible', '2024-10-06', 0),
@@ -112,3 +136,32 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+ALTER TABLE invent_catalogo
+ADD COLUMN proveedor_id INT NOT NULL,
+ADD CONSTRAINT fk_proveedor_catalogo FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id);
+
+DELIMITER //
+CREATE PROCEDURE obt_invCatalogo()
+BEGIN
+    SELECT 
+        ic.id_articulo, 
+        ic.nombre_articulo, 
+        ic.descripcion, 
+        c.nombre_categoria AS categoria, 
+        p.nombre_empresa AS proveedor, 
+        um.uni_nombre AS unidad_medida, 
+        ic.estado, 
+        ic.fecha_creacion, 
+        ic.stock
+    FROM invent_catalogo ic
+    INNER JOIN categorias c ON ic.id_categoria = c.id_categoria
+    INNER JOIN proveedores p ON ic.proveedor_id = p.proveedor_id
+    INNER JOIN unidades_medida um ON ic.uni_id = um.uni_id; -- Cambio aquí
+END//
+DELIMITER ;
+
+call fpulpas.obt_invCatalogo();
+
+

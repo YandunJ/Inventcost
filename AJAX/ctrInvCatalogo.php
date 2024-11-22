@@ -39,28 +39,47 @@ try {
                     break;
                 
             
-                case 'addArticulo':
-                    $opcion = $_POST['opcion'];
-                    $id_articulo = isset($_POST['id_articulo']) ? $_POST['id_articulo'] : 0;
-                    $nombre = $_POST['nombre'];
-                    $descripcion = $_POST['descripcion'];
-                    $id_categoria = $_POST['id_categoria'];
-                    $unidad_medida = $_POST['unidad_medida'];
-                    $estado = 'disponible'; // Puedes agregar lógica para definir el estado
-                    $stock = 0; // Stock inicial, puedes modificar según tu lógica
-                
-                    if (empty($nombre) || empty($descripcion)) {
-                        throw new Exception('Los campos nombre y descripción son obligatorios');
-                    }
-                
-                    $result = $inventario->addOrUpdateArticulo($opcion, $id_articulo, $nombre, $descripcion, $id_categoria, $unidad_medida, $estado, $stock);
-                    if ($result) {
-                        $response['status'] = 'success';
-                        $response['message'] = $opcion == 1 ? 'Artículo registrado correctamente' : 'Artículo actualizado correctamente';
-                    } else {
-                        $response['message'] = 'Error al realizar la operación';
-                    }
-                    break;
+                    case 'addArticulo':
+                        $nombre = $_POST['nombre'];
+                        $descripcion = $_POST['descripcion'];
+                        $id_categoria = $_POST['id_categoria'];
+                        $proveedor_id = $_POST['proveedor_id'];
+                        $unidad_medida = $_POST['unidad_medida'];
+                    
+                        if (empty($nombre) || empty($descripcion) || empty($id_categoria) || empty($proveedor_id) || empty($unidad_medida)) {
+                            throw new Exception('Todos los campos son obligatorios.');
+                        }
+                    
+                        $result = $inventario->addOrUpdateArticulo(1, 0, $nombre, $descripcion, $id_categoria, $proveedor_id, $unidad_medida, 0);
+                        if ($result) {
+                            $response['status'] = 'success';
+                            $response['message'] = 'Artículo registrado correctamente.';
+                        } else {
+                            $response['message'] = 'Error al registrar el artículo.';
+                        }
+                        break;
+                    
+                    case 'updateArticulo':
+                        $id_articulo = $_POST['id_articulo'];
+                        $nombre = $_POST['nombre'];
+                        $descripcion = $_POST['descripcion'];
+                        $id_categoria = $_POST['id_categoria'];
+                        $proveedor_id = $_POST['proveedor_id'];
+                        $unidad_medida = $_POST['unidad_medida'];
+                    
+                        if (empty($id_articulo) || empty($nombre) || empty($descripcion) || empty($id_categoria) || empty($proveedor_id) || empty($unidad_medida)) {
+                            throw new Exception('Todos los campos son obligatorios.');
+                        }
+                    
+                        $result = $inventario->addOrUpdateArticulo(2, $id_articulo, $nombre, $descripcion, $id_categoria, $proveedor_id, $unidad_medida, 0);
+                        if ($result) {
+                            $response['status'] = 'success';
+                            $response['message'] = 'Artículo actualizado correctamente.';
+                        } else {
+                            $response['message'] = 'Error al actualizar el artículo.';
+                        }
+                        break;
+                    
 
             case 'obtenerArticulos':
                 $result = $inventario->getArticulos();
