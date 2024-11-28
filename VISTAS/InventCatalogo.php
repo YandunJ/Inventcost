@@ -59,49 +59,45 @@
 
             <!-- Modal para el formulario -->
             <div class="modal fade" id="modalFormulario" tabindex="-1" aria-labelledby="modalFormularioLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalFormularioLabel">Agregar Artículo</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="inventoryForm">
-                                <input type="hidden" id="id_articulo" name="id_articulo" value="0">
-                                <div class="form-group">
-                                    <label for="nombre">Nombre del Artículo:</label>
-                                    <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Manzana">
-                                </div>
-                                <div class="form-group">
-                                    <label for="descripcion">Descripción:</label>
-                                    <textarea id="descripcion" name="descripcion" class="form-control" required placeholder="Breve descripción del artículo"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="categoria_select">Categoría:</label>
-                                    <select id="categoria_select" name="categoria_select" class="form-control" required></select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="unidad_medida">Unidad de Medida:</label>
-                                    <select id="unidad_medida" name="unidad_medida" class="form-control" required>
-                                        <option value="">Seleccione una unidad</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="proveedor_id">Proveedor:</label>
-                                    <select id="proveedor_id" name="proveedor_id" class="form-control" required>
-                                        <option value="">Seleccione un proveedor</option>
-                                    </select>
-                                    <p><a href="proveedores.php">Revise o agregue un nuevo proveedor</a></p>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            </form>
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalFormularioLabel">Agregar insumos al Catálogo</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="inventoryForm">
+                                    <input type="hidden" id="id_articulo" name="id_articulo" value="0">
+                                    <div class="form-group">
+                                        <label for="nombre">Nombre del artículo:</label>
+                                        <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Manzana">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="descripcion">Descripción:</label>
+                                        <textarea id="descripcion" name="descripcion" class="form-control" required placeholder="Breve descripción"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categoria_select">Categoría:</label>
+                                        <select id="categoria_select" name="id_categoria" class="form-control" required></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="unidad_medida">Unidad de Medida:</label>
+                                        <select id="unidad_medida" name="unidad_medida" class="form-control" required></select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="proveedor_id">Proveedor:</label>
+                                        <select id="proveedor_id" name="proveedor_id" class="form-control" required></select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
         </div>
         <!-- /.content-wrapper -->
 

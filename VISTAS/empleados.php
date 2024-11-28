@@ -13,6 +13,11 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="../FILES/centrForm.css">
+    
+    
+<!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
+<link rel="stylesheet" href="../FILES/Table-Compact.css">
+
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -65,7 +70,7 @@
                 <hr>
 
                 <h2 class="text-center">Listado de Empleados</h2>
-                <table id="employeesTable" class="display" style="width:100%">
+                <table id="employeesTable" class="table table-bordered table-hover table-compact">
                     <thead>
                         <tr>
                             <th>ID</th>

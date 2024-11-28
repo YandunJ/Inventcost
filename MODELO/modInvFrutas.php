@@ -165,6 +165,79 @@
                 
                 return $data;
             }
+                // // Función para obtener frutas
+                //     public function obtenerFrutas() {
+                //         $query = "SELECT id_articulo, nombre_articulo FROM invent_catalogo WHERE id_categoria = 1";
+                //         $stmt = $this->conn->prepare($query);
+                //         if (!$stmt) {
+                //             throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                //         }
+
+                //         $stmt->execute();
+                //         $result = $stmt->get_result();
+                //         $frutas = array();
+
+                //         while ($row = $result->fetch_assoc()) {
+                //             $frutas[] = $row;
+                //         }
+
+                //         $stmt->close();
+                //         return $frutas;
+                //     }
+
+
+                // Función para obtener frutas por proveedor
+                public function obtenerFrutasPorProveedor($proveedor_id) {
+                    $query = "SELECT id_articulo, nombre_articulo 
+                              FROM invent_catalogo 
+                              WHERE proveedor_id = ? AND estado = 'disponible'";
+                    $stmt = $this->conn->prepare($query);
+                
+                    if (!$stmt) {
+                        throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                    }
+                
+                    $stmt->bind_param("i", $proveedor_id);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                
+                    if (!$result) {
+                        throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+                    }
+                
+                    $frutas = [];
+                    while ($row = $result->fetch_assoc()) {
+                        $frutas[] = $row;
+                    }
+                
+                    $stmt->close();
+                
+                    // Registro para depuración
+                    if (empty($frutas)) {
+                        error_log("No se encontraron frutas para proveedor_id: $proveedor_id");
+                    }
+                
+                    return $frutas;
+                }
+                
             
-        }
+                public function obtenerProveedores() {
+                    $query = "SELECT proveedor_id, nombre_empresa FROM proveedores";
+                    $stmt = $this->conn->prepare($query);
+                    if (!$stmt) {
+                        throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                    }
+            
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $proveedores = array();
+            
+                    while ($row = $result->fetch_assoc()) {
+                        $proveedores[] = $row;
+                    }
+            
+                    $stmt->close();
+                    return $proveedores;
+                }
+            }
         ?>

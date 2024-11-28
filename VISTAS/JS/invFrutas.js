@@ -1,36 +1,12 @@
 $(document).ready(function() {
-    // Cargar frutas y proveedores
-    $.ajax({
-        url: "../AJAX/ctrInvFrutas.php",
-        type: "POST",
-        data: { action: 'cargarFrutas' },
-        dataType: "json",
-        success: function(response) {
-            if (response.status === 'success' && Array.isArray(response.data)) {
-                let options = '<option value="">Seleccione una fruta</option>';
-                response.data.forEach(function(fruta) {
-                    options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
-                });
-                $("#id_articulo").html(options);
-            } else {
-                alert("Error al cargar las frutas.");
-                console.error("Error loading frutas: ", response);
-            }
-        },
-        error: function(xhr, status, error) {
-            alert("Ocurrió un error al cargar las frutas.");
-            console.error("Error: ", error);
-            console.error("Response: ", xhr.responseText);
-        }
-    });
-    
+    // Cargar proveedores
     $.ajax({
         url: "../AJAX/ctrInvFrutas.php",
         type: "POST",
         data: { action: 'cargarProveedores' },
         dataType: "json",
         success: function(response) {
-            let options = '<option value="">Seleccione un proveedor</option>';
+            let options = '<option value="">Seleccionar proveedor</option>';
             if (response.status === 'success' && Array.isArray(response.data)) {
                 response.data.forEach(function(proveedor) {
                     options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
@@ -45,6 +21,39 @@ $(document).ready(function() {
             alert("Ocurrió un error al cargar los proveedores.");
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
+        }
+    });
+
+    // Cuando el proveedor cambia, cargar las frutas correspondientes
+    $('#proveedor_id').on('change', function() {
+        var proveedor_id = $(this).val();
+        
+        if (proveedor_id) {
+            $.ajax({
+                url: "../AJAX/ctrInvFrutas.php",
+                type: "POST",
+                data: { action: 'cargarFrutasPorProveedor', proveedor_id: proveedor_id },
+                dataType: "json",
+                success: function(response) {
+                    if (response.status === 'success' && Array.isArray(response.data)) {
+                        let options = '<option value="">Seleccionar fruta</option>';
+                        response.data.forEach(function(fruta) {
+                            options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
+                        });
+                        $("#id_articulo").html(options);
+                    } else {
+                        alert(response.message || "No se encontraron frutas para este proveedor.");
+                        $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("Ocurrió un error al cargar las frutas.");
+                    console.error("Error: ", error);
+                    console.error("Response: ", xhr.responseText);
+                }
+            });
+        } else {
+            $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
         }
     });
     
@@ -267,40 +276,58 @@ $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
             }
         });
     }
+    
 
-    $('#materiaPrimaForm').on('submit', function(event) {
-        event.preventDefault();
-    
-        const formData = $(this).serializeArray(); // Obtén los datos del formulario
-        formData.push({ name: 'action', value: 'guardarMateriaPrima' });
-    
-        $.ajax({
-            url: '../AJAX/ctrInvFrutas.php',
-            type: "POST",
-            data: formData,
-            dataType: "json",
-            success: function(response) {
-                if (response.status === 'success') {
-                    Swal.fire(
-                        'Éxito!',
-                        'Materia prima registrada exitosamente.',
-                        'success'
-                    );
-                    $('#materiaPrimaForm')[0].reset();
-                    $('#id_inv').val(''); // Limpiar el campo oculto de ID
-                    $('.btn-primary').text('Agregar Materia Prima'); // Restablecer el texto del botón
-                    materiaPrimasTable.ajax.reload(); // Recargar la tabla
-                } else {
-                    Swal.fire('Error', response.message, 'error');
-                }
-            },
-            error: function(xhr, status, error) {
-                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
+    // $('#materiaPrimaForm').on('submit', function(event) {
+    //     event.preventDefault();
+
+        $('#materiaPrimaForm').on('submit', function (e) {
+            e.preventDefault();
+            
+            // Evitar múltiples envíos
+            var formData = {
+                action: 'addArticulo',
+                id_articulo: $('#id_articulo').val(),
+                nombre: $('#nombre').val(),
+                descripcion: $('#descripcion').val(),
+                id_categoria: $('#categoria_select').val(),
+                proveedor_id: $('#proveedor_id').val(),
+                unidad_medida: $('#unidad_medida').val()
+            };
+        
+            // Deshabilitar el botón de envío para evitar múltiples clics
+            $('#submitBtn').prop('disabled', true);
+        
+            // Validar campos antes de enviar
+            if (!formData.nombre || !formData.descripcion) {
+                Swal.fire('Error', 'Los campos Nombre y Descripción son obligatorios.', 'error');
+                $('#submitBtn').prop('disabled', false);  // Habilitar de nuevo el botón
+                return;
             }
+        
+            $.ajax({
+                url: '../AJAX/ctrInvCatalogo.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function (response) {
+                    $('#submitBtn').prop('disabled', false);  // Habilitar el botón
+                    if (response.status === 'success') {
+                        Swal.fire('Éxito', response.message, 'success');
+                        $('#materiaPrimaForm')[0].reset();
+                        $('#modalFormulario').modal('hide');
+                        table.ajax.reload();  // Recargar la tabla de datos
+                    } else {
+                        Swal.fire('Error', response.message, 'error');
+                    }
+                },
+                error: function () {
+                    $('#submitBtn').prop('disabled', false);  // Habilitar el botón
+                    Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+                }
+            });
         });
-    });
+        
     
 // Cargar datos al hacer clic en el botón Editar
 $('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
@@ -423,23 +450,23 @@ $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
         });
         
         // Capturar clics en el menú lateral
-        $("a").on("click", function(e) {
-            if (formModified) {
-                e.preventDefault(); // Prevenir la navegación
-                Swal.fire({
-                    title: "Tienes datos sin guardar",
-                    text: "¿Estás seguro de que deseas salir sin guardar?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Sí, salir",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = $(this).attr("href"); // Redirigir si confirma
-                    }
-                });
-            }
-        });
+        // $("a").on("click", function(e) {
+        //     if (formModified) {
+        //         e.preventDefault(); // Prevenir la navegación
+        //         Swal.fire({
+        //             title: "Tienes datos sin guardar",
+        //             text: "¿Estás seguro de que deseas salir sin guardar?",
+        //             icon: "warning",
+        //             showCancelButton: true,
+        //             confirmButtonText: "Sí, salir",
+        //             cancelButtonText: "Cancelar"
+        //         }).then((result) => {
+        //             if (result.isConfirmed) {
+        //                 window.location.href = $(this).attr("href"); // Redirigir si confirma
+        //             }
+        //         });
+        //     }
+        // });
         
         // El botón de cancelar regresa a la página anterior
        // El botón de cancelar regresa a la página anterior

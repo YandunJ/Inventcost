@@ -17,6 +17,7 @@ CREATE TABLE invent_catalogo (
 
 DELIMITER $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `acc_invent_catalogo`(
+    IN p_opcion INT, -- Nuevo parámetro
     IN p_id_articulo INT,
     IN p_nombre_articulo VARCHAR(100),
     IN p_descripcion TEXT,
@@ -25,11 +26,11 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `acc_invent_catalogo`(
     IN p_uni_id INT
 )
 BEGIN
-    IF p_id_articulo = 0 THEN
+    IF p_opcion = 1 THEN
         -- Inserción de un nuevo registro
         INSERT INTO invent_catalogo (nombre_articulo, descripcion, id_categoria, proveedor_id, uni_id, fecha_creacion)
         VALUES (p_nombre_articulo, p_descripcion, p_id_categoria, p_proveedor_id, p_uni_id, CURDATE());
-    ELSE
+    ELSEIF p_opcion = 2 THEN
         -- Actualización de un registro existente
         UPDATE invent_catalogo
         SET nombre_articulo = p_nombre_articulo,
@@ -46,7 +47,8 @@ DELIMITER ;
 DROP TRIGGER estado_catalogo;
 
 
-CALL acc_invent_catalogo(0, 'Pera', 'Fruta fresca', 1, 1, 3, 100);
+CALL acc_invent_catalogo(2,1, 'Manzana', 'Fruta roja', 1, 2, 3);
+
 
 CREATE TABLE unidades_medida (
     uni_id INT AUTO_INCREMENT PRIMARY KEY,

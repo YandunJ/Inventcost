@@ -5,18 +5,19 @@ ini_set('display_errors', 1);
 
 require_once "../CONFIG/conexion.php";
 require_once "../MODELO/modInvFrutas.php";
-// aqui cambiar el nombre y uso para cargar los articulos de cateaogo inventario
-require_once "../MODELO/sbmateria.php";
-
 
 $conn = (new Cls_DataConnection())->FN_getConnect();
 
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
 switch ($action) {
-    case 'cargarFrutas':
-        cargarFrutas();
+    // case 'cargarFrutas':
+    //     cargarFrutas();
+    //     break;
+    case 'cargarFrutasPorProveedor':
+        cargarFrutasPorProveedor();
         break;
+    
     case 'cargarProveedores':
         cargarProveedores();
         break;
@@ -46,21 +47,47 @@ switch ($action) {
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
-function cargarFrutas() {
-    global $conn;
-    $materiaPrima = new MateriaPrimaModel($conn);
-    $frutas = $materiaPrima->obtenerFrutas();
+// function cargarFrutas() {
+//     global $conn;
+//     $materiaPrima = new MateriaPrima($conn);
+//     $frutas = $materiaPrima->obtenerFrutas();
 
-    if (!$frutas) {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los arti colas']);
-    } else {
-        echo json_encode(['status' => 'success', 'data' => $frutas]);
+//     if (!$frutas) {
+//         echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los arti colas']);
+//     } else {
+//         echo json_encode(['status' => 'success', 'data' => $frutas]);
+//     }
+// }
+
+function cargarFrutasPorProveedor() {
+    global $conn;
+    $proveedor_id = isset($_POST['proveedor_id']) ? intval($_POST['proveedor_id']) : 0;
+
+    if ($proveedor_id === 0) {
+        echo json_encode(['status' => 'error', 'message' => 'Proveedor no válido']);
+        return;
+    }
+
+    $materiaPrima = new MateriaPrima($conn);
+    try {
+        $frutas = $materiaPrima->obtenerFrutasPorProveedor($proveedor_id);
+
+        if (empty($frutas)) {
+            echo json_encode([
+                'status' => 'error', 
+                'message' => "No se encontraron frutas para este proveedor: $proveedor_id"
+            ]);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $frutas]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 
 function cargarProveedores() {
     global $conn;
-    $materiaPrima = new MateriaPrimaModel($conn);
+    $materiaPrima = new MateriaPrima($conn);
     $proveedores = $materiaPrima->obtenerProveedores();
 
     if (!$proveedores) {
@@ -69,7 +96,6 @@ function cargarProveedores() {
         echo json_encode(['status' => 'success', 'data' => $proveedores]);
     }
 }
-    
     function guardarMateriaPrima() {
         try {
             $materiaPrima = new MateriaPrima();

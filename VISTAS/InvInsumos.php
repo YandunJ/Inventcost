@@ -14,6 +14,9 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
 
     <link rel="stylesheet" href="../FILES/InvMPform.css">
+    <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
+    <link rel="stylesheet" href="../FILES/Table-Compact.css">
+
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -129,7 +132,7 @@
                     </div>
 
                     <hr>
-                    <table id="inventarioInsumosdt" class="table table-bordered table-hover">
+                    <table id="inventarioInsumosdt" class="table table-bordered table-hover table-compact">
     <thead>
         <tr>
 
