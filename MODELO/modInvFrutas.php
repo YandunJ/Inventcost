@@ -7,7 +7,21 @@
                 $conexion = new Cls_DataConnection();
                 $this->conn = $conexion->FN_getConnect();
             }
-            public function verificarLoteUnico($numero_lote) {
+
+                        
+                public function generarNumeroLote($categoria) {
+                    $stmt = $this->conn->prepare("CALL generar_lote(?, @numero_lote)");
+                    $stmt->bind_param('s', $categoria);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Recuperar el número de lote generado
+                    $result = $this->conn->query("SELECT @numero_lote AS numero_lote");
+                    $row = $result->fetch_assoc();
+                    return $row['numero_lote'];
+                }
+
+                            public function verificarLoteUnico($numero_lote) {
                 $stmt = $this->conn->prepare("SELECT COUNT(*) FROM inventario WHERE numero_lote = ?");
                 if (!$stmt) {
                     throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);

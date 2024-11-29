@@ -58,7 +58,34 @@ $(document).ready(function() {
     });
     
 
-    
+        
+        // Evento para abrir el modal y cargar el número de lote
+        $('#Form_MP').on('show.bs.modal', function () {
+            const id_categoria = 1; // ID para Materia Prima
+            const $numeroLoteField = $('#numero_lote');
+        
+            // Llamada AJAX
+            $.ajax({
+                url: "../AJAX/ctrInvFrutas.php",
+                method: 'POST',
+                data: {
+                    action: 'generarNumeroLote',
+                    id_categoria: id_categoria
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.status === 'success') {
+                        $numeroLoteField.val(response.numero_lote);
+                    } else {
+                        alert('Error al generar el número de lote: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error al comunicarse con el servidor.');
+                }
+            });
+        });
+        
     
     document.addEventListener("DOMContentLoaded", function () {
         const today = new Date();

@@ -14,6 +14,10 @@ switch ($action) {
     // case 'cargarFrutas':
     //     cargarFrutas();
     //     break;
+
+    case 'generarNumeroLote':
+        generarNumeroLote();
+        break;
     case 'cargarFrutasPorProveedor':
         cargarFrutasPorProveedor();
         break;
@@ -36,9 +40,9 @@ switch ($action) {
     case 'actualizarMateriaPrima':
         actualizarMateriaPrima();
         break;
-    case 'cambiarEstadoMateriaPrima':
-        cambiarEstadoMateriaPrima();
-        break;
+    // case 'cambiarEstadoMateriaPrima':
+    //     cambiarEstadoMateriaPrima();
+    //     break;
     case 'obtenerDetalleLote':
         obtenerDetalleLote();
         break;
@@ -47,6 +51,25 @@ switch ($action) {
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
+
+function generarNumeroLote() {
+    if (!isset($_POST['id_categoria'])) {
+        echo json_encode(['status' => 'error', 'message' => 'ID de categoría no proporcionado']);
+        return;
+    }
+
+    try {
+        $materiaPrima = new MateriaPrima();
+        $id_categoria = intval($_POST['id_categoria']);
+        $numeroLote = $materiaPrima->generarNumeroLote($id_categoria);
+
+        echo json_encode(['status' => 'success', 'numero_lote' => $numeroLote]);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+}
+
+
 // function cargarFrutas() {
 //     global $conn;
 //     $materiaPrima = new MateriaPrima($conn);
@@ -222,19 +245,6 @@ function obtenerDetalleLote() {
 }
 
 
-function cambiarEstadoMateriaPrima() {
-    global $conn;
-    $mp_id = $_POST['mp_id'];
-    $estado = $_POST['estado']; // 1 para aprobado, 2 para en revisión, 3 para no aprobado
-    $stmt = $conn->prepare("CALL estado_materia_prima(?, ?)");
-    $stmt->bind_param("ii", $mp_id, $estado);
-    if ($stmt->execute()) {
-        echo json_encode(['status' => 'success']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => $stmt->error]);
-    }
-    $stmt->close();
-}
 
  
 ?>

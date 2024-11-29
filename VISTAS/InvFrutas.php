@@ -68,10 +68,11 @@
 
                     <!-- Fila 2 -->
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="numero_lote">N Lote:</label>
-                            <input type="text" id="numero_lote" name="numero_lote" required>
-                        </div>
+                    <div class="form-group">
+                        <label for="numero_lote">N Lote:</label>
+                        <input type="text" id="numero_lote" name="numero_lote" required>
+                    </div>
+
                         <div class="form-group">
                             <label for="cantidad_ingresada">Cantidad (Kg):</label>
                             <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" step="0.01" required>
