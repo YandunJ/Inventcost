@@ -1,10 +1,44 @@
+/*ESTILO DEL MODAL DETALLES*/
+.modal-xl {
+  max-width: 90%;
+}
+
+.section-title {
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+.table-bordered th, .table-bordered td {
+  text-align: left;
+  vertical-align: middle;
+}
+
+.thead-light th {
+  background-color: #f8f9fa;
+  color: #343a40;
+  font-weight: bold;
+}
+
+.modal-body {
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+/*ESTILO MODAL FORMULARIO*/
+
 .modal-form-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    padding: 20px;
+    padding: 15px;
     background-color: #f8f9fa;
     border-radius: 8px;
+    font-weight: normal; /* Evita las negritas por defecto */
 }
 
 .modal-form-container .form-row {
@@ -18,9 +52,18 @@
 }
 
 .modal-form-container .form-group label {
-    font-weight: bold;
+    font-weight: normal;
     margin-bottom: 5px;
     display: block;
+}
+.modal-header .btn-close {
+    font-size: 1.5rem; /* Aumenta el tamaño de la "X" */
+    line-height: 1;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+.modal-header .btn-close:hover {
+    color: #dc3545; /* Color rojo al pasar el mouse */
 }
 
 .modal-form-container .form-group input,
@@ -37,3 +80,111 @@
     justify-content: flex-end;
     gap: 10px;
 }
+/* Estilo para eliminar las flechas del campo number */
+/* Eliminar las flechas del campo number */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+/* Ajuste para el diseño */
+.input-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    max-width: 200px;
+}
+
+.input-quantity input {
+    text-align: center;
+    width: 70px;
+    height: 36px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.input-quantity button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #495057;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.input-quantity button:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.input-quantity button:active {
+    background-color: #0056b3;
+}
+
+
+.quantity-input {
+    display: flex;
+    align-items: center;
+  }
+  
+  .quantity-input button {
+    border: none;
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .quantity {
+    width: 40px;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+  }
+
+  .quantity-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+  }
+  
+  .quantity-container button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+  }
+  
+  .quantity-input {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+  }
+  
+  .quantity-icon {
+    margin-right: 5px;
+  }
+  
+  .quantity-value {
+    width: 40px;
+    text-align: center;
+    border: none;
+  }
+  
+  .price {
+    margin-left: 10px;
+  }

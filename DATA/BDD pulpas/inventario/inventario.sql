@@ -183,8 +183,31 @@ END//
 DELIMITER ;
 
 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Obt_MP_por_id`(
+    IN p_id_inv INT
+)
+BEGIN
+    SELECT 
+        i.id_inv,
+        i.fecha,
+        i.hora,
+        i.id_articulo,
+        i.proveedor_id,
+        i.numero_lote,
+        i.cantidad_ingresada,
+        i.precio_unitario,
+        i.presentacion,
+        d.brix,
+        d.bultos_o_canastas,
+        d.peso_unitario,
+        d.observacion
+    FROM inventario i
+    JOIN invent_detalle_mp d ON i.id_inv = d.id_inv
+    WHERE i.id_inv = p_id_inv;
+END$$
+DELIMITER ;
 
-`fpulpas`.`ac_InsertarInsumo`
 
 
 

@@ -34,29 +34,7 @@
                         Agregar 
                     </button>
 
-                    <!-- Tabla de inventario -->
-                    <table id="inventoryTable" class="table table-bordered table-hover table-compact">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Descripción</th>
-                                <th>Categoría</th>
-                                <th>Proveedor</th>
-                                <th>Unidad de Medida</th>
-                                <th>Estado</th>
-                                <th>Fecha de Creación</th>
-                                <th>Stock</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Filas dinámicas -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
+                    
             <!-- Modal para el formulario -->
             <div class="modal fade" id="modalFormulario" tabindex="-1" aria-labelledby="modalFormularioLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -97,6 +75,30 @@
                         </div>
                     </div>
                 </div>
+                
+                    <!-- Tabla de inventario -->
+                    <table id="inventoryTable" class="table table-bordered table-hover table-compact">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Categoría</th>
+                                <th>Proveedor</th>
+                                <th>Unidad de Medida</th>
+                                <th>Estado</th>
+                                <th>Fecha de Creación</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Filas dinámicas -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
 
         </div>
         <!-- /.content-wrapper -->

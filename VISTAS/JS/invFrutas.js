@@ -1,101 +1,106 @@
-$(document).ready(function() {
-    // Cargar proveedores
-    $.ajax({
-        url: "../AJAX/ctrInvFrutas.php",
-        type: "POST",
-        data: { action: 'cargarProveedores' },
-        dataType: "json",
-        success: function(response) {
-            let options = '<option value="">Seleccionar proveedor</option>';
-            if (response.status === 'success' && Array.isArray(response.data)) {
-                response.data.forEach(function(proveedor) {
-                    options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
-                });
-                $("#proveedor_id").html(options);
-            } else {
-                alert("Error al cargar los proveedores.");
-                console.error("Error loading proveedores: ", response);
+    $(document).ready(function() {
+        // Cargar proveedores
+        $.ajax({
+            url: "../AJAX/ctrInvFrutas.php",
+            type: "POST",
+            data: { action: 'cargarProveedores' },
+            dataType: "json",
+            success: function(response) {
+                let options = '<option value="">Seleccione proveedor</option>';
+                if (response.status === 'success' && Array.isArray(response.data)) {
+                    response.data.forEach(function(proveedor) {
+                        options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
+                    });
+                    $("#proveedor_id").html(options);
+                } else {
+                    alert("Error al cargar los proveedores.");
+                    console.error("Error loading proveedores: ", response);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Ocurrió un error al cargar los proveedores.");
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
             }
-        },
-        error: function(xhr, status, error) {
-            alert("Ocurrió un error al cargar los proveedores.");
-            console.error("Error: ", error);
-            console.error("Response: ", xhr.responseText);
-        }
-    });
+        });
 
-    // Cuando el proveedor cambia, cargar las frutas correspondientes
-    $('#proveedor_id').on('change', function() {
-        var proveedor_id = $(this).val();
-        
-        if (proveedor_id) {
-            $.ajax({
-                url: "../AJAX/ctrInvFrutas.php",
-                type: "POST",
-                data: { action: 'cargarFrutasPorProveedor', proveedor_id: proveedor_id },
-                dataType: "json",
-                success: function(response) {
-                    if (response.status === 'success' && Array.isArray(response.data)) {
-                        let options = '<option value="">Seleccionar fruta</option>';
-                        response.data.forEach(function(fruta) {
-                            options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
-                        });
-                        $("#id_articulo").html(options);
-                    } else {
-                        alert(response.message || "No se encontraron frutas para este proveedor.");
-                        $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
+        // Cuando el proveedor cambia, cargar las frutas correspondientes
+        $('#proveedor_id').on('change', function() {
+            var proveedor_id = $(this).val();
+            
+            if (proveedor_id) {
+                $.ajax({
+                    url: "../AJAX/ctrInvFrutas.php",
+                    type: "POST",
+                    data: { action: 'cargarFrutasPorProveedor', proveedor_id: proveedor_id },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status === 'success' && Array.isArray(response.data)) {
+                            let options = '<option value="">Seleccione fruta</option>';
+                            response.data.forEach(function(fruta) {
+                                options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
+                            });
+                            $("#id_articulo").html(options);
+                        } else {
+                            alert(response.message || "No se encontraron frutas para este proveedor.");
+                            $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert("Ocurrió un error al cargar las frutas.");
+                        console.error("Error: ", error);
+                        console.error("Response: ", xhr.responseText);
                     }
-                },
-                error: function(xhr, status, error) {
-                    alert("Ocurrió un error al cargar las frutas.");
-                    console.error("Error: ", error);
-                    console.error("Response: ", xhr.responseText);
-                }
+                });
+            } else {
+                $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
+            }
+        });
+
+
+        
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const date = today.toISOString().split('T')[0];
+            const time = today.toTimeString().split(' ')[0].slice(0, 5); // Solo horas y minutos
+
+            document.getElementById("fecha").value = date;
+            document.getElementById("hora").value = time;
+        });
+        $(document).ready(function () {
+            // Función genérica para actualizar valores con formato
+            function updateQuantity(amount, inputId, step) {
+                const inputField = document.getElementById(inputId);
+                if (!inputField) return;
+        
+                const minValue = parseFloat(inputField.getAttribute('min')) || 0;
+                const currentValue = parseFloat(inputField.value) || minValue;
+        
+                // Calcula el nuevo valor
+                const newValue = Math.max(currentValue + (amount * step), minValue);
+        
+                // Formatear con dos decimales
+                inputField.value = newValue.toFixed(2);
+            }
+        
+            // Botones para incremento y decremento
+            $(".btn-minus.quantity-int, .btn-plus.quantity-int").on("click", function () {
+                const inputId = $(this).siblings("input").attr("id");
+                const step = 1; // Incrementos enteros
+                const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+                updateQuantity(amount, inputId, step);
             });
-        } else {
-            $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
-        }
-    });
-    
-
         
-        // Evento para abrir el modal y cargar el número de lote
-        $('#Form_MP').on('show.bs.modal', function () {
-            const id_categoria = 1; // ID para Materia Prima
-            const $numeroLoteField = $('#numero_lote');
-        
-            // Llamada AJAX
-            $.ajax({
-                url: "../AJAX/ctrInvFrutas.php",
-                method: 'POST',
-                data: {
-                    action: 'generarNumeroLote',
-                    id_categoria: id_categoria
-                },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.status === 'success') {
-                        $numeroLoteField.val(response.numero_lote);
-                    } else {
-                        alert('Error al generar el número de lote: ' + response.message);
-                    }
-                },
-                error: function () {
-                    alert('Error al comunicarse con el servidor.');
-                }
+            $(".btn-minus.quantity-decimal, .btn-plus.quantity-decimal").on("click", function () {
+                const inputId = $(this).siblings("input").attr("id");
+                const step = 0.01; // Incrementos decimales
+                const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+                updateQuantity(amount, inputId, step);
             });
         });
         
-    
-    document.addEventListener("DOMContentLoaded", function () {
-        const today = new Date();
-        const date = today.toISOString().split('T')[0];
-        const time = today.toTimeString().split(' ')[0].slice(0, 5); // Solo horas y minutos
 
-        document.getElementById("fecha").value = date;
-        document.getElementById("hora").value = time;
-    });
-    
+  
 /*
     $('#cantidad, #precio_unit').on('input', function() {
         const cantidad = parseFloat($('#cantidad').val()) || 0;
@@ -104,59 +109,56 @@ $(document).ready(function() {
         $('#precio_total').val(precioTotal.toFixed(2));
     });
 */
-     // Inicializar DataTable
-     const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
-        ajax: {
-            url: '../AJAX/ctrInvFrutas.php',
-            type: 'POST',
-            data: { action: 'cargarMateriaPrima' },
-            dataSrc: function(json) {
-                if (json.status === 'success') {
-                    return json.data;
-                } else {
-                    alert('Error: ' + json.message);
-                    return [];
-                }
+// Inicializar DataTable
+const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
+    ajax: {
+        url: '../AJAX/ctrInvFrutas.php',
+        type: 'POST',
+        data: { action: 'cargarMateriaPrima' },
+        dataSrc: function (json) {
+            if (json.status === 'success') {
+                return json.data;
+            } else {
+                Swal.fire('Error', json.message || 'Error al cargar los datos.', 'error');
+                return [];
             }
-        },
-        columns: [
-            { data: 'ID' },
-            { data: 'Fecha' },
-            { data: 'Hora' },
-            { data: 'Lote' },
-            { data: 'Proveedor' },
-            { data: 'Artículo' },
-            { data: 'Cantidad_Disponible' },
-            { data: 'Estado' },
-            { data: 'Precio_Total' },
-            {
-                data: null,
-                render: function(data, type, row) {
-                    return `
-                        <div class="btn-group">
-                                  <button class="btn btn-info btn-sm details-btn" data-id="${row.ID}">
+        }
+    },
+    columns: [
+        { data: 'Lote' },
+        { data: 'Fecha' },
+        { data: 'Hora' },
+        
+        { data: 'Proveedor' },
+        { data: 'Artículo' },
+        { data: 'Cantidad_Disponible' },
+        { data: 'Estado' },
+        { data: 'Precio_Total' },
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                    <div class="btn-group">
+                        <button class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item details-btn" href="#" data-id="${row.ID}">
                                 <i class="fas fa-info-circle"></i> Detalles
-                            </button>
-                            <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                </a>
-                            </div>
-                  
+                            </a>
+                            <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
                         </div>
-                    `;
-                }
+                    </div>
+                `;
             }
-        ]
-    });
-
-   
+        }
+    ]
+});
 
     $('#tablaMateriaPrimas').on('click', '.details-btn', function() {
         const loteID = $(this).data('id');
@@ -304,116 +306,193 @@ $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
         });
     }
     
+ 
 
-    // $('#materiaPrimaForm').on('submit', function(event) {
-    //     event.preventDefault();
+//     $('#Form_MP').on('show.bs.modal', function (e) {
+//         const $trigger = $(e.relatedTarget);
+//         const isNew = $trigger.data('is-new');
+    
+//         if (isNew) {
+//             $.ajax({
+//                 url: "../AJAX/ctrInvFrutas.php",
+//                 type: 'POST',
+//                 data: { action: 'generarNumeroLote', id_categoria: 1 }, // 1 = Materia Prima
+//                 dataType: 'json',
+//                 success: function (response) {
+//                     if (response.status === 'success') {
+//                         $('#numero_lote').val(response.numero_lote).prop('readonly', true);
+//                     } else {
+//                         Swal.fire('Error', response.message, 'error');
+//                     }
+//                 }
+//             });
+//             $('.modal-title').text('Registro de Materia Prima');
+//         } else {
+//             const idRegistro = $trigger.data('id');
+//             initializeEditModal(idRegistro);
+//             $('.modal-title').text('Editar Materia Prima');
+//         }
+//     });
+    
+    
 
-        $('#materiaPrimaForm').on('submit', function (e) {
-            e.preventDefault();
-            
-            // Evitar múltiples envíos
-            var formData = {
-                action: 'addArticulo',
-                id_articulo: $('#id_articulo').val(),
-                nombre: $('#nombre').val(),
-                descripcion: $('#descripcion').val(),
-                id_categoria: $('#categoria_select').val(),
-                proveedor_id: $('#proveedor_id').val(),
-                unidad_medida: $('#unidad_medida').val()
-            };
-        
-            // Deshabilitar el botón de envío para evitar múltiples clics
-            $('#submitBtn').prop('disabled', true);
-        
-            // Validar campos antes de enviar
-            if (!formData.nombre || !formData.descripcion) {
-                Swal.fire('Error', 'Los campos Nombre y Descripción son obligatorios.', 'error');
-                $('#submitBtn').prop('disabled', false);  // Habilitar de nuevo el botón
-                return;
-            }
-        
-            $.ajax({
-                url: '../AJAX/ctrInvCatalogo.php',
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function (response) {
-                    $('#submitBtn').prop('disabled', false);  // Habilitar el botón
-                    if (response.status === 'success') {
-                        Swal.fire('Éxito', response.message, 'success');
-                        $('#materiaPrimaForm')[0].reset();
-                        $('#modalFormulario').modal('hide');
-                        table.ajax.reload();  // Recargar la tabla de datos
-                    } else {
-                        Swal.fire('Error', response.message, 'error');
-                    }
-                },
-                error: function () {
-                    $('#submitBtn').prop('disabled', false);  // Habilitar el botón
-                    Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+// // Inicializar modal en modo "Nuevo"
+// function initializeNewModal() {
+//     const $form = $('#materiaPrimaForm');
+//     $form[0].reset(); // Limpiar formulario
+
+//     // Generar número de lote automáticamente (local)
+//     const nuevoLote = generarNumeroLote(1); // ID categoría, ajusta si es necesario
+//     $('#numero_lote').val(nuevoLote).prop('readonly', true); // Asignar y bloquear el campo
+// }
+
+// // Inicializar modal en modo "Editar"
+// function initializeEditModal(idRegistro) {
+//     const $form = $('#materiaPrimaForm');
+//     $form[0].reset();
+
+//     $.ajax({
+//         url: "../AJAX/ctrInvFrutas.php",
+//         type: 'POST',
+//         data: { action: 'obtenerMateriaPrima', id_inv: idRegistro },
+//         dataType: 'json',
+//         success: function (response) {
+//             if (response.status === 'success') {
+//                 const data = response.data;
+
+//                 // Asignar datos al formulario
+//                 Object.keys(data).forEach(key => {
+//                     $form.find(`#${key}`).val(data[key]);
+//                 });
+
+//                 // Preservar el lote original
+//                 $('#numero_lote').prop('readonly', true);
+//             } else {
+//                 Swal.fire('Error', response.message, 'error');
+//             }
+//         },
+//         error: function () {
+//             Swal.fire('Error', 'Ocurrió un error al obtener los datos.', 'error');
+//         }
+//     });
+// }
+
+// Abrir el modal y manejar lógica de nuevo registro
+$('button[data-is-new="true"]').on('click', function () {
+    const isNew = $(this).data('is-new'); // Indicar que es un nuevo registro
+
+    if (isNew) {
+        // Limpiar el formulario y solicitar un nuevo lote
+        $('#materiaPrimaForm')[0].reset(); 
+        $('#numero_lote').val(''); // Limpia el campo lote
+
+        // Solicitar el nuevo número de lote al backend
+        $.ajax({
+            url: "../AJAX/ctrInvFrutas.php",
+            type: 'POST',
+            data: { action: 'generarNumeroLote' },
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    $('#numero_lote').val(response.numero_lote); // Llenar con el nuevo lote
+                } else {
+                    Swal.fire('Error', response.message || 'Error al generar el número de lote', 'error');
                 }
-            });
+            },
+            error: function () {
+                Swal.fire('Error', 'Error al comunicarse con el servidor', 'error');
+            }
         });
-        
+    }
+
+    // Cambiar el texto del botón para diferenciar acciones
+    $('.form-actions .btn-primary').text('Guardar').data('isEditing', false);
+    $('#Form_MP').data('isEditing', false);
+
+    // Mostrar el modal
+    $('#Form_MP').modal('show');
+});
+
+
     
 // Cargar datos al hacer clic en el botón Editar
-$('#tablaMateriaPrimas').on('click', '.edit-btn', function() {
-    const id_inv = $(this).data('id'); // Asegura que el id es correcto
+$('#tablaMateriaPrimas').on('click', '.edit-btn', function () {
+    const id_inv = $(this).data('id');
+
     $.ajax({
-        url: '../AJAX/ctrInvFrutas.php',
+        url: "../AJAX/ctrInvFrutas.php",
         type: 'POST',
         data: { action: 'obtenerMateriaPrima', id_inv: id_inv },
         dataType: 'json',
-        success: function(response) {
+        success: function (response) {
             if (response.status === 'success') {
                 const data = response.data;
-                $('#fecha').val(data.fecha);
-                $('#hora').val(data.hora);
-                $('#id_articulo').val(data.id_articulo);
-                $('#proveedor_id').val(data.proveedor_id);
-                $('#numero_lote').val(data.numero_lote);
-                $('#cantidad_ingresada').val(data.cantidad_ingresada);
-                $('#precio_unitario').val(data.precio_unitario);
-                $('#bultos_o_canastas').val(data.bultos_o_canastas);
-                $('#brix').val(data.brix);
-                $('#presentacion').val(data.presentacion);
-                $('#peso_unitario').val(data.peso_unitario);
-                $('#observacion').val(data.observacion);
-                $('#id_inv').val(data.id_inv); // Verifica que se establece correctamente
+
+                // Llenar el formulario con los datos del registro
+                $('#materiaPrimaForm').find('#id_inv').val(data.id_inv);
+                $('#materiaPrimaForm').find('#fecha').val(data.fecha);
+                $('#materiaPrimaForm').find('#hora').val(data.hora);
+                $('#materiaPrimaForm').find('#id_articulo').val(data.id_articulo);
+                $('#materiaPrimaForm').find('#proveedor_id').val(data.proveedor_id);
+                $('#materiaPrimaForm').find('#numero_lote').val(data.numero_lote).prop('readonly', true); // Lote sin cambios
+                $('#materiaPrimaForm').find('#cantidad_ingresada').val(data.cantidad_ingresada);
+                $('#materiaPrimaForm').find('#precio_unitario').val(data.precio_unitario);
+                $('#materiaPrimaForm').find('#brix').val(data.brix);
+                $('#materiaPrimaForm').find('#presentacion').val(data.presentacion);
+                $('#materiaPrimaForm').find('#bultos_o_canastas').val(data.bultos_o_canastas);
+                $('#materiaPrimaForm').find('#peso_unitario').val(data.peso_unitario);
+                $('#materiaPrimaForm').find('#observacion').val(data.observacion);
+
+                // Cambiar texto del botón para editar
                 $('.form-actions .btn-primary').text('Guardar cambios').data('isEditing', true);
+                $('#Form_MP').data('isEditing', true);
+
+                // Mostrar el modal
+                $('#Form_MP').modal('show');
             } else {
                 Swal.fire('Error', response.message, 'error');
             }
         },
-        error: function(xhr, status, error) {
+        error: function () {
             Swal.fire('Error', 'Ocurrió un error al obtener los datos.', 'error');
-            console.error("Error: ", error);
-            console.error("Response: ", xhr.responseText);
         }
     });
 });
 
+
 // Enviar el formulario para agregar o actualizar la materia prima
-$('.form-actions .btn-primary').on('click', function(event) {
+$('.form-actions .btn-primary').on('click', function (event) {
     event.preventDefault();
-    const isEditing = $(this).data('isEditing');
+
+    const $form = $('#materiaPrimaForm');
+    const isEditing = $('#Form_MP').data('isEditing');
     const action = isEditing ? 'actualizarMateriaPrima' : 'guardarMateriaPrima';
+
+    // No tocar el número de lote en edición
+    if (isEditing) {
+        $('#numero_lote').prop('readonly', false); // Permite enviarlo al backend
+    }
+
     $.ajax({
         url: '../AJAX/ctrInvFrutas.php',
         type: 'POST',
-        data: $('#materiaPrimaForm').serialize() + `&action=${action}`,
+        data: $form.serialize() + `&action=${action}`,
         dataType: 'json',
-        success: function(response) {
+        success: function (response) {
             if (response.status === 'success') {
-                Swal.fire('Éxito', isEditing ? 'Registro actualizado correctamente' : 'Registro agregado correctamente', 'success');
-                materiaPrimasTable.ajax.reload();
-                $('#materiaPrimaForm')[0].reset();
-                $('.form-actions .btn-primary').text('Agregar').data('isEditing', false);
+                Swal.fire(
+                    'Éxito',
+                    isEditing ? 'Registro actualizado correctamente' : 'Registro agregado correctamente',
+                    'success'
+                ).then(() => {
+                    $('#Form_MP').modal('hide');
+                    materiaPrimasTable.ajax.reload();
+                });
             } else {
                 Swal.fire('Error', response.message, 'error');
             }
         },
-        error: function(xhr, status, error) {
+        error: function () {
             Swal.fire('Error', 'Ocurrió un error al guardar los datos.', 'error');
         }
     });

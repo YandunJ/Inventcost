@@ -131,9 +131,13 @@ $(document).ready(function() {
   $('#inventoryForm').on('submit', function (e) {
     e.preventDefault();
 
+    // Determinar si es agregar o editar
+    let id_articulo = $('#id_articulo').val();
+    let action = id_articulo && id_articulo != "0" ? 'updateArticulo' : 'addArticulo';
+
     let formData = {
-        action: 'addArticulo',
-        id_articulo: $('#id_articulo').val(),
+        action: action,
+        id_articulo: id_articulo,
         nombre: $('#nombre').val(),
         descripcion: $('#descripcion').val(),
         id_categoria: $('#categoria_select').val(),
@@ -160,6 +164,7 @@ $(document).ready(function() {
             if (response.status === 'success') {
                 Swal.fire('Éxito', response.message, 'success');
                 $('#inventoryForm')[0].reset();
+                $('#id_articulo').val('0'); // Reiniciar ID para nuevas inserciones
                 $('#modalFormulario').modal('hide');
                 table.ajax.reload(); // Recargar la tabla de datos
             } else {
@@ -175,6 +180,7 @@ $(document).ready(function() {
         }
     });
 });
+
 
 
 // Cargar datos en el formulario al editar
@@ -217,32 +223,7 @@ $('#inventoryTable').on('click', '.edit-btn', function () {
     });
 });
 
-$('#inventoryForm').on('submit', function (e) {
-    e.preventDefault();
 
-    let id_articulo = $('#id_articulo').val();
-    let action = id_articulo == 0 ? 'addArticulo' : 'updateArticulo'; // Determinar acción
-
-    // Realizar petición AJAX
-    $.ajax({
-        url: '../AJAX/ctrInvCatalogo.php',
-        type: 'POST',
-        data: $(this).serialize() + `&action=${action}`,
-        dataType: 'json',
-        success: function (response) {
-            if (response.status === 'success') {
-                $('#modalFormulario').modal('hide');
-                Swal.fire('Éxito', response.message, 'success');
-                $('#inventoryTable').DataTable().ajax.reload();
-            } else {
-                Swal.fire('Error', response.message, 'error');
-            }
-        },
-        error: function () {
-            Swal.fire('Error', 'No se pudo guardar el artículo.', 'error');
-        }
-    });
-});
 
 
 // Eliminar artículo de inventario

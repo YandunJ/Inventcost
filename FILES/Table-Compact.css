@@ -1,6 +1,6 @@
 /* Estilo base para tablas compactas */
 .table-compact {
-    font-size: 12px; /* Reduce el tamaño de la fuente */
+    font-size: 14px; /* Reduce el tamaño de la fuente */
     text-align: center; /* Centra el contenido */
 }
 
@@ -13,7 +13,7 @@
 
 .table-compact th {
     background-color: #f4f6f9; /* Color de fondo para los encabezados */
-    font-weight: bold;
+    font-weight: bold; /* fuente campos datatable*/
     border-bottom: 2px solid #dee2e6; /* Línea más marcada en el encabezado */
 }
 

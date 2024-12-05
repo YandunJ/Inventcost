@@ -27,22 +27,27 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <li class="nav-item">
                             <a href="index.php" class="nav-link">
                                 <i class="nav-icon fas fa-home"></i>
-                                <p>Home</p>
+                                <p>Inicio</p>
                             </a>
                         </li>
                                
                         <!-- Other menu items -->
-                       
+                        <li class="nav-item">
+                                    <a href="proveedores.php" class="nav-link">
+                                        <i class="nav-icon fas fa-truck"></i>
+                                        <p>Proveedores</p>
+                                    </a>
+                                </li>
                         <li class="nav-item">
                             <a href="InventCatalogo.php" class="nav-link">
-                                <i class="nav-icon fas fa-apple-alt"></i>
-                                <p>Catalogo Inventario</p>
+                                <i class="nav-icon fas fa-edit fas"></i>
+                                <p>Catalogo </p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a href="InvFrutas.php" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                                <i class="nav-icon fas fa-apple-alt"></i>
                                 <p>Lotes Frutas</p>
                             </a>
                         </li>
@@ -88,13 +93,13 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <li class="nav-item">
                             <a href="producto.php" class="nav-link">
                                 <i class="nav-icon fas fa-box-open"></i>
-                                <p>Producto Terminado</p>
+                                <p>Productos</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="insumos.php" class="nav-link">
                                 <i class="nav-icon fas fa-boxes"></i>
-                                <p>Catalogo Insumos</p>
+                                <p> Insumos</p>
                             </a>
                         </li>
 
@@ -104,7 +109,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-users-cog"></i>
                                 <p>
-                                    Gestión de Personal
+                                     Uusuarios
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -112,13 +117,13 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <li class="nav-item">
                                     <a href="usuarios.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Control de Usuarios</p>
+                                        <p>Usuario</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="empleados.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Control Empleados</p>
+                                        <p>Empleados</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -127,12 +132,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                         <p>Roles de usuario</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="proveedores.php" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Proveedores</p>
-                                    </a>
-                                </li>
+                               
 
                               
                             </ul>

@@ -13,60 +13,10 @@ VALUES
 ('Insumos', 'Materiales utilizados en la producción', '2024-10-05'),
 ('Productos Terminado', 'Paquetes de Pulpa Procesada', '2024-10-05');
 
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ac_InsertarMP`(
-    IN p_fecha DATE,
-    IN p_hora TIME,
-    IN p_id_articulo INT,
-    IN p_proveedor_id INT,
-    IN p_numero_lote VARCHAR(50),
-    IN p_cantidad_ingresada DECIMAL(10, 2),
-    IN p_precio_unitario DECIMAL(10, 2),
-    IN p_presentacion VARCHAR(50),
-    IN p_bultos_o_canastas INT,
-    IN p_peso_unitario DECIMAL(10, 2),
-    IN p_brix DECIMAL(5, 2),
-    IN p_observacion TEXT
-)
-BEGIN
-    DECLARE v_id_inv INT;
-
-    -- Inicio de la transacción
-    START TRANSACTION;
-
-    -- Inserción en la tabla inventario (sin `precio_total` ya que es una columna generada)
-    INSERT INTO inventario (
-        fecha, hora, id_articulo, proveedor_id, numero_lote,
-        cantidad_ingresada, cantidad_restante, 
-        precio_unitario, presentacion
-    ) VALUES (
-        p_fecha, p_hora, p_id_articulo, p_proveedor_id, p_numero_lote,
-        p_cantidad_ingresada, p_cantidad_ingresada, -- `cantidad_restante` inicial
-        p_precio_unitario, p_presentacion
-    );
-
-    -- Obtener el último ID insertado en inventario
-    SET v_id_inv = LAST_INSERT_ID();
-
-    -- Inserción en la tabla invent_detalle_MP
-    INSERT INTO invent_detalle_MP (
-        id_inv, bultos_o_canastas, peso_unitario, 
-        brix, observacion
-    ) VALUES (
-        v_id_inv, p_bultos_o_canastas, p_peso_unitario, 
-        p_brix, p_observacion
-    );
-
-    -- Confirmación de la transacción
-    COMMIT;
-END$$
-DELIMITER ;
-
 DELIMITER //
 
-CREATE PROCEDURE sp_generar_lote (
-    IN categoria CHAR(3), -- MP, INS, PT
+CREATE PROCEDURE generar_lote (
+    IN id_categoria INT, -- ID de la categoría (1, 2, 3)
     OUT numero_lote VARCHAR(20)
 )
 BEGIN
@@ -74,20 +24,20 @@ BEGIN
     DECLARE fecha VARCHAR(6);
     DECLARE consecutivo INT;
 
-    -- Determinar el prefijo según la categoría
-    CASE categoria
-        WHEN 'MP' THEN SET prefijo = 'MP_';
-        WHEN 'INS' THEN SET prefijo = 'INS_';
-        WHEN 'PT' THEN SET prefijo = 'PT_';
+    -- Determinar el prefijo según el ID de categoría
+    CASE id_categoria
+        WHEN 1 THEN SET prefijo = 'MP_';
+        WHEN 2 THEN SET prefijo = 'INS_';
+        WHEN 3 THEN SET prefijo = 'PT_';
         ELSE SIGNAL SQLSTATE '45000'
-            SET MESSAGE_TEXT = 'Categoría no válida';
+            SET MESSAGE_TEXT = 'ID de categoría no válido';
     END CASE;
 
     -- Fecha en formato DDMMAA
     SET fecha = DATE_FORMAT(NOW(), '%d%m%y');
 
-    -- Obtener el consecutivo
-    SELECT COUNT(*) + 1
+    -- Obtener el número consecutivo más alto para esa fecha y prefijo
+    SELECT COALESCE(MAX(CAST(SUBSTRING(numero_lote, 8) AS UNSIGNED)), 0) + 1
     INTO consecutivo
     FROM inventario
     WHERE numero_lote LIKE CONCAT(prefijo, fecha, '%');
@@ -97,3 +47,4 @@ BEGIN
 END //
 
 DELIMITER ;
+

@@ -51,23 +51,17 @@ switch ($action) {
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
-
 function generarNumeroLote() {
-    if (!isset($_POST['id_categoria'])) {
-        echo json_encode(['status' => 'error', 'message' => 'ID de categoría no proporcionado']);
-        return;
-    }
-
     try {
         $materiaPrima = new MateriaPrima();
-        $id_categoria = intval($_POST['id_categoria']);
-        $numeroLote = $materiaPrima->generarNumeroLote($id_categoria);
+        $numeroLote = $materiaPrima->generarNumeroLote();
 
         echo json_encode(['status' => 'success', 'numero_lote' => $numeroLote]);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
 
 
 // function cargarFrutas() {
@@ -192,28 +186,28 @@ function cargarProveedores() {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
-    
-    function obtenerMateriaPrima() {
-        // Validamos que se esté pasando el id_inv
-        if (isset($_POST['id_inv'])) {
-            $id_inv = $_POST['id_inv']; // Obtenemos el id_inv desde el POST
-            $materiaPrima = new MateriaPrima();
-    
-            // Llamamos a la función para obtener los datos del inventario
-            $data = $materiaPrima->obtenerMateriaPrimaPorId($id_inv);
-    
-            if ($data) {
-                // Si se obtuvo el registro, lo retornamos en formato JSON
-                echo json_encode(['status' => 'success', 'data' => $data]);
+        
+        function obtenerMateriaPrima() {
+            // Validamos que se esté pasando el id_inv
+            if (isset($_POST['id_inv'])) {
+                $id_inv = $_POST['id_inv']; // Obtenemos el id_inv desde el POST
+                $materiaPrima = new MateriaPrima();
+        
+                // Llamamos a la función para obtener los datos del inventario
+                $data = $materiaPrima->obtenerMateriaPrimaPorId($id_inv);
+        
+                if ($data) {
+                    // Si se obtuvo el registro, lo retornamos en formato JSON
+                    echo json_encode(['status' => 'success', 'data' => $data]);
+                } else {
+                    // Si no se encuentra el registro, enviamos un mensaje de error
+                    echo json_encode(['status' => 'error', 'message' => 'No se pudo obtener la materia prima.']);
+                }
             } else {
-                // Si no se encuentra el registro, enviamos un mensaje de error
-                echo json_encode(['status' => 'error', 'message' => 'No se pudo obtener la materia prima.']);
+                echo json_encode(['status' => 'error', 'message' => 'El ID del inventario no fue proporcionado.']);
             }
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'El ID del inventario no fue proporcionado.']);
         }
-    }
-    
+        
 
 function eliminarMateriaPrima() {
     $id_inv = $_POST['id_inv'];  // Recibe el ID de inventario desde la solicitud

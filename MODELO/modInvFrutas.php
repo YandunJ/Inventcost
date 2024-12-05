@@ -8,20 +8,36 @@
                 $this->conn = $conexion->FN_getConnect();
             }
 
-                        
-                public function generarNumeroLote($categoria) {
-                    $stmt = $this->conn->prepare("CALL generar_lote(?, @numero_lote)");
-                    $stmt->bind_param('s', $categoria);
-                    $stmt->execute();
-                    $stmt->close();
+             // Generar número de lote con prefijo MP_
+    public function generarNumeroLote() {
+        $prefijo = 'MP_';
+        $fecha = date('dmy');
 
-                    // Recuperar el número de lote generado
-                    $result = $this->conn->query("SELECT @numero_lote AS numero_lote");
-                    $row = $result->fetch_assoc();
-                    return $row['numero_lote'];
-                }
+        // Obtener el último número de lote para la fecha actual
+        $stmt = $this->conn->prepare("
+            SELECT numero_lote 
+            FROM inventario 
+            WHERE numero_lote LIKE CONCAT(?, ?, '%')
+            ORDER BY CAST(SUBSTRING(numero_lote, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
+            LIMIT 1
+        ");
+        $stmt->bind_param('ssss', $prefijo, $fecha, $prefijo, $fecha);
+        $stmt->execute();
+        $stmt->bind_result($ultimoLote);
+        $stmt->fetch();
+        $stmt->close();
 
-                            public function verificarLoteUnico($numero_lote) {
+        $nuevoConsecutivo = $ultimoLote 
+            ? intval(substr($ultimoLote, strlen($prefijo . $fecha))) + 1 
+            : 1;
+
+        return $prefijo . $fecha . $nuevoConsecutivo;
+    }
+
+            
+            
+            
+            public function verificarLoteUnico($numero_lote) {
                 $stmt = $this->conn->prepare("SELECT COUNT(*) FROM inventario WHERE numero_lote = ?");
                 if (!$stmt) {
                     throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
@@ -68,7 +84,7 @@
                 }
             
                 $stmt->bind_param(
-                    'ssiiisdsidss', 
+                    'ssiissdsidss', 
                     $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
                     $cantidad_ingresada, $precio_unitario, $presentacion,
                     $bultos_o_canastas, $peso_unitario, $brix, $observacion
@@ -83,7 +99,7 @@
                 return $result;
             }
             
-            
+
 
             public function obtenerInventarioMP() {
                 // Llamada al procedimiento almacenado que proporciona los datos resumidos para el DataTable
@@ -101,6 +117,7 @@
             
                 return $data;
             }
+            
             public function obtenerMateriaPrimaPorId($id_inv) {
                 $stmt = $this->conn->prepare("CALL Obt_MP_por_id(?)");
                 
