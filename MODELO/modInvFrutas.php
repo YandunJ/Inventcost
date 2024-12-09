@@ -217,6 +217,33 @@
                 //     }
 
 
+                public function obtenerProveedoresPorCategoria($id_categoria) {
+                    $query = "
+                        SELECT DISTINCT p.proveedor_id, p.nombre_empresa 
+                        FROM proveedores p
+                        JOIN invent_catalogo ic ON p.proveedor_id = ic.proveedor_id
+                        WHERE ic.id_categoria = ? AND ic.estado = 'disponible'
+                    ";
+                    $stmt = $this->conn->prepare($query);
+                    if (!$stmt) {
+                        throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                    }
+                
+                    $stmt->bind_param("i", $id_categoria);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $proveedores = [];
+                
+                    while ($row = $result->fetch_assoc()) {
+                        $proveedores[] = $row;
+                    }
+                
+                    $stmt->close();
+                    return $proveedores;
+                }
+                
+
+
                 // Función para obtener frutas por proveedor
                 public function obtenerFrutasPorProveedor($proveedor_id) {
                     $query = "SELECT id_articulo, nombre_articulo 
@@ -252,23 +279,23 @@
                 }
                 
             
-                public function obtenerProveedores() {
-                    $query = "SELECT proveedor_id, nombre_empresa FROM proveedores";
-                    $stmt = $this->conn->prepare($query);
-                    if (!$stmt) {
-                        throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
-                    }
+                // public function obtenerProveedores() {
+                //     $query = "SELECT proveedor_id, nombre_empresa FROM proveedores";
+                //     $stmt = $this->conn->prepare($query);
+                //     if (!$stmt) {
+                //         throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+                //     }
             
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $proveedores = array();
+                //     $stmt->execute();
+                //     $result = $stmt->get_result();
+                //     $proveedores = array();
             
-                    while ($row = $result->fetch_assoc()) {
-                        $proveedores[] = $row;
-                    }
+                //     while ($row = $result->fetch_assoc()) {
+                //         $proveedores[] = $row;
+                //     }
             
-                    $stmt->close();
-                    return $proveedores;
-                }
+                //     $stmt->close();
+                //     return $proveedores;
+                // }
             }
         ?>

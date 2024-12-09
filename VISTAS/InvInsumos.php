@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
 
-    <link rel="stylesheet" href="../FILES/InvMPform.css">
+    
     <link rel="stylesheet" href="../FILES/InvMPModal.css">
     <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
@@ -35,6 +35,7 @@
                         Agregar
                     </button>
 
+                 
                     <!-- Modal -->
                     <div class="modal fade" id="Form_Insumos" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -54,14 +55,12 @@
                                                 <select id="proveedor_id" name="proveedor_id" class="form-control" required>
                                                     <option value="">Seleccione un proveedor</option>
                                                 </select>
-                                                
                                             </div>
                                             <div class="form-group">
                                                 <label for="id_articulo">Insumo:</label>
                                                 <select id="id_articulo" name="id_articulo" class="form-control" required>
                                                     <option value="">Seleccione un insumo</option>
                                                 </select>
-                                                
                                             </div>
                                             <div class="form-group">
                                                 <label for="fecha">Fecha:</label>
@@ -72,7 +71,6 @@
                                                 <input type="time" id="hora" name="hora" class="form-control" required>
                                             </div>
                                         </div>
-
                                         <!-- Fila 2 -->
                                         <div class="form-row">
                                             <div class="form-group">
@@ -80,25 +78,28 @@
                                                 <input type="text" id="numero_lote" name="numero_lote" class="form-control" readonly>
                                             </div>
                                             <div class="form-group">
-                                            <label for="cantidad_ingresada">Cantidad Ingresada:</label>
+                                                <label for="cantidad_ingresada">Cantidad Ingresada:</label>
                                                 <div class="quantity-input">
-                                                    <button type="button" class="btn-decrement">-</button>
+                                                    <button type="button" class="btn-minus quantity-decimal">-</button>
                                                     <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" value="0" required>
-                                                    <button type="button" class="btn-increment">+</button>
+                                                    <button type="button" class="btn-plus quantity-decimal">+</button>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="unidad_medida">Unidad de Medida:</label>
                                                 <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
                                             </div>
+                                        </div>
+                                        <!-- Fila 3 -->
+                                        <div class="form-row">
                                             <div class="form-group">
                                                 <label for="precio_unitario">Precio Unitario:</label>
                                                 <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" required>
                                             </div>
-                                        </div>
-
-                                        <!-- Fila 3 -->
-                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="precio_total">Precio Total:</label>
+                                                <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" readonly>
+                                            </div>
                                             <div class="form-group">
                                                 <label for="presentacion">Presentación:</label>
                                                 <select id="presentacion" name="presentacion" class="form-control" required>
@@ -107,7 +108,6 @@
                                                 </select>
                                             </div>
                                         </div>
-
                                         <!-- Botones -->
                                         <div class="form-actions">
                                             <button type="submit" class="btn btn-primary">Guardar</button>

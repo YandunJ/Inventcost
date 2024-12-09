@@ -126,9 +126,6 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
     },
     columns: [
         { data: 'Lote' },
-        { data: 'Fecha' },
-        { data: 'Hora' },
-        
         { data: 'Proveedor' },
         { data: 'Artículo' },
         { data: 'Cantidad_Disponible' },
@@ -307,76 +304,6 @@ $('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
     }
     
  
-
-//     $('#Form_MP').on('show.bs.modal', function (e) {
-//         const $trigger = $(e.relatedTarget);
-//         const isNew = $trigger.data('is-new');
-    
-//         if (isNew) {
-//             $.ajax({
-//                 url: "../AJAX/ctrInvFrutas.php",
-//                 type: 'POST',
-//                 data: { action: 'generarNumeroLote', id_categoria: 1 }, // 1 = Materia Prima
-//                 dataType: 'json',
-//                 success: function (response) {
-//                     if (response.status === 'success') {
-//                         $('#numero_lote').val(response.numero_lote).prop('readonly', true);
-//                     } else {
-//                         Swal.fire('Error', response.message, 'error');
-//                     }
-//                 }
-//             });
-//             $('.modal-title').text('Registro de Materia Prima');
-//         } else {
-//             const idRegistro = $trigger.data('id');
-//             initializeEditModal(idRegistro);
-//             $('.modal-title').text('Editar Materia Prima');
-//         }
-//     });
-    
-    
-
-// // Inicializar modal en modo "Nuevo"
-// function initializeNewModal() {
-//     const $form = $('#materiaPrimaForm');
-//     $form[0].reset(); // Limpiar formulario
-
-//     // Generar número de lote automáticamente (local)
-//     const nuevoLote = generarNumeroLote(1); // ID categoría, ajusta si es necesario
-//     $('#numero_lote').val(nuevoLote).prop('readonly', true); // Asignar y bloquear el campo
-// }
-
-// // Inicializar modal en modo "Editar"
-// function initializeEditModal(idRegistro) {
-//     const $form = $('#materiaPrimaForm');
-//     $form[0].reset();
-
-//     $.ajax({
-//         url: "../AJAX/ctrInvFrutas.php",
-//         type: 'POST',
-//         data: { action: 'obtenerMateriaPrima', id_inv: idRegistro },
-//         dataType: 'json',
-//         success: function (response) {
-//             if (response.status === 'success') {
-//                 const data = response.data;
-
-//                 // Asignar datos al formulario
-//                 Object.keys(data).forEach(key => {
-//                     $form.find(`#${key}`).val(data[key]);
-//                 });
-
-//                 // Preservar el lote original
-//                 $('#numero_lote').prop('readonly', true);
-//             } else {
-//                 Swal.fire('Error', response.message, 'error');
-//             }
-//         },
-//         error: function () {
-//             Swal.fire('Error', 'Ocurrió un error al obtener los datos.', 'error');
-//         }
-//     });
-// }
-
 // Abrir el modal y manejar lógica de nuevo registro
 $('button[data-is-new="true"]').on('click', function () {
     const isNew = $(this).data('is-new'); // Indicar que es un nuevo registro
@@ -539,21 +466,21 @@ $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
 });
 
     
-        let formModified = false;
+        // let formModified = false;
 
-        // Detectar cambios en el formulario
-        $("#materiaPrimaForm input, #materiaPrimaFormselect").on("input change", function() {
-            formModified = true;
-        });
+        // // Detectar cambios en el formulario
+        // $("#materiaPrimaForm input, #materiaPrimaFormselect").on("input change", function() {
+        //     formModified = true;
+        // });
         
-        // Evento beforeunload para detectar si se intenta cerrar o recargar la página
-        window.addEventListener("beforeunload", function(e) {
-            if (formModified) {
-                const confirmationMessage = "Tienes datos sin guardar. ¿Estás seguro de que deseas salir?";
-                e.returnValue = confirmationMessage; // Establece el mensaje
-                return confirmationMessage;
-            }
-        });
+        // // Evento beforeunload para detectar si se intenta cerrar o recargar la página
+        // window.addEventListener("beforeunload", function(e) {
+        //     if (formModified) {
+        //         const confirmationMessage = "Tienes datos sin guardar. ¿Estás seguro de que deseas salir?";
+        //         e.returnValue = confirmationMessage; // Establece el mensaje
+        //         return confirmationMessage;
+        //     }
+        // });
         
         // Capturar clics en el menú lateral
         // $("a").on("click", function(e) {

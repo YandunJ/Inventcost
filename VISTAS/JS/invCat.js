@@ -1,14 +1,14 @@
-$(document).ready(function() {
-        
+$(document).ready(function () {
+    // Cargar categorías al iniciar
     $.ajax({
         url: "../AJAX/ctrInvCatalogo.php",
         type: "POST",
         data: { action: 'getCategorias' },
         dataType: "json",
-        success: function(response) {
+        success: function (response) {
             if (response.status === 'success' && Array.isArray(response.data)) {
                 let options = "<option value=''>Seleccione una categoría</option>";
-                response.data.forEach(function(categoria) {
+                response.data.forEach(function (categoria) {
                     options += `<option value="${categoria.id_categoria}">${categoria.nombre_categoria}</option>`;
                 });
                 $("#categoria_select").html(options);
@@ -16,62 +16,82 @@ $(document).ready(function() {
                 console.error("Error al cargar categorías: ", response);
             }
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
         }
     });
-    
-    
-    
-        // Cargar unidades de medida en el select box
-        $.ajax({
-            url: "../AJAX/ctrInvCatalogo.php",
-            type: "POST",
-            data: { action: 'getUnidadesMedida' },
-            dataType: "json",
-            success: function(response) {
-                if (response.status === 'success' && Array.isArray(response.data)) {
-                    let options = "<option value=''>Seleccione una unidad</option>";
-                    response.data.forEach(function(unidad) {
-                        options += `<option value="${unidad.uni_id}">${unidad.uni_nombre}</option>`;
-                    });
-                    $("#unidad_medida").html(options);
-                } else {
-                    console.error("Error al cargar unidades de medida: ", response);
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-            }
-        });
-        
-    
-    
+
+    // Cargar todas las unidades de medida inicialmente
+    let allUnits = [];
     $.ajax({
         url: "../AJAX/ctrInvCatalogo.php",
         type: "POST",
-        data: { action: 'cargarProveedores' },
+        data: { action: 'getUnidadesMedida' },
         dataType: "json",
-        success: function(response) {
-            let options = '<option value="">Seleccione un proveedor</option>';
+        success: function (response) {
             if (response.status === 'success' && Array.isArray(response.data)) {
-                response.data.forEach(function(proveedor) {
-                    options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
+                allUnits = response.data; // Guardar unidades en memoria
+                let options = "<option value=''>Seleccione una unidad</option>";
+                response.data.forEach(function (unidad) {
+                    options += `<option value="${unidad.uni_id}">${unidad.uni_nombre}</option>`;
                 });
-                $("#proveedor_id").html(options);
+                $("#unidad_medida").html(options);
             } else {
-                alert("Error al cargar los proveedores.");
-                console.error("Error loading proveedores: ", response);
+                console.error("Error al cargar unidades de medida: ", response);
             }
         },
-        error: function(xhr, status, error) {
-            alert("Ocurrió un error al cargar los proveedores.");
+        error: function (xhr, status, error) {
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
         }
     });
+
+    // Cambiar las unidades de medida según la categoría seleccionada
+    $("#categoria_select").on("change", function () {
+        const selectedCategory = $(this).val();
+        let filteredUnits = [];
+
+        if (selectedCategory === "1") { // Materia Prima
+            filteredUnits = allUnits.filter(unit => unit.uni_nombre === "Kilogramos");
+        } else if (selectedCategory === "2") { // Insumos
+            filteredUnits = allUnits; // Mostrar todas las unidades
+        }
+
+        // Actualizar el select de unidades de medida
+        let options = "<option value=''>Seleccione una unidad</option>";
+        filteredUnits.forEach(function (unidad) {
+            options += `<option value="${unidad.uni_id}">${unidad.uni_nombre}</option>`;
+        });
+        $("#unidad_medida").html(options);
+    });
+
+
+    
+    
+    // $.ajax({
+    //     url: "../AJAX/ctrInvCatalogo.php",
+    //     type: "POST",
+    //     data: { action: 'cargarProveedores' },
+    //     dataType: "json",
+    //     success: function(response) {
+    //         let options = '<option value="">Seleccione un proveedor</option>';
+    //         if (response.status === 'success' && Array.isArray(response.data)) {
+    //             response.data.forEach(function(proveedor) {
+    //                 options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
+    //             });
+    //             $("#proveedor_id").html(options);
+    //         } else {
+    //             alert("Error al cargar los proveedores.");
+    //             console.error("Error loading proveedores: ", response);
+    //         }
+    //     },
+    //     error: function(xhr, status, error) {
+    //         alert("Ocurrió un error al cargar los proveedores.");
+    //         console.error("Error: ", error);
+    //         console.error("Response: ", xhr.responseText);
+    //     }
+    // });
 
     var table = $('#inventoryTable').DataTable({
         "ajax": {
@@ -88,7 +108,7 @@ $(document).ready(function() {
             { "data": "nombre_articulo" },
             { "data": "descripcion" },
             { "data": "categoria" }, // Cambiado para usar el alias 'categoria'
-            { "data": "proveedor" },
+            
             { "data": "unidad_medida" },
              // Cambiado para usar el alias 'unidad_medida'
             { "data": "estado" },
@@ -141,7 +161,7 @@ $(document).ready(function() {
         nombre: $('#nombre').val(),
         descripcion: $('#descripcion').val(),
         id_categoria: $('#categoria_select').val(),
-        proveedor_id: $('#proveedor_id').val(),
+        
         unidad_medida: $('#unidad_medida').val()
     };
 
@@ -208,7 +228,7 @@ $('#inventoryTable').on('click', '.edit-btn', function () {
                 $('#nombre').val(data.nombre_articulo);
                 $('#descripcion').val(data.descripcion);
                 $('#categoria_select').val(data.id_categoria).trigger('change');
-                $('#proveedor_id').val(data.proveedor_id).trigger('change');
+                
                 $('#unidad_medida').val(data.uni_id).trigger('change');
 
                 // Mostrar el modal

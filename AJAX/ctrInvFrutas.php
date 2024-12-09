@@ -40,9 +40,7 @@ switch ($action) {
     case 'actualizarMateriaPrima':
         actualizarMateriaPrima();
         break;
-    // case 'cambiarEstadoMateriaPrima':
-    //     cambiarEstadoMateriaPrima();
-    //     break;
+  
     case 'obtenerDetalleLote':
         obtenerDetalleLote();
         break;
@@ -105,14 +103,21 @@ function cargarFrutasPorProveedor() {
 function cargarProveedores() {
     global $conn;
     $materiaPrima = new MateriaPrima($conn);
-    $proveedores = $materiaPrima->obtenerProveedores();
+    // ID de la categoría de Materia Prima (en tu caso, 1)
+    $id_categoria_materia_prima = 1;
 
-    if (!$proveedores) {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los proveedores']);
-    } else {
-        echo json_encode(['status' => 'success', 'data' => $proveedores]);
+    try {
+        $proveedores = $materiaPrima->obtenerProveedoresPorCategoria($id_categoria_materia_prima);
+        if (empty($proveedores)) {
+            echo json_encode(['status' => 'error', 'message' => 'No se encontraron proveedores relacionados a materia prima']);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $proveedores]);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
     function guardarMateriaPrima() {
         try {
             $materiaPrima = new MateriaPrima();

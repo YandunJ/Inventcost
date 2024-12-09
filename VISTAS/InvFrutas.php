@@ -84,6 +84,12 @@
 
 
 
+                        <div class="form-group">
+                            <label for="precio_total">Precio Total:</label>
+                            <input type="number" id="precio_total" name="precio_total" step="0.01" disabled>
+                        </div>
+
+                        
 <div class="form-group">
     <label for="precio_unitario">Precio Unitario:</label>
     <div class="input-quantity">
@@ -92,10 +98,6 @@
         <button type="button" class="btn-plus quantity-decimal">+</button>
     </div>
 </div>
-                        <div class="form-group">
-                            <label for="precio_total">Precio Total:</label>
-                            <input type="number" id="precio_total" name="precio_total" step="0.01" disabled>
-                        </div>
                     </div>
 
                     <!-- Fila 3 -->
@@ -155,8 +157,7 @@
                             <thead>
                                 <tr>
                                 <th>Lote</th>
-                                    <th>Fecha</th>
-                                    <th>Hora</th>
+                              
                                     
                                     <th>Proveedor</th>
                                     <th>Artículo</th>

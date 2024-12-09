@@ -109,7 +109,7 @@ function getArticuloById() {
 
 function addArticulo() {
     // Validar campos obligatorios
-    $requiredFields = ['nombre', 'descripcion', 'id_categoria', 'proveedor_id', 'unidad_medida'];
+    $requiredFields = ['nombre', 'descripcion', 'id_categoria', 'unidad_medida'];
     foreach ($requiredFields as $field) {
         if (empty($_POST[$field])) {
             echo json_encode(['status' => 'error', 'message' => "El campo $field es obligatorio."]);
@@ -125,7 +125,6 @@ function addArticulo() {
             $_POST['nombre'],
             $_POST['descripcion'],
             $_POST['id_categoria'],
-            $_POST['proveedor_id'],
             $_POST['unidad_medida']
         );
 
@@ -139,10 +138,9 @@ function addArticulo() {
     }
 }
 
-
 function updateArticulo() {
     // Validar campos obligatorios
-    $requiredFields = ['id_articulo', 'nombre', 'descripcion', 'id_categoria', 'proveedor_id', 'unidad_medida'];
+    $requiredFields = ['id_articulo', 'nombre', 'descripcion', 'id_categoria', 'unidad_medida'];
     foreach ($requiredFields as $field) {
         if (empty($_POST[$field])) {
             echo json_encode(['status' => 'error', 'message' => "El campo $field es obligatorio."]);
@@ -158,7 +156,6 @@ function updateArticulo() {
             $_POST['nombre'],
             $_POST['descripcion'],
             $_POST['id_categoria'],
-            $_POST['proveedor_id'],
             $_POST['unidad_medida']
         );
 

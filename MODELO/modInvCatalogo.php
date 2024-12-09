@@ -10,25 +10,22 @@ class InvCatalogo {
         $this->conn = new Cls_DataConnection();
     }
 
- 
-    public function addOrUpdateArticulo($opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $proveedor_id, $uni_id) {
+    public function addOrUpdateArticulo($opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $uni_id) {
         // Validar si el artículo ya existe en la base de datos
-        $queryExist = "SELECT * FROM invent_catalogo WHERE nombre_articulo = ? AND proveedor_id = ?";
-        $paramsExist = [$nombre_articulo, $proveedor_id];
+        $queryExist = "SELECT COUNT(*) AS total FROM invent_catalogo WHERE nombre_articulo = ? AND uni_id = ?";
+        $paramsExist = [$nombre_articulo, $uni_id];
         $resultExist = $this->conn->ejecutarSP($queryExist, $paramsExist);
-        
-        // Si ya existe, devolver un mensaje indicando que no se puede duplicar
-        if ($resultExist && $resultExist->num_rows > 0) {
-            return ['error' => 'El artículo ya existe en el catálogo con este proveedor.'];
+
+        if ($resultExist && $resultExist->fetch_assoc()['total'] > 0 && $opcion == 1) {
+            return ['error' => 'El artículo ya existe en el catálogo con esta unidad.'];
         }
-     
-        // Si no existe, ejecutar el procedimiento para agregarlo
-        $query = "CALL acc_invent_catalogo(?, ?, ?, ?, ?, ?, ?)";
-        $params = [$opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $proveedor_id, $uni_id];
-    
+
+        // Ejecutar el procedimiento almacenado para agregar o actualizar
+        $query = "CALL Catalogo_CRUD(?, ?, ?, ?, ?, ?)";
+        $params = [$opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $uni_id];
+
         try {
             $result = $this->conn->ejecutarSP($query, $params);
-        
             if ($result) {
                 return true; // Procedimiento ejecutado correctamente
             } else {
@@ -38,13 +35,11 @@ class InvCatalogo {
             return ['error' => $e->getMessage()];
         }
     }
-    
 
-     
     public function getArticuloById($id_articulo) {
-        $query = "CALL obt_invCatalogo_id(?)";
+        $query = "CALL Catalogo_data_id(?)";
         $params = [$id_articulo];
-    
+
         try {
             $result = $this->conn->ejecutarSP($query, $params);
             if ($result) {
@@ -57,12 +52,11 @@ class InvCatalogo {
         }
     }
     
-    
     public function getArticulos() {
         try {
-            $query = "CALL obt_invCatalogo()";
+            $query = "CALL Catalogo_data()";
             $result = $this->conn->FN_getConnect()->query($query);
-    
+
             if ($result) {
                 $articulos = [];
                 while ($row = $result->fetch_assoc()) {
@@ -106,7 +100,7 @@ class InvCatalogo {
     
    
     
-    // Métodos relacionados con categorías y proveedores
+    // Métodos relacionados con categorías y unidades de medida
     public function getCategorias() {
         $query = "SELECT id_categoria, nombre_categoria FROM categorias";
         $result = $this->conn->FN_getConnect()->query($query);

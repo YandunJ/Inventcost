@@ -27,7 +27,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h3 class="text-center">Catálogo Frutas e Insumos    </h3>
+                    <h3 class="text-center">Catálogo Inventario   </h3>
 
                     <!-- Botón para abrir el modal -->
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario">
@@ -64,10 +64,7 @@
                                         <label for="unidad_medida">Unidad de Medida:</label>
                                         <select id="unidad_medida" name="unidad_medida" class="form-control" required></select>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="proveedor_id">Proveedor:</label>
-                                        <select id="proveedor_id" name="proveedor_id" class="form-control" required></select>
-                                    </div>
+                                 
                                     <button type="submit" class="btn btn-primary">Guardar</button>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 </form>
@@ -84,7 +81,7 @@
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Categoría</th>
-                                <th>Proveedor</th>
+                                
                                 <th>Unidad de Medida</th>
                                 <th>Estado</th>
                                 <th>Fecha de Creación</th>

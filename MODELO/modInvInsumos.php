@@ -9,6 +9,32 @@ class InventarioInsumos {
     }
 
 
+    public function generarNumeroLote() {
+        $prefijo = 'INS_';
+        $fecha = date('dmy');
+
+        $stmt = $this->conn->prepare("
+            SELECT numero_lote 
+            FROM inventario 
+            WHERE numero_lote LIKE CONCAT(?, ?, '%')
+            ORDER BY CAST(SUBSTRING(numero_lote, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
+            LIMIT 1
+        ");
+        $stmt->bind_param('ssss', $prefijo, $fecha, $prefijo, $fecha);
+        $stmt->execute();
+        $stmt->bind_result($ultimoLote);
+        $stmt->fetch();
+        $stmt->close();
+
+        $nuevoConsecutivo = $ultimoLote 
+            ? intval(substr($ultimoLote, strlen($prefijo . $fecha))) + 1 
+            : 1;
+
+        return $prefijo . $fecha . $nuevoConsecutivo;
+    }
+    
+
+
     public function insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario) {
         // Ajustar la llamada al procedimiento almacenado ac_InsertarINS con los parámetros correctos
         $stmt = $this->conn->prepare("CALL ac_InsertarINS(?, ?, ?, ?, ?, ?, ?, ?)");
@@ -75,6 +101,64 @@ class InventarioInsumos {
         $stmt->close();
     }
 
+    
+    public function obtenerProveedoresPorCategoria($id_categoria) {
+        $query = "
+            SELECT DISTINCT p.proveedor_id, p.nombre_empresa 
+            FROM proveedores p
+            JOIN invent_catalogo ic ON p.proveedor_id = ic.proveedor_id
+            WHERE ic.id_categoria = ? AND ic.estado = 'disponible'
+        ";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $id_categoria);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $proveedores = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $proveedores[] = $row;
+        }
+
+        $stmt->close();
+        return $proveedores;
+    }
+
+    public function obtenerInsumosPorProveedor($proveedor_id) {
+        $query = "SELECT id_articulo, nombre_articulo 
+                  FROM invent_catalogo 
+                  WHERE proveedor_id = ? AND estado = 'disponible'";
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+        }
+    
+        $stmt->bind_param("i", $proveedor_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    
+        if (!$result) {
+            throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+        }
+    
+        $insumos = [];
+        while ($row = $result->fetch_assoc()) {
+            $insumos[] = $row;
+        }
+    
+        $stmt->close();
+    
+        // Registro para depuración, como en materia prima
+        if (empty($insumos)) {
+            error_log("No se encontraron insumos para proveedor_id: $proveedor_id");
+        }
+    
+        return $insumos;
+    }
+    
 
     
 }

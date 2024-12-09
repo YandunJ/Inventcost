@@ -15,6 +15,13 @@ VALUES
 
 DELIMITER //
 
+
+SELECT DISTINCT p.proveedor_id, p.nombre_empresa
+FROM proveedores p
+JOIN invent_catalogo ic ON p.proveedor_id = ic.proveedor_id
+WHERE ic.id_categoria = 1 AND ic.estado = 'disponible';
+
+
 CREATE PROCEDURE generar_lote (
     IN id_categoria INT, -- ID de la categoría (1, 2, 3)
     OUT numero_lote VARCHAR(20)

@@ -5,18 +5,22 @@ ini_set('display_errors', 1);
 
 require_once "../CONFIG/conexion.php";
 require_once "../MODELO/modInvInsumos.php"; // Asegúrate de que este archivo exista
-require_once "../MODELO/sbinsumos.php"; // El modelo de insumos
+
 
 $conn = (new Cls_DataConnection())->FN_getConnect();
 
 $action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
 switch ($action) {
-        case 'cargarInsumos':
-        cargarInsumos();
+
+    case 'generarNumeroLote':
+        generarNumeroLote();
+        break;
+        case 'cargarInsumosPorProveedor':
+            cargarInsumosPorProveedor();
             break;
         case 'cargarProveedores':
-        cargarProveedores();
+            cargarProveedores();
             break;
         case 'guardarInsumo':
             guardarInsumo();
@@ -45,30 +49,93 @@ switch ($action) {
             break;
     }
 
-function cargarInsumos() {
-    global $conn;
-    $insumosModel = new InsumosModel($conn); // Instanciar el modelo
-    $insumos = $insumosModel->obtenerInsumos(); // Obtener insumos
 
-    if (!$insumos) {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los insumos']);
-    } else {
-        echo json_encode(['status' => 'success', 'data' => $insumos]); // Enviar datos como respuesta JSON
+  
+    
+    function generarNumeroLote() {
+        try {
+            $insumos = new InventarioInsumos();
+            $numeroLote = $insumos->generarNumeroLote();
+            echo json_encode(['status' => 'success', 'numero_lote' => $numeroLote]);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
-}
-
-
-function cargarProveedores() {
-    global $conn;
-    $insumosModel = new InsumosModel($conn);
-    $proveedores = $insumosModel->obtenerProveedores();
-
-    if (!$proveedores) {
-        echo json_encode(['status' => 'error', 'message' => 'No se pudieron obtener los proveedores']);
-    } else {
-        echo json_encode(['status' => 'success', 'data' => $proveedores]);
+    
+    
+    function obtenerUnidadMedida() {
+        global $conn;
+        $id_articulo = isset($_POST['id_articulo']) ? $_POST['id_articulo'] : '';
+    
+        if ($id_articulo) {
+            // Consulta para obtener la unidad de medida uniendo las tablas
+            $query = "
+                SELECT um.uni_nombre 
+                FROM invent_catalogo ic
+                JOIN unidades_medida um ON ic.uni_id = um.uni_id
+                WHERE ic.id_articulo = ?
+            ";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $id_articulo);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $unidad = $result->fetch_assoc();
+    
+            if ($unidad) {
+                echo json_encode(['status' => 'success', 'unidad_medida' => $unidad['uni_nombre']]);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Unidad de medida no encontrada']);
+            }
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'ID de artículo no válido']);
+        }
     }
-}
+    
+    function cargarInsumosPorProveedor() {
+        global $conn;
+        $proveedor_id = isset($_POST['proveedor_id']) ? intval($_POST['proveedor_id']) : 0;
+    
+        if ($proveedor_id === 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Proveedor no válido']);
+            return;
+        }
+    
+        $insumos = new InventarioInsumos($conn);
+        try {
+            $data = $insumos->obtenerInsumosPorProveedor($proveedor_id);
+    
+            if (empty($data)) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => "No se encontraron insumos para este proveedor: $proveedor_id"
+                ]);
+            } else {
+                echo json_encode(['status' => 'success', 'data' => $data]);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    
+    function cargarProveedores() {
+        global $conn;
+        $insumos = new InventarioInsumos($conn);
+    
+        $id_categoria_insumos = 2; // ID de categoría para insumos
+    
+        try {
+            $proveedores = $insumos->obtenerProveedoresPorCategoria($id_categoria_insumos);
+            if (empty($proveedores)) {
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron proveedores para insumos']);
+            } else {
+                echo json_encode(['status' => 'success', 'data' => $proveedores]);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
 
 function guardarInsumo() {
     global $conn;
@@ -156,26 +223,5 @@ function eliminarInsumo() {
     }
 }
 
-function obtenerUnidadMedida() {
-    global $conn;
-    $id_articulo = isset($_POST['id_articulo']) ? $_POST['id_articulo'] : '';
-
-    if ($id_articulo) {
-        $query = "SELECT unidad_medida FROM invent_catalogo WHERE id_articulo = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $id_articulo);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $unidad = $result->fetch_assoc();
-
-        if ($unidad) {
-            echo json_encode(['status' => 'success', 'unidad_medida' => $unidad['unidad_medida']]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Unidad de medida no encontrada']);
-        }
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'ID de artículo no válido']);
-    }
-}
 
 ?>
