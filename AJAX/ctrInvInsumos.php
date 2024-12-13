@@ -16,9 +16,12 @@ switch ($action) {
     case 'generarNumeroLote':
         generarNumeroLote();
         break;
-        case 'cargarInsumosPorProveedor':
-            cargarInsumosPorProveedor();
+        case 'cargarInsumos':
+            cargarInsumos();
             break;
+        // case 'cargarInsumosPorProveedor':
+        //     cargarInsumosPorProveedor();
+        //     break;
         case 'cargarProveedores':
             cargarProveedores();
             break;
@@ -91,24 +94,14 @@ switch ($action) {
         }
     }
     
-    function cargarInsumosPorProveedor() {
+
+    function cargarInsumos() {
         global $conn;
-        $proveedor_id = isset($_POST['proveedor_id']) ? intval($_POST['proveedor_id']) : 0;
-    
-        if ($proveedor_id === 0) {
-            echo json_encode(['status' => 'error', 'message' => 'Proveedor no válido']);
-            return;
-        }
-    
         $insumos = new InventarioInsumos($conn);
         try {
-            $data = $insumos->obtenerInsumosPorProveedor($proveedor_id);
-    
+            $data = $insumos->obtenerInsumos(); // Obtiene todos los insumos
             if (empty($data)) {
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => "No se encontraron insumos para este proveedor: $proveedor_id"
-                ]);
+                echo json_encode(['status' => 'error', 'message' => 'No se encontraron insumos disponibles.']);
             } else {
                 echo json_encode(['status' => 'success', 'data' => $data]);
             }
@@ -117,48 +110,31 @@ switch ($action) {
         }
     }
 
-    
-    function cargarProveedores() {
+
+    function guardarInsumo() {
         global $conn;
-        $insumos = new InventarioInsumos($conn);
+        $insumosModel = new InventarioInsumos();
     
-        $id_categoria_insumos = 2; // ID de categoría para insumos
+        // Capturar datos del formulario y ajustar nombres según el SP y la tabla
+        $id_articulo = $_POST['id_articulo'];
+        $proveedor_id = $_POST['proveedor_id'];
+        $fecha = $_POST['fecha'];
+        $hora = $_POST['hora'];
+        $numero_lote = $_POST['numero_lote'];
+        $cantidad_ingresada = $_POST['cantidad_ingresada'];
+        $presentacion = $_POST['presentacion'];
+        $precio_unitario = $_POST['precio_unitario'];
+        $unidad_medida = $_POST['unidad_medida']; // Captura este parámetro adicional
     
         try {
-            $proveedores = $insumos->obtenerProveedoresPorCategoria($id_categoria_insumos);
-            if (empty($proveedores)) {
-                echo json_encode(['status' => 'error', 'message' => 'No se encontraron proveedores para insumos']);
-            } else {
-                echo json_encode(['status' => 'success', 'data' => $proveedores]);
-            }
+            // Llamada al método de inserción con los parámetros necesarios
+            $insumosModel->insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario, $unidad_medida);
+            echo json_encode(['status' => 'success', 'message' => 'Insumo agregado exitosamente']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
     
-
-function guardarInsumo() {
-    global $conn;
-    $insumosModel = new InventarioInsumos();
-
-    // Capturar datos del formulario y ajustar nombres según el SP y la tabla
-    $id_articulo = $_POST['id_articulo'];       // Correspondiente a p_id_articulo
-    $proveedor_id = $_POST['proveedor_id'];     // Correspondiente a p_proveedor_id
-    $fecha = $_POST['fecha'];                   // Correspondiente a p_fecha
-    $hora = $_POST['hora'];                     // Correspondiente a p_hora
-    $numero_lote = $_POST['numero_lote'];       // Correspondiente a p_numero_lote
-    $cantidad_ingresada = $_POST['cantidad_ingresada']; // Correspondiente a p_cantidad_ingresada
-    $presentacion = $_POST['presentacion'];     // Correspondiente a p_presentacion
-    $precio_unitario = $_POST['precio_unitario']; // Correspondiente a p_precio_unitario
-
-    try {
-        // Llamada al método de inserción con los parámetros necesarios
-        $insumosModel->insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario);
-        echo json_encode(['status' => 'success', 'message' => 'Insumo agregado exitosamente']);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
 function cargarInsumosTabla() {
     global $conn;
     header('Content-Type: application/json');

@@ -20,7 +20,6 @@ CREATE TABLE inventario (
     FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
 );
 
-
 DELIMITER //
 
 CREATE PROCEDURE Obt_INS_por_id(IN p_inventins_id INT)
@@ -290,6 +289,59 @@ BEGIN
         precio_total = p_cantidad_ingresada * p_precio_unitario,
         presentacion = p_presentacion
     WHERE id_inv = p_id_inv;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Obt_inven_MP`()
+BEGIN
+    SELECT 
+        inv.id_inv AS ID,
+        inv.numero_lote AS Lote,
+        prov.nombre_empresa AS Proveedor,
+        cat.nombre_articulo AS Artículo,
+        inv.unidad_medida AS unidad_medida,
+        inv.cantidad_ingresada AS cantidad_ingresada, 
+        inv.cantidad_restante AS Cantidad_Disponible,
+        inv.precio_unitario AS precio_unitario,
+        inv.precio_total AS Precio_Total,
+        inv.estado AS Estado 
+         -- o inv.precio_unitario si prefieres
+    FROM 
+        inventario inv
+    JOIN 
+        proveedores prov ON inv.proveedor_id = prov.proveedor_id
+    JOIN 
+        invent_catalogo cat ON inv.id_articulo = cat.id_articulo
+    WHERE 
+        cat.id_categoria = 1; -- Filtra solo los registros de Materia Prima
+END$$
+DELIMITER ;
+
+call fpulpas.sp_Obt_inven_MP();
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ac_InsertarINS`(
+    IN p_id_articulo INT,
+    IN p_proveedor_id INT,
+    IN p_fecha DATE,
+    IN p_hora TIME,
+    IN p_numero_lote VARCHAR(50),
+    IN p_cantidad_ingresada DECIMAL(10, 2),
+    IN p_presentacion VARCHAR(50),
+    IN p_precio_unitario DECIMAL(10, 2),
+    IN p_unidad_medida VARCHAR(20)
+)
+BEGIN
+    -- Inserción de un nuevo registro
+    INSERT INTO inventario (
+        fecha, hora, id_articulo, proveedor_id, numero_lote, unidad_medida,
+        cantidad_ingresada, cantidad_restante, precio_unitario, presentacion, estado
+    )
+    VALUES (
+        p_fecha, p_hora, p_id_articulo, p_proveedor_id, p_numero_lote, p_unidad_medida,
+        p_cantidad_ingresada, p_cantidad_ingresada, p_precio_unitario, p_presentacion, 'disponible'
+    );
 END$$
 DELIMITER ;
 

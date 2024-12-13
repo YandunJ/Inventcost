@@ -14,14 +14,15 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'Fecha' },
-            { data: 'Hora' },
             { data: 'Lote' },
             { data: 'Proveedor' },
             { data: 'Artículo' },
+            { data: 'unidad_medida' },
+            
             { data: 'Cantidad_Disponible' },
+            { data: 'precio_unitario' },
             { data: 'Precio_Total' },
-            { data: 'Estado' },
+            
             {
                 data: 'ID', // Reutilizando el campo ID
                 render: function(data, type, row) {
@@ -62,11 +63,12 @@ $(document).ready(function() {
             }
         },
         columns: [
-            { data: 'Fecha' },
-            { data: 'Hora' },
             { data: 'Lote' },
             { data: 'Proveedor' },
             { data: 'Insumo' },
+            
+            
+            
             { data: 'Unidad_Medida' },
             { data: 'Cantidad' },
             { data: 'Cantidad_Restante' },

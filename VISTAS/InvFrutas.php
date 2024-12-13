@@ -23,7 +23,7 @@
         <div class="content-wrapper">
             <section class="content">
                 <div class="container-fluid">
-                    <h1 class="text-center">Inventario de Materia Prima</h1>
+                    <h1 class="text-center">Inventario Frutas</h1>
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_MP" data-is-new="true">
     Agregar
 </button>
@@ -84,20 +84,20 @@
 
 
 
-                        <div class="form-group">
-                            <label for="precio_total">Precio Total:</label>
-                            <input type="number" id="precio_total" name="precio_total" step="0.01" disabled>
-                        </div>
-
-                        
 <div class="form-group">
-    <label for="precio_unitario">Precio Unitario:</label>
-    <div class="input-quantity">
-        <button type="button" class="btn-minus quantity-decimal">-</button>
-        <input type="number" id="precio_unitario" name="precio_unitario" value="0.00" min="0" step="0.01" required>
-        <button type="button" class="btn-plus quantity-decimal">+</button>
+        <label for="precio_total">Precio Total:</label>
+        <div class="input-quantity">
+            <button type="button" class="btn-minus quantity-decimal">-</button>
+            <input type="number" id="precio_total" name="precio_total" value="0.00" min="0" step="0.01" required>
+            <button type="button" class="btn-plus quantity-decimal">+</button>
+        </div>
     </div>
-</div>
+
+    <div class="form-group">
+        <label for="precio_unitario">Precio Unitario:</label>
+        <input type="number" id="precio_unitario" name="precio_unitario" value="0.00" readonly>
+    </div>
+
                     </div>
 
                     <!-- Fila 3 -->
@@ -157,13 +157,15 @@
                             <thead>
                                 <tr>
                                 <th>Lote</th>
-                              
-                                    
                                     <th>Proveedor</th>
                                     <th>Artículo</th>
-                                    <th>Stock</th>
-                                    <th>Estado</th>
+                                    <th>Unid. Medida</th>
+                                    <th>Cant. Inicial</th>
+                                    <th>Disponible</th>
+                                    <th>Precio Unit.</th>
                                     <th>Precio Total</th>
+                                    <th>Estado</th>
+                                    
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -309,7 +311,7 @@
            <!-- Main Footer -->
            <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
-                Custom footer text
+                FRAN FRUIT
             </div>
             <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
         </footer>

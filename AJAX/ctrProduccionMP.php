@@ -20,7 +20,7 @@ switch ($action) {
 }
 
 function cargarMateriaPrima() {
-    $produccionMP = new ProduccionMateriaPrima();
+    $produccionMP = new Produccion();
     try {
         $data = $produccionMP->obtenerMateriaPrima();
         echo json_encode(['status' => 'success', 'data' => $data]);

@@ -127,9 +127,7 @@ $(document).ready(function () {
      edit-btn" href="#" data-id="${row.id_articulo}">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <a class="dropdown-item delete-btn" href="#" data-id="${row.id_articulo}">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                </a>
+                              
                             </div>
                         </div>
                     `;

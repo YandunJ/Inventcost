@@ -1,61 +1,54 @@
-    $(document).ready(function() {
-        // Cargar proveedores
-        $.ajax({
-            url: "../AJAX/ctrInvFrutas.php",
-            type: "POST",
-            data: { action: 'cargarProveedores' },
-            dataType: "json",
-            success: function(response) {
-                let options = '<option value="">Seleccione proveedor</option>';
-                if (response.status === 'success' && Array.isArray(response.data)) {
-                    response.data.forEach(function(proveedor) {
-                        options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
-                    });
-                    $("#proveedor_id").html(options);
-                } else {
-                    alert("Error al cargar los proveedores.");
-                    console.error("Error loading proveedores: ", response);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("Ocurrió un error al cargar los proveedores.");
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-            }
-        });
-
-        // Cuando el proveedor cambia, cargar las frutas correspondientes
-        $('#proveedor_id').on('change', function() {
-            var proveedor_id = $(this).val();
-            
-            if (proveedor_id) {
-                $.ajax({
-                    url: "../AJAX/ctrInvFrutas.php",
-                    type: "POST",
-                    data: { action: 'cargarFrutasPorProveedor', proveedor_id: proveedor_id },
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.status === 'success' && Array.isArray(response.data)) {
-                            let options = '<option value="">Seleccione fruta</option>';
-                            response.data.forEach(function(fruta) {
-                                options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
-                            });
-                            $("#id_articulo").html(options);
-                        } else {
-                            alert(response.message || "No se encontraron frutas para este proveedor.");
-                            $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert("Ocurrió un error al cargar las frutas.");
-                        console.error("Error: ", error);
-                        console.error("Response: ", xhr.responseText);
-                    }
+$(document).ready(function() {
+    // Cargar proveedores
+    $.ajax({
+        url: "../AJAX/ctrInvFrutas.php",
+        type: "POST",
+        data: { action: 'cargarProveedores' },
+        dataType: "json",
+        success: function(response) {
+            let options = '<option value="">Seleccione proveedor</option>';
+            if (response.status === 'success' && Array.isArray(response.data)) {
+                response.data.forEach(function(proveedor) {
+                    options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
                 });
+                $("#proveedor_id").html(options);
             } else {
-                $("#id_articulo").html('<option value="">Seleccionar fruta</option>');
+                alert("Error al cargar los proveedores.");
+                console.error("Error loading proveedores: ", response);
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            alert("Ocurrió un error al cargar los proveedores.");
+            console.error("Error: ", error);
+            console.error("Response: ", xhr.responseText);
+        }
+    });
+
+    // Cargar frutas de forma independiente
+    $.ajax({
+        url: "../AJAX/ctrInvFrutas.php",
+        type: "POST",
+        data: { action: 'cargarFrutas' },
+        dataType: "json",
+        success: function(response) {
+            let options = '<option value="">Seleccione fruta</option>';
+            if (response.status === 'success' && Array.isArray(response.data)) {
+                response.data.forEach(function(fruta) {
+                    options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
+                });
+                $("#id_articulo").html(options);
+            } else {
+                alert("Error al cargar las frutas.");
+                console.error("Error loading frutas: ", response);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Ocurrió un error al cargar las frutas.");
+            console.error("Error: ", error);
+            console.error("Response: ", xhr.responseText);
+        }
+    });
+
 
 
         
@@ -99,16 +92,35 @@
             });
         });
         
-
-  
-/*
-    $('#cantidad, #precio_unit').on('input', function() {
-        const cantidad = parseFloat($('#cantidad').val()) || 0;
-        const precioUnit = parseFloat($('#precio_unit').val()) || 0;
-        const precioTotal = cantidad * precioUnit;
-        $('#precio_total').val(precioTotal.toFixed(2));
-    });
-*/
+        $(document).ready(function () {
+            // Función para actualizar un campo con botones de incremento/decremento
+            function updateQuantity(amount, inputId, step) {
+                const inputField = document.getElementById(inputId);
+                if (!inputField) return;
+                const minValue = parseFloat(inputField.getAttribute('min')) || 0;
+                const currentValue = parseFloat(inputField.value) || minValue;
+                const newValue = Math.max(currentValue + (amount * step), minValue);
+                inputField.value = newValue.toFixed(step === 1 ? 0 : 2);
+                inputField.dispatchEvent(new Event('input')); // Disparar evento de input
+            }
+        
+            // Botones de incremento/decremento
+            $(".btn-minus, .btn-plus").on("click", function () {
+                const inputId = $(this).siblings("input").attr("id");
+                const step = $(this).hasClass("quantity-decimal") ? 0.01 : 1;
+                const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+                updateQuantity(amount, inputId, step);
+            });
+        
+            // Calcular Precio Unitario automáticamente
+            $('#cantidad_ingresada, #precio_total').on('input', function () {
+                const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0
+                const precioTotal = parseFloat($('#precio_total').val()) || 0;
+                const precioUnitario = precioTotal / cantidad;
+                $('#precio_unitario').val(precioUnitario.toFixed(2));
+            });
+        });
+        
 // Inicializar DataTable
 const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
     ajax: {
@@ -128,9 +140,12 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         { data: 'Lote' },
         { data: 'Proveedor' },
         { data: 'Artículo' },
+        { data: 'unidad_medida' },
+        { data: 'cantidad_ingresada' },
         { data: 'Cantidad_Disponible' },
-        { data: 'Estado' },
+        { data: 'precio_unitario' },
         { data: 'Precio_Total' },
+        { data: 'Estado' },
         {
             data: null,
             render: function (data, type, row) {

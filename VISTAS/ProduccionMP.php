@@ -65,14 +65,15 @@
         <table class="table table-bordered" id="tablaSeleccionarMP">
             <thead>
                 <tr>
-                    <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Lote</th>
-                    <th>Proveedor</th>
-                    <th>Artículo</th>
-                    <th>Stock</th>
-                    <th>Precio Total</th>
-                    <th>Estado</th>
+                <th>Lote</th>
+                                    <th>Proveedor</th>
+                                    <th>Artículo</th>
+                                    <th>Unid. Medida</th>
+                                    
+                                    <th>Saldo Disp.</th>
+                                    <th>Precio Unit.</th>
+                                    <th>Precio Total</th>
+                                    
                     <th>Detalles</th> <!-- Nueva columna -->
                     <th>Cantidad a Consumir</th>
                     <th>Seleccionar</th>
@@ -85,22 +86,20 @@
     <!-- Pestaña Insumos -->
     <div class="tab-pane fade" id="insumos" role="tabpanel">
         <h3>Seleccionar Insumos</h3>
-        <table class="table table-bordered" id="tablaSeleccionarINS">
+        <table class="table table-bordered table-hover table-compact" id="tablaSeleccionarINS">
             <thead>
                 <tr>
                     <th>Fecha</th>
-                    <th>Hora</th>
-                    <th>Lote</th>
                     <th>Proveedor</th>
-                    <th>Insumo</th>
-                    <th>Unidad de Medida</th>
-                    <th>Cantidad Ingresada</th>
-                    <th>Cantidad Restante</th>
-                    <th>Precio Unitario</th>
-                    <th>Precio Total</th>
-                    <th>Presentación</th>
-                    <th>Estado</th>
-                    <th>Detalles</th>
+                            <th>Insumo</th>
+                            
+                            <th>Ud Medida</th>
+                            <th>Cantidad</th>
+                            <th>Stock</th>
+                            <th>Precio Unitario</th>
+                            <th>Precio Total</th>
+                            <th>Presentación</th>
+                            <th>Estado</th>
                     <th>Cantidad a Consumir</th>
                     <th>Seleccionar</th>
                 </tr>
@@ -124,9 +123,9 @@
 
 
 
-  <!-- Modal de Detalles -->
+<!-- MODAL DETALLES -->z
 <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="detalleModalLabel">Detalles del Lote</h5>
@@ -135,72 +134,123 @@
                 </button>
             </div>
             <div class="modal-body">
-    <!-- Sección de Información General -->
-    <div class="modal-section">
-        <div class="modal-section-title">Información General</div>
-        <p><strong>Fecha de Ingreso:</strong> <span id="detalleFecha"></span></p>
-        <p><strong>Hora de Ingreso:</strong> <span id="detalleHora"></span></p>
-        <p><strong>Número de Lote:</strong> <span id="detalleLote"></span></p>
-        <p><strong>Proveedor:</strong> <span id="detalleProveedor"></span></p>
-    </div>
-
-    <!-- Sección de Detalles de Artículo -->
-    <div class="modal-section">
-        <div class="modal-section-title">Detalles de Artículo</div>
-        <p><strong>Artículo:</strong> <span id="detalleArticulo"></span></p>
-        <p><strong>Cantidad Ingresada:</strong> <span id="detalleCantidadIngresada"></span></p>
-        <p><strong>Cantidad Disponible:</strong> <span id="detalleCantidadRestante"></span></p>
-        <p><strong>Unidad de Medida:</strong> <span id="detalleUnidadMedida"></span></p>
-        <p><strong>Presentación:</strong> <span id="detallePresentacion"></span></p>
-    </div>
-
-    <!-- Sección de Precios -->
-    <div class="modal-section">
-        <div class="modal-section-title">Precios</div>
-        <p><strong>Precio Unitario:</strong> <span id="detallePrecioUnitario"></span></p>
-        <p><strong>Precio Total:</strong> <span id="detallePrecioTotal"></span></p>
-    </div>
-
-    <!-- Sección de Información Adicional -->
-    <div class="modal-section">
-        <div class="modal-section-title">Información Adicional</div>
-        <p><strong>Estado:</strong> <span id="detalleEstado"></span></p>
-        <p><strong>Brix:</strong> <span id="detalleBrix"></span></p>
-        <p><strong>Peso Unitario:</strong> <span id="detallePesoUnitario"></span></p>
-        <p><strong>Bultos o Canastas:</strong> <span id="detalleBultos"></span></p>
-    </div>
-
-    <!-- Sección de Observaciones y Aprobación -->
-    <div class="modal-section">
-        <div class="modal-section-title">Observaciones y Aprobación</div>
-        <p><strong>Observación:</strong> <span id="detalleObservacion"></span></p>
-        <p><strong>Aprobación del Lote:</strong> <span id="detalleAprobacion"></span></p>
-    </div>
-</div>
- 
-
+                <div class="container-fluid">
+                    <div class="row">
+                        <!-- Columna 1 -->
+                        <div class="col-md-4">
+                            <h6 class="section-title">Información General</h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Fecha de Ingreso</strong></td>
+                                        <td id="detalleFecha"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hora de Ingreso</strong></td>
+                                        <td id="detalleHora"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Número de Lote</strong></td>
+                                        <td id="detalleLote"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Proveedor</strong></td>
+                                        <td id="detalleProveedor"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Columna 2 -->
+                        <div class="col-md-4">
+                            <h6 class="section-title">Detalles de Artículo</h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Artículo</strong></td>
+                                        <td id="detalleArticulo"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cantidad Ingresada</strong></td>
+                                        <td id="detalleCantidadIngresada"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Cantidad Disponible</strong></td>
+                                        <td id="detalleCantidadRestante"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Unidad de Medida</strong></td>
+                                        <td id="detalleUnidadMedida"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Presentación</strong></td>
+                                        <td id="detallePresentacion"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Columna 3 -->
+                        <div class="col-md-4">
+                            <h6 class="section-title">Precios</h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Precio Unitario</strong></td>
+                                        <td id="detallePrecioUnitario"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Precio Total</strong></td>
+                                        <td id="detallePrecioTotal"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h6 class="section-title">Información Adicional</h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Estado</strong></td>
+                                        <td id="detalleEstado"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Brix</strong></td>
+                                        <td id="detalleBrix"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Peso Unitario</strong></td>
+                                        <td id="detallePesoUnitario"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Bultos o Canastas</strong></td>
+                                        <td id="detalleBultos"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h6 class="section-title">Observaciones y Aprobación</h6>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Observación</strong></td>
+                                        <td id="detalleObservacion"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Aprobación del Lote</strong></td>
+                                        <td id="detalleAprobacion"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
-                    </div>
-                </div>
-
-                <!-- Resumen de Consumo -->
-                <div class="mt-4 p-3 border rounded bg-light">
-                    <h4>Resumen de Consumo</h4>
-                    <p>Total Producción: $<span id="totalProduccion">0.00</span></p>
-                </div>
-
-                <!-- Botón de Confirmación -->
-                <button type="button" class="btn btn-primary mt-3" id="registrarProduccion">Registrar Producción</button>
-            </div>
-        </section>
-    </div>
-</div>
-
 <!-- Scripts -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
 <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

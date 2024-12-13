@@ -30,7 +30,7 @@
             <!-- Main content -->
             <section class="content">
             <div class="container-fluid">
-            <h1 class="text-center">Gestión de Insumos</h1>
+            <h1 class="text-center">Inventario de Insumos</h1>
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_Insumos" data-is-new="true">
                         Agregar
                     </button>
@@ -78,12 +78,12 @@
                                                 <input type="text" id="numero_lote" name="numero_lote" class="form-control" readonly>
                                             </div>
                                             <div class="form-group">
-                                                <label for="cantidad_ingresada">Cantidad Ingresada:</label>
-                                                <div class="quantity-input">
-                                                    <button type="button" class="btn-minus quantity-decimal">-</button>
-                                                    <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" value="0" required>
-                                                    <button type="button" class="btn-plus quantity-decimal">+</button>
-                                                </div>
+                            <label for="cantidad_ingresada">Cantidad Ingresada:</label>
+                            <div class="quantity-input">
+                                <button type="button" class="btn-minus quantity-integer">-</button>
+                                <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" value="0" min="0" required>
+                                <button type="button" class="btn-plus quantity-integer">+</button>
+                            </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="unidad_medida">Unidad de Medida:</label>
@@ -92,13 +92,17 @@
                                         </div>
                                         <!-- Fila 3 -->
                                         <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="precio_unitario">Precio Unitario:</label>
-                                                <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="precio_total">Precio Total:</label>
-                                                <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" readonly>
+                                        <div class="form-group">
+                            <label for="precio_unitario">Precio Unitario:</label>
+                            <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio_total">Precio Total:</label>
+                            <div class="quantity-input">
+                                <button type="button" class="btn-minus quantity-decimal">-</button>
+                                <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" value="0.00">
+                                <button type="button" class="btn-plus quantity-decimal">+</button>
+                            </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="presentacion">Presentación:</label>
@@ -125,11 +129,9 @@
     <thead>
         <tr>
 
-                            <th>ID</th>
+                             <th>lote</th>
+                             <th>Proveedor</th>
                             <th>Insumo</th>
-                            <th>Proveedor</th>
-                            <th>Fecha</th>
-                            <th>Hora</th>
                             <th>Ud Medida</th>
                             <th>Cantidad</th>
                             <th>Stock</th>

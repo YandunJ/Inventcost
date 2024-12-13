@@ -34,13 +34,10 @@ class InventarioInsumos {
     }
     
 
-
-    public function insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario) {
-        // Ajustar la llamada al procedimiento almacenado ac_InsertarINS con los parámetros correctos
-        $stmt = $this->conn->prepare("CALL ac_InsertarINS(?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('iisssssd', $id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario);
-
-
+    public function insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario, $unidad_medida) {
+        $stmt = $this->conn->prepare("CALL ac_InsertarINS(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param('iisssdsds', $id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario, $unidad_medida);
+    
         if ($stmt->execute()) {
             return true;
         } else {
@@ -49,6 +46,7 @@ class InventarioInsumos {
         
         $stmt->close();
     }
+    
 
     // FUNCION ANTERIOR PARA INSERTAR O ACTULIZAR NO SE USA ACTULAMENTE: 
     public function insertarActualizar($inventins_id, $insumo_id, $proveedor_id, $fecha_cad, $unidad_medida, $cantidad, $precio_unitario, $precio_total) {
@@ -102,64 +100,81 @@ class InventarioInsumos {
     }
 
     
-    public function obtenerProveedoresPorCategoria($id_categoria) {
-        $query = "
-            SELECT DISTINCT p.proveedor_id, p.nombre_empresa 
-            FROM proveedores p
-            JOIN invent_catalogo ic ON p.proveedor_id = ic.proveedor_id
-            WHERE ic.id_categoria = ? AND ic.estado = 'disponible'
-        ";
+    // public function obtenerProveedoresPorCategoria($id_categoria) {
+    //     $query = "
+    //         SELECT DISTINCT p.proveedor_id, p.nombre_empresa 
+    //         FROM proveedores p
+    //         JOIN invent_catalogo ic ON p.proveedor_id = ic.proveedor_id
+    //         WHERE ic.id_categoria = ? AND ic.estado = 'disponible'
+    //     ";
+    //     $stmt = $this->conn->prepare($query);
+    //     if (!$stmt) {
+    //         throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+    //     }
+
+    //     $stmt->bind_param("i", $id_categoria);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
+    //     $proveedores = [];
+
+    //     while ($row = $result->fetch_assoc()) {
+    //         $proveedores[] = $row;
+    //     }
+
+    //     $stmt->close();
+    //     return $proveedores;
+    // }
+
+    // public function obtenerInsumosPorProveedor($proveedor_id) {
+    //     $query = "SELECT id_articulo, nombre_articulo 
+    //               FROM invent_catalogo 
+    //               WHERE proveedor_id = ? AND estado = 'disponible'";
+    //     $stmt = $this->conn->prepare($query);
+    //     if (!$stmt) {
+    //         throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+    //     }
+    
+    //     $stmt->bind_param("i", $proveedor_id);
+    //     $stmt->execute();
+    //     $result = $stmt->get_result();
+    
+    //     if (!$result) {
+    //         throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+    //     }
+    
+    //     $insumos = [];
+    //     while ($row = $result->fetch_assoc()) {
+    //         $insumos[] = $row;
+    //     }
+    
+    //     $stmt->close();
+    
+    //     // Registro para depuración, como en materia prima
+    //     if (empty($insumos)) {
+    //         error_log("No se encontraron insumos para proveedor_id: $proveedor_id");
+    //     }
+    
+    //     return $insumos;
+    // }
+    
+    public function obtenerInsumos() {
+        $query = "SELECT id_articulo, nombre_articulo FROM invent_catalogo WHERE id_categoria = 2";
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
             throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
         }
-
-        $stmt->bind_param("i", $id_categoria);
+    
         $stmt->execute();
         $result = $stmt->get_result();
-        $proveedores = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $proveedores[] = $row;
-        }
-
-        $stmt->close();
-        return $proveedores;
-    }
-
-    public function obtenerInsumosPorProveedor($proveedor_id) {
-        $query = "SELECT id_articulo, nombre_articulo 
-                  FROM invent_catalogo 
-                  WHERE proveedor_id = ? AND estado = 'disponible'";
-        $stmt = $this->conn->prepare($query);
-        if (!$stmt) {
-            throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
-        }
+        $insumos = array();
     
-        $stmt->bind_param("i", $proveedor_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-    
-        if (!$result) {
-            throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
-        }
-    
-        $insumos = [];
         while ($row = $result->fetch_assoc()) {
             $insumos[] = $row;
         }
     
         $stmt->close();
-    
-        // Registro para depuración, como en materia prima
-        if (empty($insumos)) {
-            error_log("No se encontraron insumos para proveedor_id: $proveedor_id");
-        }
-    
         return $insumos;
     }
-    
-
     
 }
 

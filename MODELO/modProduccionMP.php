@@ -1,7 +1,7 @@
 <?php
 // MODELO/modProduccionMP.php
 
-class ProduccionMateriaPrima {
+class Produccion {
     private $conn;
 
     public function __construct() {

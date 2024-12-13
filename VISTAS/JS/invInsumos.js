@@ -1,61 +1,53 @@
-$(document).ready(function () {
-    // Cargar proveedores al cargar la página
+$(document).ready(function() {
+    // Cargar proveedores
     $.ajax({
-        url: "../AJAX/ctrInvInsumos.php",
+        url: "../AJAX/ctrInvFrutas.php",
         type: "POST",
         data: { action: 'cargarProveedores' },
         dataType: "json",
-        success: function (response) {
+        success: function(response) {
             let options = '<option value="">Seleccione proveedor</option>';
             if (response.status === 'success' && Array.isArray(response.data)) {
-                response.data.forEach(function (proveedor) {
+                response.data.forEach(function(proveedor) {
                     options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
                 });
                 $("#proveedor_id").html(options);
             } else {
-                alert("Error al cargar los proveedores: " + response.message);
-                console.error("Error cargando proveedores: ", response);
+                alert("Error al cargar los proveedores.");
+                console.error("Error loading proveedores: ", response);
             }
         },
-        error: function (xhr, status, error) {
+        error: function(xhr, status, error) {
             alert("Ocurrió un error al cargar los proveedores.");
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
         }
     });
-
-// Cuando el proveedor cambia, cargar los insumos correspondientes
-$("#proveedor_id").on("change", function () {
-    const proveedor_id = $(this).val();
-
-    if (proveedor_id) {
-        $.ajax({
-            url: "../AJAX/ctrInvInsumos.php",
-            type: "POST",
-            data: { action: 'cargarInsumosPorProveedor', proveedor_id: proveedor_id },
-            dataType: "json",
-            success: function (response) {
-                let options = '<option value="">Seleccione insumo</option>';
-                if (response.status === 'success' && Array.isArray(response.data)) {
-                    response.data.forEach(function (insumo) {
-                        options += `<option value="${insumo.id_articulo}">${insumo.nombre_articulo}</option>`;
-                    });
-                    $("#id_articulo").html(options);
-                } else {
-                    alert(response.message || "No se encontraron insumos para este proveedor.");
-                    $("#id_articulo").html('<option value="">Seleccione insumo</option>');
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Ocurrió un error al cargar los insumos.");
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-            }
-        });
-    } else {
-        $("#id_articulo").html('<option value="">Seleccione insumo</option>');
+// Cargar insumos de forma independiente
+$.ajax({
+    url: "../AJAX/ctrInvInsumos.php",
+    type: "POST",
+    data: { action: 'cargarInsumos' },
+    dataType: "json",
+    success: function (response) {
+        let options = '<option value="">Seleccione insumo</option>';
+        if (response.status === 'success' && Array.isArray(response.data)) {
+            response.data.forEach(function (insumo) {
+                options += `<option value="${insumo.id_articulo}">${insumo.nombre_articulo}</option>`;
+            });
+            $("#id_articulo").html(options);
+        } else {
+            alert("Error al cargar los insumos.");
+            console.error("Error loading insumos: ", response);
+        }
+    },
+    error: function (xhr, status, error) {
+        alert("Ocurrió un error al cargar los insumos.");
+        console.error("Error: ", error);
+        console.error("Response: ", xhr.responseText);
     }
 });
+
 
     
 
@@ -113,7 +105,8 @@ $("#proveedor_id").on("change", function () {
             const minValue = parseFloat(inputField.getAttribute('min')) || 0;
             const currentValue = parseFloat(inputField.value) || minValue;
             const newValue = Math.max(currentValue + (amount * step), minValue);
-            inputField.value = newValue.toFixed(2);
+            inputField.value = newValue.toFixed(step === 1 ? 0 : 2); // Enteros o decimales
+            inputField.dispatchEvent(new Event('input')); // Disparar evento input
         }
     
         $(".btn-minus, .btn-plus").on("click", function () {
@@ -122,7 +115,16 @@ $("#proveedor_id").on("change", function () {
             const amount = $(this).hasClass("btn-plus") ? 1 : -1;
             updateQuantity(amount, inputId, step);
         });
+    
+        // Calcular precio unitario dinámicamente
+        $('#cantidad_ingresada, #precio_total').on('input', function () {
+            const cantidad = parseFloat($('#cantidad_ingresada').val()) || 0;
+            const precioTotal = parseFloat($('#precio_total').val()) || 0;
+            const precioUnitario = cantidad > 0 ? (precioTotal / cantidad).toFixed(2) : 0;
+            $('#precio_unitario').val(precioUnitario);
+        });
     });
+    
     
         
    // Calcular el precio total
@@ -151,11 +153,12 @@ $('#cantidad, #precio_unitario').on('input', function() {
                 }
             },
             columns: [
-                { data: 'ID' },
-                { data: 'Insumo' },
+                { data: 'Lote' },
                 { data: 'Proveedor' },
-                { data: 'Fecha' },
-                { data: 'Hora' },
+                { data: 'Insumo' },
+                
+                
+                
                 { data: 'Unidad_Medida' },
                 { data: 'Cantidad' },
                 { data: 'Cantidad_Restante' },
