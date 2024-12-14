@@ -1,40 +1,55 @@
 <?php
-//MODELO/modProveedores.php
+// MODELO/modProveedores.php
 
 class Proveedores {
-    private $db;
+    private $conn;
 
-    public function __construct($db) {
-        $this->db = $db;
+    public function __construct() {
+        $conexion = new Cls_DataConnection();
+        $this->conn = $conexion->FN_getConnect();
     }
 
-    public function acciones_proveedor($proveedor_id, $nombre_empresa, $representante, $direccion, $correo, $telefono) {
-        $stmt = $this->db->prepare("CALL acciones_proveedor(?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssss", $proveedor_id, $nombre_empresa, $representante, $direccion, $correo, $telefono);
-        if (!$stmt->execute()) {
-            throw new Exception($stmt->error); // Lanza una excepción si hay un error
-        }
-        return true;
-    }
-    
+    // CRUD para Proveedores (Insertar, Actualizar, Eliminar)
+    public function prov_CRUD($accion, $proveedor_id, $nombre_empresa, $representante, $correo, $telefono) {
+        $stmt = $this->conn->prepare("CALL prov_CRUD(?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param('sissss', $accion, $proveedor_id, $nombre_empresa, $representante, $correo, $telefono);
+        $result = $stmt->execute();
+        $stmt->close();
 
-    public function pa_obtener_proveedores() {
-        $result = $this->db->query("CALL pa_obtener_proveedores()");
-        return $result->fetch_all(MYSQLI_ASSOC);
+        return $result;
     }
 
-    public function pa_eliminar_proveedor($proveedor_id) {
-        $stmt = $this->db->prepare("CALL pa_eliminar_proveedor(?)");
-        $stmt->bind_param("i", $proveedor_id);
-        return $stmt->execute();
+    // Eliminar un proveedor
+    public function prov_eliminar($proveedor_id) {
+        $stmt = $this->conn->prepare("CALL prov_eliminar(?)");
+        $stmt->bind_param('i', $proveedor_id);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        return $result;
     }
 
-    public function pa_obt_prov_id($proveedor_id) {
-        $stmt = $this->db->prepare("CALL pa_obt_prov_id(?)");
-        $stmt->bind_param("i", $proveedor_id);
+    // Obtener todos los proveedores
+    public function prov_datos() {
+        $stmt = $this->conn->prepare("CALL prov_datos()");
         $stmt->execute();
-        return $stmt->get_result()->fetch_assoc();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $data;
+    }
+
+    // Obtener datos de un proveedor por ID
+    public function prov_datos_id($proveedor_id) {
+        $stmt = $this->conn->prepare("CALL prov_datos_id(?)");
+        $stmt->bind_param('i', $proveedor_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_assoc();
+        $stmt->close();
+
+        return $data;
     }
 }
 ?>
-
