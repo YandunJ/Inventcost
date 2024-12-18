@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="../FILES/centrForm.css">
-    <link rel="stylesheet" href="../FILES/InvMPModal.css">
+    <!-- <link rel="stylesheet" href="../FILES/centrForm.css"> -->
+    <!-- <link rel="stylesheet" href="../FILES/InvMPModal.css"> -->
+    <link rel="stylesheet" href="../FILES/global-style.css">
     <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
 </head>
@@ -27,9 +28,11 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                <h1 class="text-center">Registrar Proveedores</h1>
+                <h1 class="text-center">Proveedores</h1>
+                <div class="text-right mb-3">
                 <!-- Botón para abrir el modal -->
 <button class="btn btn-primary mb-3" id="addProveedorButton">Agregar Nuevo</button>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="proveedorModal" tabindex="-1" aria-labelledby="proveedorModalLabel" aria-hidden="true">
@@ -106,7 +109,7 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <!-- Custom JS -->
     <script src="JS/prov.js"></script> <!-- Ruta al archivo JS -->
-
+    <script src="JS/validaciones.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 
 </body>

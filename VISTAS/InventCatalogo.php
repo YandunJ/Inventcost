@@ -13,7 +13,7 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="../Public/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
+    <link rel="stylesheet" href="../FILES/global-style.css">
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -27,13 +27,13 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h3 class="text-center">Catálogo Inventario   </h3>
-
+                    <h1 class="text-center">Catálogo Inventario   </h1>
+                    <div class="text-right mb-3">
                     <!-- Botón para abrir el modal -->
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario">
                         Agregar 
                     </button>
-
+                    </div>
                     
             <!-- Modal para el formulario -->
             <div class="modal fade" id="modalFormulario" tabindex="-1" aria-labelledby="modalFormularioLabel" aria-hidden="true">
@@ -109,6 +109,8 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
         <script src="JS/invCat.js"></script>
+        <script src="JS/validaciones.js"></script>
+        <script src="JS/cerrarsesion.js"></script>
     </div>
 </body>
 </html>

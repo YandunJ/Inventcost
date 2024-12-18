@@ -134,6 +134,8 @@ $(document).ready(function () {
                 }
             }
         ]
+        ,
+        language: dataTableLanguage
     });
 
     var editing = false;

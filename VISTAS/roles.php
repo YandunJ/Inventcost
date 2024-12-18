@@ -4,53 +4,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Rol</title>
+    <title>Gestión de Roles</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
+    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="../FILES/centrForm.css">
-    <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
+    <!-- Estilo común para formularios -->
+    <link rel="stylesheet" href="../FILES/global-style.css">
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
 </head>
 <body>
 <div class="wrapper">
     <!-- Navbar -->
-    <?php include 'MODULOS/ModuloNavbar.php';?>
-    <!-- Main Sidebar Container -->
-    <?php include 'MODULOS/MDAdminSidebar.php';?>
-    <!-- Content Wrapper. Contains page content -->
+    <?php include 'MODULOS/ModuloNavbar.php'; ?>
+    <!-- Sidebar -->
+    <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+    <!-- Content Wrapper -->
     <div class="content-wrapper">
-        <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
-                <h1 class="text-center">Agregar Rol</h1>
-                <div class="form-container">
-                    <form id="roleForm">
-                    <div class="form-group">
-                            <label for="rol_nombre">Nombre del Rol:</label>
-                            <input type="text" id="rol_nombre" name="rol_nombre" class="form-control" required maxlength="25" placeholder="Ej. Administrador">
-                        </div>
-                        <div class="form-group">
-                            <label for="rol_descripcion">Descripción del Rol:</label>
-                            <input type="text" id="rol_descripcion" name="rol_descripcion" class="form-control" required maxlength="50" placeholder="Ej. Acceso total al sistema">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="rol_area_trabajo">Permisos en el Sistema:</label>
-                            <select id="rol_area_trabajo" name="rol_area_trabajo" class="form-control" required></select>
-                        </div>
-                        <button type="submit" class="btn btn-primary ">Agregar Rol</button>
-                        <button type="button" class="btn btn-secondary " id="cancelButton">Cancelar</button>
-
-                    </form>
+                <h1 class="text-center"> Roles De Usuario</h1>
+                <div class="text-right mb-3">
+                    <!-- Botón para abrir el modal -->
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#roleModal">Agregar</button>
                 </div>
-
-                <!-- DataTable para mostrar los roles -->
-                <h2 class="text-center">Listado de Roles</h2>
+                <!-- Tabla de Roles -->
                 <table id="rolesTable" class="table table-bordered table-hover table-compact">
                     <thead>
                         <tr>
@@ -63,32 +44,55 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Los datos se llenarán mediante AJAX -->
+                        <!-- Datos llenados mediante AJAX -->
                     </tbody>
                 </table>
             </div>
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
+
+    <!-- Modal para el formulario -->
+    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roleModalLabel">Agregar Rol</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="roleForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="rol_nombre">Nombre del Rol:</label>
+                            <input type="text" id="rol_nombre" name="rol_nombre" class="form-control" required maxlength="25" placeholder="Ej. Supervisor">
+                        </div>
+                        <div class="form-group">
+                            <label for="rol_descripcion">Descripción del Rol:</label>
+                            <input type="text" id="rol_descripcion" name="rol_descripcion" class="form-control" required maxlength="50" placeholder="Ej. Acceso total al sistema">
+                        </div>
+                        <div class="form-group">
+                            <label for="rol_area_trabajo">Permisos en el Sistema:</label>
+                            <select id="rol_area_trabajo" name="rol_area_trabajo" class="form-control" required></select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- ./wrapper -->
-<!-- SweetAlert2 -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- jQuery -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
 <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
 <script src="../Public/dist/js/adminlte.min.js"></script>
-<!-- DataTables JS -->
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<!-- Custom JS -->
-<script src="JS/roles.js"></script> <!-- Ruta al archivo JS -->
-<!-- Incluir el script de cierre de sesión -->
-<script src="JS/cerrarsesion.js"></script>
-
+<script src="JS/roles.js"></script>
+<script src="JS/validaciones.js"></script>
 </body>
 </html>

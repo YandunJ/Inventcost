@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
 
-    
+<link rel="stylesheet" href="../FILES/global-style.css">
     <link rel="stylesheet" href="../FILES/InvMPModal.css">
     <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
@@ -31,10 +31,11 @@
             <section class="content">
             <div class="container-fluid">
             <h1 class="text-center">Inventario de Insumos</h1>
+            <div class="text-right mb-3">
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_Insumos" data-is-new="true">
                         Agregar
                     </button>
-
+                    </div>
                  
                     <!-- Modal -->
                     <div class="modal fade" id="Form_Insumos" tabindex="-1" aria-hidden="true">
@@ -164,6 +165,7 @@
 
     <!-- Custom JS  -->
     <script src="JS/invInsumos.js"></script>
+    <script src="JS/validaciones.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 
     

@@ -187,6 +187,8 @@ $('#cantidad, #precio_unitario').on('input', function() {
                     }
                 }
             ]
+            ,
+        language: dataTableLanguage
         });
 
 // Abrir modal de nuevo registro

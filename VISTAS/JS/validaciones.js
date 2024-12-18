@@ -1,22 +1,21 @@
-$(document).ready(function() {
-    // Función para actualizar la cantidad
-    function updateQuantity(amount, inputId) {
-        const inputField = document.getElementById(inputId);
-        if (!inputField) return;
-        const minValue = parseFloat(inputField.getAttribute('min')) || 0;
-        const stepValue = parseFloat(inputField.getAttribute('step')) || 1;
-        const currentValue = parseFloat(inputField.value) || minValue;
 
-        const newValue = Math.max(currentValue + (amount * stepValue), minValue);
-        inputField.value = newValue.toFixed(2);
-    }
+    
+   // Configuración general para DataTables en español
+const dataTableLanguage = {
+    lengthMenu: "Ver _MENU_ registros",
+    zeroRecords: "No se encontraron resultados",
+    info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+    infoEmpty: "No hay registros disponibles",
+    infoFiltered: "(filtrado de _MAX_ registros totales)",
+    search: "Buscar:",
+    paginate: {
+        first: "Primero",
+        last: "Último",
+        next: "Siguiente",
+        previous: "Anterior"
+    },
+    loadingRecords: "Cargando...",
+    processing: "Procesando..."
+};
 
-    // Eventos para los botones
-    $(".btn-minus").on("click", function() {
-        updateQuantity(-1, "cantidad_ingresada");
-    });
 
-    $(".btn-plus").on("click", function() {
-        updateQuantity(1, "cantidad_ingresada");
-    });
-});

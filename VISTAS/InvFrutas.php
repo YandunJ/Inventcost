@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <!-- <link rel="stylesheet" href="../FILES/InvMPform.css"> -->
     <link rel="stylesheet" href="../FILES/InvMPModal.css">
+    <link rel="stylesheet" href="../FILES/global-style.css">
     
 <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
@@ -24,9 +25,11 @@
             <section class="content">
                 <div class="container-fluid">
                     <h1 class="text-center">Inventario Frutas</h1>
+                    <div class="text-right mb-3">
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_MP" data-is-new="true">
     Agregar
 </button>
+</div>
 
                 
 
@@ -272,7 +275,7 @@
                                         <td id="detallePesoUnitario"></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Bultos o Canastas</strong></td>
+                                        <td><strong>Cant. Bultos/Canastas</strong></td>
                                         <td id="detalleBultos"></td>
                                     </tr>
                                 </tbody>
@@ -322,6 +325,7 @@
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="JS/invFrutas.js"></script>
+    <script src="JS/validaciones.js"></script>
     
     <script src="JS/cerrarsesion.js"></script>
 

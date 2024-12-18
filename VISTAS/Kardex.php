@@ -8,14 +8,61 @@
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
+    
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="../FILES/global-style.css">
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
     <style>
-        .table-compact th, .table-compact td {
-            font-size: 0.9rem;
-            padding: 0.4rem;
-        }
+.calendar-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#monthPicker {
+    width: 150px;
+    text-align: center;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    color: #495057;
+}
+
+#monthPicker:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.search-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+.input-group-text {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.input-group-text i {
+    font-size: 1.2em;
+}
+
+
     </style>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -27,37 +74,41 @@
             <section class="content">
                 <div class="container-fluid">
                     <h1 class="text-center">Kardex de Inventario</h1>
-
                     <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label for="selectMes">Mes:</label>
-                            <select id="selectMes" class="form-control">
-                                <option value="1">Enero</option>
-                                <option value="2">Febrero</option>
-                                <option value="3">Marzo</option>
-                                <option value="4">Abril</option>
-                                <option value="5">Mayo</option>
-                                <option value="6">Junio</option>
-                                <option value="7">Julio</option>
-                                <option value="8">Agosto</option>
-                                <option value="9">Septiembre</option>
-                                <option value="10">Octubre</option>
-                                <option value="11">Noviembre</option>
-                                <option value="12">Diciembre</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="selectCategoria">Categoría:</label>
-                            <select id="selectCategoria" class="form-control">
-                                <option value="MP">Materia Prima</option>
-                                <option value="INS">Insumos</option>
-                                <option value="PT">Producto Terminado</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <button class="btn btn-primary mt-4" id="btnFiltrar">Consultar</button>
-                        </div>
-                    </div>
+    <div class="col-md-4">
+        <label for="monthPicker">Mes Inventario:</label>
+        <div class="input-group">
+        <span class="input-group-text">
+                    <i class="far fa-calendar-alt"></i>
+                </span>
+            <input type="text" id="monthPicker" class="form-control" placeholder="MM/AAAA" readonly>
+            <div class="input-group-append">
+             
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <label for="selectCategoria">Categoría:</label>
+        <select id="selectCategoria" class="form-control">
+            <option value="MP">Materia Prima</option>
+            <option value="INS">Insumos</option>
+            <option value="PT">Producto Terminado</option>
+        </select>
+    </div>
+
+    <div class="col-md-4 text-right">
+        <button class="btn btn-primary mt-4" id="btnFiltrar">
+            <i class="fas fa-search"></i> Consultar
+        </button>
+
+        <button id="btnReporteEntradas" class="btn btn-primary">Imp. Reporte </button>
+    </div>
+
+    
+
+</div>
+
 
                     <table id="tablaKardex" class="table table-bordered table-hover table-compact">
                         <thead>
@@ -85,10 +136,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
     <script src="JS/kardex.js"></script>
+    <script src="JS/validaciones.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 </body>
 </html>

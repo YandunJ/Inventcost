@@ -170,6 +170,8 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
             }
         }
     ]
+    ,
+        language: dataTableLanguage
 });
 
     $('#tablaMateriaPrimas').on('click', '.details-btn', function() {

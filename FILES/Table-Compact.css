@@ -12,7 +12,7 @@
 }
 
 .table-compact th {
-    background-color: #f4f6f9; /* Color de fondo para los encabezados */
+    background-color: #c9cbd1; /* Color de fondo para los encabezados */
     font-weight: bold; /* fuente campos datatable*/
     border-bottom: 2px solid #dee2e6; /* Línea más marcada en el encabezado */
 }
@@ -50,4 +50,58 @@
 /* Opcional: clase para ajustar el tamaño del checkbox */
 .table-compact .checkbox-large {
     transform: scale(1.5); /* Tamaño más grande */
+}
+
+/* Mejora del contorno del DataTable */
+.dataTables_wrapper {
+    border: 1px solid #ced4da; /* Borde externo del DataTable */
+    border-radius: 8px; /* Esquinas redondeadas */
+    padding: 10px; /* Espaciado interno */
+    background-color: #ffffff; /* Fondo blanco */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para realce */
+}
+
+/* Estilo para las tablas dentro del DataTable */
+.table-bordered {
+    border: 1px solid #dee2e6; /* Bordes internos */
+}
+
+.table-compact th, .table-compact td {
+    border: 1px solid #dee2e6; /* Bordes entre celdas */
+}
+
+/* Encabezado del DataTable */
+.dataTables_wrapper .dataTables_filter label,
+.dataTables_wrapper .dataTables_length label {
+    font-weight: bold;
+    color: #495057;
+}
+
+/* Botones de paginación */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #f8f9fa; /* Fondo claro */
+    color: #007bff; /* Color de texto */
+    border: 1px solid #ced4da; /* Bordes */
+    border-radius: 4px; /* Esquinas redondeadas */
+    margin: 2px; /* Espaciado */
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #007bff; /* Fondo azul al pasar el cursor */
+    color: #ffffff; /* Texto blanco */
+}
+
+/* Ajuste de checkboxes para mayor tamaño en las tablas compactas */
+.table-compact .form-check-input {
+    transform: scale(1.2); /* Aumenta el tamaño del checkbox */
+    margin: 0; /* Reduce el margen */
+    cursor: pointer; /* Muestra un puntero al pasar sobre el checkbox */
+}
+
+/* Centrado de checkboxes en celdas */
+.table-compact tbody tr td .form-check-input {
+    position: absolute;
+    top: 50%; /* Centra verticalmente */
+    left: 50%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%) scale(1.7); /* Aumenta el tamaño y ajusta la posición */
 }

@@ -23,6 +23,7 @@ $(document).ready(function () {
                 },
             },
         ],
+        language: dataTableLanguage
     });
 
   // Botón para abrir el modal para agregar un nuevo proveedor

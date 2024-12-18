@@ -8,15 +8,11 @@
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="../FILES/tableMP.css">
+    <!-- <link rel="stylesheet" href="../FILES/tableMP.css"> -->
     <link rel="stylesheet" href="../FILES/InvMPModal.css">
+    <link rel="stylesheet" href="../FILES/global-style.css">
+    <link rel="stylesheet" href="../FILES/Table-Compact.css">
 
-    <style>
-        .nav-tabs .nav-link.active {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -41,14 +37,18 @@
                     </div>
                 </div>
 
+                
+
                 <!-- Menú de Pestañas -->
-                <ul class="nav nav-tabs mt-4" id="myTab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" id="materiaPrima-tab" data-toggle="tab" href="#materiaPrima" role="tab">Materia Prima</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="insumos-tab" data-toggle="tab" href="#insumos" role="tab">Insumos</a>
-                    </li>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="materiaPrima-tab" data-toggle="tab" href="#materiaPrima" role="tab">Materia Prima</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="insumos-tab" data-toggle="tab" href="#insumos" role="tab">Insumos</a>
+    </li>
+
+
                     <li class="nav-item">
                         <a class="nav-link" id="manoObra-tab" data-toggle="tab" href="#manoObra" role="tab">Mano de Obra</a>
                     </li>
@@ -57,22 +57,24 @@
                     </li>
                 </ul>
 
+
+                
+
                 <!-- Contenido de las Pestañas -->
                 <div class="tab-content mt-3" id="myTabContent">
-    <!-- Pestaña Materia Prima -->
-    <div class="tab-pane fade show active" id="materiaPrima" role="tabpanel">
+                <div class="tab-pane fade show active" id="materiaPrima" role="tabpanel">
         <h3>Seleccionar Materia Prima</h3>
-        <table class="table table-bordered" id="tablaSeleccionarMP">
+        <table class="table table-bordered table-hover table-compact" id="LotesMP">
             <thead>
                 <tr>
                 <th>Lote</th>
                                     <th>Proveedor</th>
-                                    <th>Artículo</th>
+                                    <th>Fruta</th>
                                     <th>Unid. Medida</th>
                                     
-                                    <th>Saldo Disp.</th>
+                                    <th>Disponible</th>
                                     <th>Precio Unit.</th>
-                                    <th>Precio Total</th>
+                                    
                                     
                     <th>Detalles</th> <!-- Nueva columna -->
                     <th>Cantidad a Consumir</th>
@@ -85,45 +87,174 @@
 
     <!-- Pestaña Insumos -->
     <div class="tab-pane fade" id="insumos" role="tabpanel">
-        <h3>Seleccionar Insumos</h3>
-        <table class="table table-bordered table-hover table-compact" id="tablaSeleccionarINS">
-            <thead>
-                <tr>
-                    <th>Fecha</th>
-                    <th>Proveedor</th>
-                            <th>Insumo</th>
-                            
-                            <th>Ud Medida</th>
-                            <th>Cantidad</th>
-                            <th>Stock</th>
-                            <th>Precio Unitario</th>
-                            <th>Precio Total</th>
-                            <th>Presentación</th>
-                            <th>Estado</th>
-                    <th>Cantidad a Consumir</th>
-                    <th>Seleccionar</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+
+    <h3>Seleccionar Insumos</h3>
+        <table class="table table-bordered table-hover table-compact" id="LotesINS">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Proveedor</th>
+            <th>Insumo</th>
+            <th>Ud Medida</th>
+            <th>Disponible</th>
+            <th>Precio Unitario</th>
+            <th>Cantidad a Consumir</th>
+            <th>Seleccionar </th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
     </div>
 
-    <!-- Pestaña Mano de Obra -->
     <div class="tab-pane fade" id="manoObra" role="tabpanel">
-        <h3>Mano de Obra</h3>
-        <!-- Contenido para Mano de Obra -->
-    </div>
+    <h3>Mano de Obra</h3>
+    <!-- Tabla de Mano de Obra -->
+    <table class="table table-bordered table-hover table-compact" id="tablaManoObra">
+        <thead>
+            <tr>
+                <th>Actividad</th>
+                <th>Cantidad Personas</th>
+                <th>Precio H/T</th>
+                <th>Total Horas por Persona / Día</th>
+                <th>Total Horas / Trabajador</th>
+                <th>Costo Mano Obra Día</th>
+                <th>Costo Mano Obra Total Pedido</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Materia Prima</td>
+                <td><input type="number" class="form-control cantidad-personas" min="0" value="2"></td>
+                <td><input type="text" class="form-control precio-ht" value="2.50" readonly></td>
+                <td><input type="number" class="form-control horas-por-dia" min="0" value="2"></td>
+                <td class="horas-trabajador">4</td>
+                <td class="costo-dia">$10.00</td>
+                <td class="costo-total">$10.00</td>
+            </tr>
+            <tr>
+                <td>Selección</td>
+                <td><input type="number" class="form-control cantidad-personas" min="0" value="4"></td>
+                <td><input type="text" class="form-control precio-ht" value="2.50" readonly></td>
+                <td><input type="number" class="form-control horas-por-dia" min="0" value="16"></td>
+                <td class="horas-trabajador">64</td>
+                <td class="costo-dia">$160.00</td>
+                <td class="costo-total">$160.00</td>
+            </tr>
+            <tr>
+                <td>Envasado</td>
+                <td><input type="number" class="form-control cantidad-personas" min="0" value="0"></td>
+                <td><input type="text" class="form-control precio-ht" va    lue="2.50" readonly></td>
+                <td><input type="number" class="form-control horas-por-dia" min="0" value="2"></td>
+                <td class="horas-trabajador">0</td>
+                <td class="costo-dia">$0.00</td>
+                <td class="costo-total">$0.00</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="font-weight-bold">
+                <td colspan="6" class="text-right">TOTAL MANO DE OBRA:</td>
+                <td id="totalManoObra">$170.00</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
 
-    <!-- Pestaña Costos Asociados -->
-    <div class="tab-pane fade" id="costosAsociados" role="tabpanel">
-        <h3>Costos Asociados</h3>
-        <!-- Contenido para Costos Asociados -->
+                    <!-- Pestaña Costos Asociados -->
+                    <div class="tab-pane fade" id="costosAsociados" role="tabpanel">
+                    <h3>Otros Costos</h3>
+    <button class="btn btn-primary mb-3" onclick="agregarFilaCosto()">Agregar Costo</button>
+
+    <!-- Tabla de Otros Costos -->
+    <table class="table table-bordered table-hover" id="tablaOtrosCostos">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario ($)</th>
+                <th>Costo Total ($)</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Mantenimiento de maquinaria</td>
+                <td><input type="number" class="form-control cantidad" value="2" min="1" onchange="calcularCostoTotal(this)"></td>
+                <td><input type="number" class="form-control precio-unitario" value="150" min="0" onchange="calcularCostoTotal(this)"></td>
+                <td class="costo-total">300</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editarFilaCosto(this)">Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarFilaCosto(this)">Eliminar</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Costos de transporte</td>
+                <td><input type="number" class="form-control cantidad" value="3" min="1" onchange="calcularCostoTotal(this)"></td>
+                <td><input type="number" class="form-control precio-unitario" value="50" min="0" onchange="calcularCostoTotal(this)"></td>
+                <td class="costo-total">150</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" onclick="editarFilaCosto(this)">Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarFilaCosto(this)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr class="font-weight-bold">
+                <td colspan="3" class="text-right">TOTAL OTROS COSTOS:</td>
+                <td id="totalOtrosCostos">450</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+                <div class="row mt-3">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title">Subtotales de Producción</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="subtotalMP">Subtotal Materia Prima:</label>
+                        <input type="text" id="subtotalMP" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subtotalINS">Subtotal Insumos:</label>
+                        <input type="text" id="subtotalINS" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subtotalMO">Subtotal Mano de Obra:</label>
+                        <input type="text" id="subtotalMO" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subtotalCA">Subtotal Costos Asociados:</label>
+                        <input type="text" id="subtotalCA" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-3 offset-md-9">
+                        <label for="totalProduccion">Costo Total de Producción:</label>
+                        <input type="text" id="totalProduccion" class="form-control text-right font-weight-bold text-success" value="0.00" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+            </div>
+        </section>
+        
+    </div>
+    
 </div>
 
 
 
-<!-- MODAL DETALLES -->z
+<!-- MODAL DETALLES -->
 <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
@@ -256,6 +387,7 @@
 <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../Public/dist/js/adminlte.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="JS/ProduccionMP.js"></script>
+<script src="JS/ProdMP.js"></script>
+<script src="JS/validaciones.js"></script>
 </body>
 </html>
