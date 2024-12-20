@@ -24,23 +24,25 @@
             <div class="container-fluid">
                 <h1>Producción</h1>
 
-                <!-- Datos Generales de Producción -->
-                <div class="row">
-                    <div class="col-md-4">
-                        <label for="fecha_produccion">Fecha de Producción:</label>
-                        <input type="datetime-local" id="fecha_produccion" class="form-control">
-                    </div>
-              
-                    <div class="col-md-4">
-                        <label for="cantidad_producida">Cantidad Producida:</label>
-                        <input type="number" id="cantidad_producida" class="form-control">
-                    </div>
-                </div>
+              <!-- Datos Generales de Producción -->
+<div class="section-container">
+    <div class="row">
+        <div class="col-md-6">
+            <label for="fecha_produccion">Fecha de Producción:</label>
+            <input type="datetime-local" id="fecha_produccion" class="form-control form-control-sm">
+        </div>
+        <div class="col-md-6">
+            <label for="cantidad_producida">Cantidad Producida:</label>
+            <input type="number" id="cantidad_producida" class="form-control form-control-sm">
+        </div>
+    </div>
+</div>
+
 
                 
 
                 <!-- Menú de Pestañas -->
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
     <li class="nav-item">
         <a class="nav-link active" id="materiaPrima-tab" data-toggle="tab" href="#materiaPrima" role="tab">Materia Prima</a>
     </li>
@@ -61,7 +63,7 @@
                 
 
                 <!-- Contenido de las Pestañas -->
-                <div class="tab-content mt-3" id="myTabContent">
+                <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="materiaPrima" role="tabpanel">
         <h3>Seleccionar Materia Prima</h3>
         <table class="table table-bordered table-hover table-compact" id="LotesMP">
@@ -163,39 +165,33 @@
                     <!-- Pestaña Costos Asociados -->
                     <div class="tab-pane fade" id="costosAsociados" role="tabpanel">
                     <h3>Otros Costos</h3>
-    <button class="btn btn-primary mb-3" onclick="agregarFilaCosto()">Agregar Costo</button>
+    
 
     <!-- Tabla de Otros Costos -->
     <table class="table table-bordered table-hover" id="tablaOtrosCostos">
         <thead>
             <tr>
-                <th>Descripción</th>
+                <th>Producto</th>
                 <th>Cantidad</th>
                 <th>Precio Unitario ($)</th>
                 <th>Costo Total ($)</th>
-                <th>Acciones</th>
+                
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>Mantenimiento de maquinaria</td>
+                <td>CIF ELECTRICIDAD-Q</td>
                 <td><input type="number" class="form-control cantidad" value="2" min="1" onchange="calcularCostoTotal(this)"></td>
                 <td><input type="number" class="form-control precio-unitario" value="150" min="0" onchange="calcularCostoTotal(this)"></td>
                 <td class="costo-total">300</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editarFilaCosto(this)">Editar</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarFilaCosto(this)">Eliminar</button>
-                </td>
+              
             </tr>
             <tr>
-                <td>Costos de transporte</td>
+                <td>CIF AGUA-Q</td>
                 <td><input type="number" class="form-control cantidad" value="3" min="1" onchange="calcularCostoTotal(this)"></td>
                 <td><input type="number" class="form-control precio-unitario" value="50" min="0" onchange="calcularCostoTotal(this)"></td>
                 <td class="costo-total">150</td>
-                <td>
-                    <button class="btn btn-warning btn-sm" onclick="editarFilaCosto(this)">Editar</button>
-                    <button class="btn btn-danger btn-sm" onclick="eliminarFilaCosto(this)">Eliminar</button>
-                </td>
+              
             </tr>
         </tbody>
         <tfoot>
@@ -209,9 +205,9 @@
 </div>
 
 
-                <div class="row mt-3">
+<div class="row mt-4">
     <div class="col-md-12">
-        <div class="card">
+        <div class="card subtotales-container">
             <div class="card-header bg-primary text-white">
                 <h5 class="card-title">Subtotales de Producción</h5>
             </div>
@@ -244,6 +240,15 @@
         </div>
     </div>
 </div>
+
+<div class="row mt-4">
+    <div class="col-md-12 text-center">
+        <button id="btnRegistrarProduccion" class="btn btn-success btn-lg">
+            <i class="fas fa-save"></i> Registrar Producción
+        </button>
+    </div>
+</div>
+
 
             </div>
         </section>

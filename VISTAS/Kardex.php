@@ -14,56 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
     <link rel="stylesheet" href="../FILES/global-style.css">
     <link rel="stylesheet" href="../FILES/Table-Compact.css">
-    <style>
-.calendar-picker {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#monthPicker {
-    width: 150px;
-    text-align: center;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #f8f9fa;
-    color: #495057;
-}
-
-#monthPicker:focus {
-    outline: none;
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.search-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 5px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.search-button:hover {
-    background-color: #0056b3;
-}
-.input-group-text {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-.input-group-text i {
-    font-size: 1.2em;
-}
-
-
-    </style>
+   
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">

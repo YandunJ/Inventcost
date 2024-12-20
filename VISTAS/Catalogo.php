@@ -52,10 +52,7 @@
                                         <label for="nombre">Nombre del artículo:</label>
                                         <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Manzana">
                                     </div>
-                                    <div class="form-group">
-                                        <label for="descripcion">Descripción:</label>
-                                        <textarea id="descripcion" name="descripcion" class="form-control" required placeholder="Breve descripción"></textarea>
-                                    </div>
+                                 
                                     <div class="form-group">
                                         <label for="categoria_select">Categoría:</label>
                                         <select id="categoria_select" name="id_categoria" class="form-control" required></select>
@@ -79,10 +76,10 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
-                                <th>Descripción</th>
+                                
                                 <th>Categoría</th>
                                 
-                                <th>Unidad de Medida</th>
+                                <th>Presentacion</th>
                                 <th>Estado</th>
                                 <th>Fecha de Creación</th>
                                 <th>Stock</th>

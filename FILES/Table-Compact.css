@@ -12,7 +12,7 @@
 }
 
 .table-compact th {
-    background-color: #c9cbd1; /* Color de fondo para los encabezados */
+    background-color: #1c497a; /* Color de fondo para los encabezados */
     font-weight: bold; /* fuente campos datatable*/
     border-bottom: 2px solid #dee2e6; /* Línea más marcada en el encabezado */
 }
@@ -93,7 +93,7 @@
 
 /* Ajuste de checkboxes para mayor tamaño en las tablas compactas */
 .table-compact .form-check-input {
-    transform: scale(1.2); /* Aumenta el tamaño del checkbox */
+    transform: scale(0.9); /* Aumenta el tamaño del checkbox */
     margin: 0; /* Reduce el margen */
     cursor: pointer; /* Muestra un puntero al pasar sobre el checkbox */
 }

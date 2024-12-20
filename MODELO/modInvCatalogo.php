@@ -10,19 +10,20 @@ class InvCatalogo {
         $this->conn = new Cls_DataConnection();
     }
 
-    public function addOrUpdateArticulo($opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $uni_id) {
+    // Método para agregar o actualizar un artículo
+    public function addOrUpdateArticulo($opcion, $cat_id, $cat_nombre, $ctg_id, $prs_id) {
         // Validar si el artículo ya existe en la base de datos
-        $queryExist = "SELECT COUNT(*) AS total FROM invent_catalogo WHERE nombre_articulo = ? AND uni_id = ?";
-        $paramsExist = [$nombre_articulo, $uni_id];
+        $queryExist = "SELECT COUNT(*) AS total FROM catalogo WHERE cat_nombre = ? AND prs_id = ?";
+        $paramsExist = [$cat_nombre, $prs_id];
         $resultExist = $this->conn->ejecutarSP($queryExist, $paramsExist);
 
         if ($resultExist && $resultExist->fetch_assoc()['total'] > 0 && $opcion == 1) {
-            return ['error' => 'El artículo ya existe en el catálogo con esta unidad.'];
+            return ['error' => 'El artículo ya existe en el catálogo con esta presentación.'];
         }
 
         // Ejecutar el procedimiento almacenado para agregar o actualizar
-        $query = "CALL Catalogo_CRUD(?, ?, ?, ?, ?, ?)";
-        $params = [$opcion, $id_articulo, $nombre_articulo, $descripcion, $id_categoria, $uni_id];
+        $query = "CALL Catalogo_CRUD(?, ?, ?, ?, ?)";
+        $params = [$opcion, $cat_id, $cat_nombre, $ctg_id, $prs_id];
 
         try {
             $result = $this->conn->ejecutarSP($query, $params);
@@ -36,22 +37,25 @@ class InvCatalogo {
         }
     }
 
-    public function getArticuloById($id_articulo) {
+      // Método para obtener un artículo por ID
+      public function getArticuloById($cat_id) {
         $query = "CALL Catalogo_data_id(?)";
-        $params = [$id_articulo];
-
+        $params = [$cat_id];
+    
         try {
             $result = $this->conn->ejecutarSP($query, $params);
-            if ($result) {
-                return $result->fetch_assoc(); // Retorna la primera fila
+            if ($result && $result->num_rows > 0) {
+                return $result->fetch_assoc();
             } else {
-                throw new Exception("El artículo no fue encontrado.");
+                throw new Exception("No se encontraron datos para el ID: $cat_id");
             }
         } catch (Exception $e) {
-            return null; // Opcional, registra el error si necesitas detalles
+            return null; // Manejo de errores simplificado
         }
     }
     
+    
+    // Método para obtener todos los artículos
     public function getArticulos() {
         try {
             $query = "CALL Catalogo_data()";
@@ -70,81 +74,68 @@ class InvCatalogo {
             return ['error' => $e->getMessage()];
         }
     }
-    
-    public function deleteArticulo($id_articulo) {
-        $conexion = new Cls_DataConnection();
-        $conn = $conexion->FN_getConnect(); // Nueva conexión para esta operación
-    
-        try {
-            $query = "CALL elim_invCatalogo(?)";
-            $stmt = $conn->prepare($query);
-    
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . $conn->error);
-            }
-    
-            $stmt->bind_param("i", $id_articulo);
-    
-            if ($stmt->execute()) {
-                $stmt->close();
-                $conn->close(); // Cierra la conexión después de usarla
-                return true; // Eliminación exitosa
+        // Métodos relacionados con categorías y unidades de medida
+        public function getCategorias() {
+            $query = "SELECT ctg_id, ctg_nombre FROM categorias";
+            $result = $this->conn->FN_getConnect()->query($query);
+        
+            if ($result) {
+                $categorias = [];   
+                while ($row = $result->fetch_assoc()) {
+                    $categorias[] = $row;
+                }
+                return $categorias;
             } else {
-                throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+                return ['error' => 'Error al obtener categorías: ' . $this->conn->FN_getConnect()->error];
             }
-        } catch (Exception $e) {
-            $conn->close(); // Cierra la conexión en caso de error
-            return ['error' => $e->getMessage()];
         }
-    }
+        
+        public function getUnidadesMedida() {
+            $query = "SELECT prs_id, prs_nombre FROM presentacion";
+            $result = $this->conn->FN_getConnect()->query($query);
+        
+            if ($result) {
+                $unidades = [];
+                while ($row = $result->fetch_assoc()) {
+                    $unidades[] = $row;
+                }
+                return $unidades;
+            } else {
+                return ['error' => 'Error al obtener unidades: ' . $this->conn->FN_getConnect()->error];
+            }
+        }
+        
+    
+    // public function deleteArticulo($id_articulo) {
+    //     $conexion = new Cls_DataConnection();
+    //     $conn = $conexion->FN_getConnect(); // Nueva conexión para esta operación
+    
+    //     try {
+    //         $query = "CALL elim_invCatalogo(?)";
+    //         $stmt = $conn->prepare($query);
+    
+    //         if (!$stmt) {
+    //             throw new Exception("Error al preparar la consulta: " . $conn->error);
+    //         }
+    
+    //         $stmt->bind_param("i", $id_articulo);
+    
+    //         if ($stmt->execute()) {
+    //             $stmt->close();
+    //             $conn->close(); // Cierra la conexión después de usarla
+    //             return true; // Eliminación exitosa
+    //         } else {
+    //             throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
+    //         }
+    //     } catch (Exception $e) {
+    //         $conn->close(); // Cierra la conexión en caso de error
+    //         return ['error' => $e->getMessage()];
+    //     }
+    // }
     
    
     
-    // Métodos relacionados con categorías y unidades de medida
-    public function getCategorias() {
-        $query = "SELECT id_categoria, nombre_categoria FROM categorias";
-        $result = $this->conn->FN_getConnect()->query($query);
-    
-        if ($result) {
-            $categorias = [];
-            while ($row = $result->fetch_assoc()) {
-                $categorias[] = $row;
-            }
-            return $categorias;
-        } else {
-            return ['error' => 'Error al obtener categorías: ' . $this->conn->FN_getConnect()->error];
-        }
-    }
-    
-    public function getUnidadesMedida() {
-        $query = "SELECT uni_id, uni_nombre FROM unidades_medida";
-        $result = $this->conn->FN_getConnect()->query($query);
-    
-        if ($result) {
-            $unidades = [];
-            while ($row = $result->fetch_assoc()) {
-                $unidades[] = $row;
-            }
-            return $unidades;
-        } else {
-            return ['error' => 'Error al obtener unidades: ' . $this->conn->FN_getConnect()->error];
-        }
-    }
-    
-    public function obtenerProveedores() {
-        $query = "SELECT proveedor_id, nombre_empresa FROM proveedores";
-        $result = $this->conn->FN_getConnect()->query($query);
-    
-        if ($result) {
-            $proveedores = [];
-            while ($row = $result->fetch_assoc()) {
-                $proveedores[] = $row;
-            }
-            return $proveedores;
-        } else {
-            return ['error' => 'Error al obtener proveedores: ' . $this->conn->FN_getConnect()->error];
-        }
-    }
+
     
 }
 ?>

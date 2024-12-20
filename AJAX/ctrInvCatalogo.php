@@ -17,9 +17,9 @@ switch ($action) {
     case 'getUnidadesMedida':
         getUnidadesMedida();
         break;
-    case 'cargarProveedores':
-        cargarProveedores();
-        break;
+    // case 'cargarProveedores':
+    //     cargarProveedores();
+    //     break;
     case 'getArticuloById':
         getArticuloById();
         break;
@@ -32,9 +32,9 @@ switch ($action) {
     case 'obtenerArticulos':
         obtenerArticulos();
         break;
-    case 'deleteArticulo':
-        deleteArticulo();
-        break;
+    // case 'deleteArticulo':
+    //     deleteArticulo();
+    //     break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -71,20 +71,20 @@ function getUnidadesMedida() {
     }
 }
 
-function cargarProveedores() {
-    try {
-        $model = new InvCatalogo();
-        $proveedores = $model->obtenerProveedores();
+// function cargarProveedores() {
+//     try {
+//         $model = new InvCatalogo();
+//         $proveedores = $model->obtenerProveedores();
 
-        if (isset($proveedores['error'])) {
-            throw new Exception($proveedores['error']);
-        }
+//         if (isset($proveedores['error'])) {
+//             throw new Exception($proveedores['error']);
+//         }
 
-        echo json_encode(['status' => 'success', 'data' => $proveedores]);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
+//         echo json_encode(['status' => 'success', 'data' => $proveedores]);
+//     } catch (Exception $e) {
+//         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+//     }
+// }
 
 function getArticuloById() {
     $id_articulo = $_POST['id_articulo'] ?? null;
@@ -109,7 +109,7 @@ function getArticuloById() {
 
 function addArticulo() {
     // Validar campos obligatorios
-    $requiredFields = ['nombre', 'descripcion', 'id_categoria', 'unidad_medida'];
+    $requiredFields = ['nombre', 'id_categoria', 'unidad_medida'];
     foreach ($requiredFields as $field) {
         if (empty($_POST[$field])) {
             echo json_encode(['status' => 'error', 'message' => "El campo $field es obligatorio."]);
@@ -123,7 +123,7 @@ function addArticulo() {
             1, // Operación: Agregar
             0, // ID (se ignora en inserción)
             $_POST['nombre'],
-            $_POST['descripcion'],
+            
             $_POST['id_categoria'],
             $_POST['unidad_medida']
         );
@@ -140,7 +140,7 @@ function addArticulo() {
 
 function updateArticulo() {
     // Validar campos obligatorios
-    $requiredFields = ['id_articulo', 'nombre', 'descripcion', 'id_categoria', 'unidad_medida'];
+    $requiredFields = ['id_articulo', 'nombre', 'id_categoria', 'unidad_medida'];
     foreach ($requiredFields as $field) {
         if (empty($_POST[$field])) {
             echo json_encode(['status' => 'error', 'message' => "El campo $field es obligatorio."]);
@@ -154,7 +154,7 @@ function updateArticulo() {
             2, // Operación: Actualizar
             $_POST['id_articulo'],
             $_POST['nombre'],
-            $_POST['descripcion'],
+            
             $_POST['id_categoria'],
             $_POST['unidad_medida']
         );
@@ -184,29 +184,29 @@ function obtenerArticulos() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-function deleteArticulo() {
-    $id_articulo = $_POST['articulo_id'] ?? null;
+// function deleteArticulo() {
+//     $id_articulo = $_POST['articulo_id'] ?? null;
 
-    if (!$id_articulo) {
-        echo json_encode(['status' => 'error', 'message' => 'El ID del artículo es obligatorio.']);
-        return;
-    }
+//     if (!$id_articulo) {
+//         echo json_encode(['status' => 'error', 'message' => 'El ID del artículo es obligatorio.']);
+//         return;
+//     }
 
-    try {
-        $inventarioModel = new InvCatalogo();
-        $result = $inventarioModel->deleteArticulo($id_articulo);
+//     try {
+//         $inventarioModel = new InvCatalogo();
+//         $result = $inventarioModel->deleteArticulo($id_articulo);
 
-        if (is_array($result) && isset($result['error'])) {
-            throw new Exception($result['error']);
-        }
+//         if (is_array($result) && isset($result['error'])) {
+//             throw new Exception($result['error']);
+//         }
 
-        echo json_encode([
-            'status' => $result ? 'success' : 'error',
-            'message' => $result ? 'Artículo eliminado correctamente.' : 'No se pudo eliminar el artículo.'
-        ]);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
+//         echo json_encode([
+//             'status' => $result ? 'success' : 'error',
+//             'message' => $result ? 'Artículo eliminado correctamente.' : 'No se pudo eliminar el artículo.'
+//         ]);
+//     } catch (Exception $e) {
+//         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+//     }
+// }
 
 ?>
