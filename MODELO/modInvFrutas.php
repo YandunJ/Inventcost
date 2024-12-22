@@ -15,10 +15,10 @@
 
         // Obtener el último número de lote para la fecha actual
         $stmt = $this->conn->prepare("
-            SELECT numero_lote 
+            SELECT lote 
             FROM inventario 
-            WHERE numero_lote LIKE CONCAT(?, ?, '%')
-            ORDER BY CAST(SUBSTRING(numero_lote, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
+            WHERE lote LIKE CONCAT(?, ?, '%')
+            ORDER BY CAST(SUBSTRING(lote, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
             LIMIT 1
         ");
         $stmt->bind_param('ssss', $prefijo, $fecha, $prefijo, $fecha);
@@ -35,10 +35,8 @@
     }
 
             
-            
-            
             public function verificarLoteUnico($numero_lote) {
-                $stmt = $this->conn->prepare("SELECT COUNT(*) FROM inventario WHERE numero_lote = ?");
+                $stmt = $this->conn->prepare("SELECT COUNT(*) FROM inventario WHERE lote = ?");
                 if (!$stmt) {
                     throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
                 }
@@ -52,7 +50,7 @@
                 return $count == 0;
             }
             private function verificarLoteUnicoParaActualizacion($numero_lote, $id_inv) {
-                $stmt = $this->conn->prepare("SELECT COUNT(*) FROM inventario WHERE numero_lote = ? AND id_inv != ?");
+                $stmt = $this->conn->prepare("SELECT COUNT(*) FROM inventario WHERE lote = ? AND id_inv != ?");
                 if (!$stmt) {
                     throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
                 }
@@ -97,25 +95,6 @@
             
                 $stmt->close();
                 return $result;
-            }
-            
-
-
-            public function obtenerInventarioMP() {
-                // Llamada al procedimiento almacenado que proporciona los datos resumidos para el DataTable
-                $sql = "CALL sp_Obt_inven_MP()";
-                $result = $this->conn->query($sql);
-            
-                if (!$result) {
-                    throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
-                }
-            
-                $data = [];
-                while ($row = $result->fetch_assoc()) {
-                    $data[] = $row;
-                }
-            
-                return $data;
             }
             
             public function obtenerMateriaPrimaPorId($id_inv) {
@@ -170,6 +149,22 @@
                 return $result;
             }
             
+            public function obtenerInventarioMP() {
+                // Llamada al procedimiento almacenado que proporciona los datos para el DataTable
+                $sql = "CALL mp_data()";
+                $result = $this->conn->query($sql);
+            
+                if (!$result) {
+                    throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
+                }
+            
+                $data = [];
+                while ($row = $result->fetch_assoc()) {
+                    $data[] = $row;
+                }
+            
+                return $data;
+            }
             
             public function eliminar($mp_id) {
                 $sql = "CALL sp_EliminarRegistroMP(?)";
@@ -215,69 +210,6 @@
                         $stmt->close();
                         return $frutas;
                     }
-
-
-                // public function obtenerProveedoresPorCategoria($id_categoria) {
-                //     $query = "
-                //         SELECT DISTINCT p.proveedor_id, p.nombre_empresa 
-                //         FROM proveedores p
-                //         JOIN invent_catalogo ic ON p.proveedor_id = ic.proveedor_id
-                //         WHERE ic.id_categoria = ? AND ic.estado = 'disponible'
-                //     ";
-                //     $stmt = $this->conn->prepare($query);
-                //     if (!$stmt) {
-                //         throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
-                //     }
-                
-                //     $stmt->bind_param("i", $id_categoria);
-                //     $stmt->execute();
-                //     $result = $stmt->get_result();
-                //     $proveedores = [];
-                
-                //     while ($row = $result->fetch_assoc()) {
-                //         $proveedores[] = $row;
-                //     }
-                
-                //     $stmt->close();
-                //     return $proveedores;
-                // }
-                
-
-
-                // // Función para obtener frutas por proveedor
-                // public function obtenerFrutasPorProveedor($proveedor_id) {
-                //     $query = "SELECT id_articulo, nombre_articulo 
-                //               FROM invent_catalogo 
-                //               WHERE proveedor_id = ? AND estado = 'disponible'";
-                //     $stmt = $this->conn->prepare($query);
-                
-                //     if (!$stmt) {
-                //         throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
-                //     }
-                
-                //     $stmt->bind_param("i", $proveedor_id);
-                //     $stmt->execute();
-                //     $result = $stmt->get_result();
-                
-                //     if (!$result) {
-                //         throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
-                //     }
-                
-                //     $frutas = [];
-                //     while ($row = $result->fetch_assoc()) {
-                //         $frutas[] = $row;
-                //     }
-                
-                //     $stmt->close();
-                
-                //     // Registro para depuración
-                //     if (empty($frutas)) {
-                //         error_log("No se encontraron frutas para proveedor_id: $proveedor_id");
-                //     }
-                
-                //     return $frutas;
-                // }
-                
             
                 public function obtenerProveedores() {
                     $query = "SELECT proveedor_id, nombre_empresa FROM proveedores";

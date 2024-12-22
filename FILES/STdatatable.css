@@ -1,20 +1,23 @@
 /* Tabla compacta */
 .table-compact {
-    font-size: 14px;
+    font-size: 12px; /* Reducir el tamaño de la fuente */
     text-align: center;
 }
 
 .table-compact th {
     background-color: #1c497a;
     color: white;
-    font-weight: bold;
-    padding: 10px;
+    font-weight: normal; /* Evitar negritas */
+    padding: 8px; /* Ajustar el padding */
+    font-size: 11px; /* Tamaño reducido para encabezados */
 }
 
 .table-compact td {
-    padding: 8px;
+    padding: 6px; /* Reducir el padding */
+    font-size: 13px; /* Tamaño reducido para celdas */
 }
 
+/* Envoltorio del DataTable */
 .dataTables_wrapper {
     border: 1px solid #dee2e6;
     padding: 10px;
@@ -36,4 +39,15 @@
 .dataTables_wrapper .paginate_button:hover {
     background-color: #007bff;
     color: white;
+}
+
+/* Ajustes del contenedor al minimizar el panel lateral */
+.wrapper {
+    overflow-x: hidden; /* Evitar desplazamiento horizontal no deseado */
+}
+
+/* Forzar adaptación del DataTable al tamaño disponible */
+.table-compact {
+    width: 100% !important;
+    display: table; /* Mantener el comportamiento de tabla */
 }

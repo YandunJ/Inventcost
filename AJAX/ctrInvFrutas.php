@@ -184,7 +184,6 @@ function cargarProveedores() {
         }
     }
     
-
     function cargarMateriaPrima() {
         $materiaPrima = new MateriaPrima();  // La conexión se establece en el constructor
     
@@ -195,7 +194,7 @@ function cargarProveedores() {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
-        
+    
         function obtenerMateriaPrima() {
             // Validamos que se esté pasando el id_inv
             if (isset($_POST['id_inv'])) {

@@ -102,15 +102,18 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         }
     },
     columns: [
-        { data: 'Lote' },
-        { data: 'Proveedor' },
-        { data: 'Artículo' },
-        { data: 'unidad_medida' },
-        { data: 'cantidad_ingresada' },
-        { data: 'Cantidad_Disponible' },
-        { data: 'precio_unitario' },
-        { data: 'Precio_Total' },
+        { data: 'FechaHora'},
+        { data: 'Lote'},
+        { data: 'Proveedor'},
+        { data: 'Articulo'},
+        { data: 'UnidadMedida'},
+        { data: 'CantidadIngresada'},
+        { data: 'CantidadDisponible' },
+        { data: 'PrecioUnitario'},
+        { data: 'PrecioTotal' },
         { data: 'Estado' },
+        { data: 'Brix'},    
+        { data: 'Observacion'},
         {
             data: null,
             render: function (data, type, row) {
@@ -134,10 +137,11 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
                 `;
             }
         }
-    ]
-    ,
-        language: dataTableLanguage
+    ],
+    language: dataTableLanguage
 });
+
+
 
     $('#tablaMateriaPrimas').on('click', '.details-btn', function() {
         const loteID = $(this).data('id');
