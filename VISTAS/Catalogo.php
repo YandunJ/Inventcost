@@ -5,16 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artículos de Inventario</title>
-    <!-- AdminLTE CSS -->
-    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="../Public/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <link rel="stylesheet" href="../FILES/global-style.css">
-    <link rel="stylesheet" href="../FILES/Table-Compact.css">
+
+    <link rel="stylesheet" href="../FILES/global.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -92,12 +84,16 @@
                     </table>
                 </div>
             </section>
-
-
+                
         </div>
-        <!-- /.content-wrapper -->
-
-        <!-- Scripts -->
+              
+              <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                FRAN FRUIT
+            </div>
+            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
+        </footer>
+        </div>
         <script src="../Public/plugins/jquery/jquery.min.js"></script>
         <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
         <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>
@@ -108,6 +104,6 @@
         <script src="JS/invCat.js"></script>
         <script src="JS/validaciones.js"></script>
         <script src="JS/cerrarsesion.js"></script>
-    </div>
+    
 </body>
 </html>

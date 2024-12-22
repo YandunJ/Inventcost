@@ -34,9 +34,9 @@ $(document).ready(function() {
             let options = '<option value="">Seleccione fruta</option>';
             if (response.status === 'success' && Array.isArray(response.data)) {
                 response.data.forEach(function(fruta) {
-                    options += `<option value="${fruta.id_articulo}">${fruta.nombre_articulo}</option>`;
+                    options += `<option value="${fruta.cat_id}">${fruta.cat_nombre}</option>`;
                 });
-                $("#id_articulo").html(options);
+                $("#cat_id").html(options);
             } else {
                 alert("Error al cargar las frutas.");
                 console.error("Error loading frutas: ", response);
@@ -51,75 +51,40 @@ $(document).ready(function() {
 
 
 
-        
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const date = today.toISOString().split('T')[0];
-            const time = today.toTimeString().split(' ')[0].slice(0, 5); // Solo horas y minutos
-
-            document.getElementById("fecha").value = date;
-            document.getElementById("hora").value = time;
+    $(document).ready(function () {
+        // Función genérica para actualizar los valores
+        function updateQuantity(amount, inputId, step) {
+            const inputField = document.getElementById(inputId);
+            if (!inputField) return;
+    
+            const minValue = parseFloat(inputField.getAttribute('min')) || 0;
+            const currentValue = parseFloat(inputField.value) || minValue;
+    
+            // Calcula el nuevo valor
+            const newValue = Math.max(currentValue + (amount * step), minValue);
+            inputField.value = newValue.toFixed(step === 1 ? 0 : 2);
+    
+            // Dispara el evento de entrada para actualizaciones dinámicas
+            inputField.dispatchEvent(new Event('input'));
+        }
+    
+        // Incremento y decremento de valores
+        $(".btn-minus, .btn-plus").on("click", function () {
+            const inputId = $(this).siblings("input").attr("id");
+            const step = $(this).hasClass("quantity-decimal") ? 0.01 : 1;
+            const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+            updateQuantity(amount, inputId, step);
         });
-        $(document).ready(function () {
-            // Función genérica para actualizar valores con formato
-            function updateQuantity(amount, inputId, step) {
-                const inputField = document.getElementById(inputId);
-                if (!inputField) return;
-        
-                const minValue = parseFloat(inputField.getAttribute('min')) || 0;
-                const currentValue = parseFloat(inputField.value) || minValue;
-        
-                // Calcula el nuevo valor
-                const newValue = Math.max(currentValue + (amount * step), minValue);
-        
-                // Formatear con dos decimales
-                inputField.value = newValue.toFixed(2);
-            }
-        
-            // Botones para incremento y decremento
-            $(".btn-minus.quantity-int, .btn-plus.quantity-int").on("click", function () {
-                const inputId = $(this).siblings("input").attr("id");
-                const step = 1; // Incrementos enteros
-                const amount = $(this).hasClass("btn-plus") ? 1 : -1;
-                updateQuantity(amount, inputId, step);
-            });
-        
-            $(".btn-minus.quantity-decimal, .btn-plus.quantity-decimal").on("click", function () {
-                const inputId = $(this).siblings("input").attr("id");
-                const step = 0.01; // Incrementos decimales
-                const amount = $(this).hasClass("btn-plus") ? 1 : -1;
-                updateQuantity(amount, inputId, step);
-            });
+    
+        // Calcular Precio Unitario dinámicamente
+        $('#cantidad_ingresada, #precio_total').on('input', function () {
+            const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0
+            const precioTotal = parseFloat($('#precio_total').val()) || 0;
+            const precioUnitario = precioTotal / cantidad;
+            $('#precio_unitario').val(precioUnitario.toFixed(2));
         });
-        
-        $(document).ready(function () {
-            // Función para actualizar un campo con botones de incremento/decremento
-            function updateQuantity(amount, inputId, step) {
-                const inputField = document.getElementById(inputId);
-                if (!inputField) return;
-                const minValue = parseFloat(inputField.getAttribute('min')) || 0;
-                const currentValue = parseFloat(inputField.value) || minValue;
-                const newValue = Math.max(currentValue + (amount * step), minValue);
-                inputField.value = newValue.toFixed(step === 1 ? 0 : 2);
-                inputField.dispatchEvent(new Event('input')); // Disparar evento de input
-            }
-        
-            // Botones de incremento/decremento
-            $(".btn-minus, .btn-plus").on("click", function () {
-                const inputId = $(this).siblings("input").attr("id");
-                const step = $(this).hasClass("quantity-decimal") ? 0.01 : 1;
-                const amount = $(this).hasClass("btn-plus") ? 1 : -1;
-                updateQuantity(amount, inputId, step);
-            });
-        
-            // Calcular Precio Unitario automáticamente
-            $('#cantidad_ingresada, #precio_total').on('input', function () {
-                const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0
-                const precioTotal = parseFloat($('#precio_total').val()) || 0;
-                const precioUnitario = precioTotal / cantidad;
-                $('#precio_unitario').val(precioUnitario.toFixed(2));
-            });
-        });
+    });
+    
         
 // Inicializar DataTable
 const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
@@ -217,109 +182,7 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         });
     }
     
-/*
-document.getElementById('cantidad_ingresada').addEventListener('input', calcularPrecioTotal);
-document.getElementById('precio_unitario').addEventListener('input', calcularPrecioTotal);
 
-function calcularPrecioTotal() {
-    const cantidad = parseFloat(document.getElementById('cantidad_ingresada').value) || 0;
-    const precioUnitario = parseFloat(document.getElementById('precio_unitario').value) || 0;
-    const precioTotal = cantidad * precioUnitario;
-    document.getElementById('precio_total').value = precioTotal.toFixed(2);
-}
-
-  */  
-    
-
-
-    // Botón de estado "A" (Aprobar)
-$('#tablaMateriaPrimas').on('click', '.approve-btn', function() {
-    const mp_id = $(this).data('id');
-    Swal.fire({
-        title: '¿Estás seguro de aprobar esta materia prima?',
-        text: "Esta acción se puede deshacer.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, aprobar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            cambiarEstado(mp_id, 1); // 1 para "aprobado"
-        }
-    });
-});
- // Botón de estado "X" (No Aprobar)
-$('#tablaMateriaPrimas').on('click', '.reject-btn', function() {
-    const mp_id = $(this).data('id');
-    Swal.fire({
-        title: '¿Estás seguro de no aprobar esta materia prima?',
-        text: "Esta acción se puede deshacer.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Sí, no aprobar',
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            cambiarEstado(mp_id, 3); // 3 para "no_aprobado"
-        }
-    });
-});
-      // Al hacer clic en el botón de estado (Aprobar/No Aprobar)
-      $('#tablaMateriaPrimas').on('click', '.status-btn',     function() {
-        const mp_id = $(this).data('id');
-        const estadoActual = $(this).text();
-        const nuevoEstado = estadoActual === 'Aprobado' ? 'no_aprobado' : 'aprobado'; // Cambia el estado
-
-        $.ajax({
-            url: '../AJAX/ctrInvenMateriaP.php',
-            type: 'POST',
-            data: { action: 'cambiarEstadoMateriaPrima', mp_id: mp_id, estado: nuevoEstado },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    alert('Estado actualizado exitosamente.');
-                    materiaPrimasTable.ajax.reload(); // Recargar la tabla
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("Ocurrió un error al cambiar el estado.");
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-            }
-        });
-});
-
-
-
-    function cambiarEstado(mp_id, estado) {
-        $.ajax({
-            url: '../AJAX/ctrInvenMateriaP.php',
-            type: 'POST',
-            data: { action: 'cambiarEstadoMateriaPrima', mp_id: mp_id, estado: estado },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    const actionType = $('#mp_id').val() ? 'actualizada' : 'registrada';
-                    alert(`Materia prima ${actionType} exitosamente.`);
-                    $('#materiaPrimaForm')[0].reset();
-                    $('#mp_id').val(''); // Limpia el campo oculto
-                    $('.btn-primary.btn-block').text('Agregar Materia Prima');
-                    materiaPrimasTable.ajax.reload(null, false); // Recarga la tabla manteniendo la página actual
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            
-            error: function(xhr, status, error) {
-                alert("Ocurrió un error al cambiar el estado.");
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-            }
-        });
-    }
-    
  
 // Abrir el modal y manejar lógica de nuevo registro
 $('button[data-is-new="true"]').on('click', function () {
@@ -376,7 +239,7 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function () {
                 $('#materiaPrimaForm').find('#id_inv').val(data.id_inv);
                 $('#materiaPrimaForm').find('#fecha').val(data.fecha);
                 $('#materiaPrimaForm').find('#hora').val(data.hora);
-                $('#materiaPrimaForm').find('#id_articulo').val(data.id_articulo);
+                $('#materiaPrimaForm').find('#cat_id').val(data.cat_id);
                 $('#materiaPrimaForm').find('#proveedor_id').val(data.proveedor_id);
                 $('#materiaPrimaForm').find('#numero_lote').val(data.numero_lote).prop('readonly', true); // Lote sin cambios
                 $('#materiaPrimaForm').find('#cantidad_ingresada').val(data.cantidad_ingresada);

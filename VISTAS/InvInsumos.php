@@ -6,18 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario de Insumos</title>
     <!-- AdminLTE CSS -->
-    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css">
-
-<link rel="stylesheet" href="../FILES/global-style.css">
-    <link rel="stylesheet" href="../FILES/InvMPModal.css">
-    <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
-    <link rel="stylesheet" href="../FILES/Table-Compact.css">
-
+    <link rel="stylesheet" href="../FILES/global.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -37,92 +26,83 @@
                     </button>
                     </div>
                  
-                    <!-- Modal -->
                     <div class="modal fade" id="Form_Insumos" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Registro de Insumos</h5>
-                                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="InsumosForm" class="modal-form-container">
-                                        <!-- Fila 1 -->
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="proveedor_id">Proveedor:</label>
-                                                <select id="proveedor_id" name="proveedor_id" class="form-control" required>
-                                                    <option value="">Seleccione un proveedor</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="id_articulo">Insumo:</label>
-                                                <select id="id_articulo" name="id_articulo" class="form-control" required>
-                                                    <option value="">Seleccione un insumo</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="fecha">Fecha:</label>
-                                                <input type="date" id="fecha" name="fecha" class="form-control" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="hora">Hora:</label>
-                                                <input type="time" id="hora" name="hora" class="form-control" required>
-                                            </div>
-                                        </div>
-                                        <!-- Fila 2 -->
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="numero_lote">N Lote:</label>
-                                                <input type="text" id="numero_lote" name="numero_lote" class="form-control" readonly>
-                                            </div>
-                                            <div class="form-group">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registro de Insumos</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="InsumosForm" class="modal-form-container">
+                    <!-- Fila 1 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="proveedor_id">Proveedor:</label>
+                            <select id="proveedor_id" name="proveedor_id" class="form-control" required>
+                                <option value="">Seleccione un proveedor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_articulo">Insumo:</label>
+                            <select id="id_articulo" name="id_articulo" class="form-control" required>
+                                <option value="">Seleccione un insumo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_elaboracion">Fecha Elaboración:</label>
+                            <input type="date" id="fecha_elaboracion" name="fecha_elaboracion" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fecha_caducidad">Fecha Caducidad:</label>
+                            <input type="date" id="fecha_caducidad" name="fecha_caducidad" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="numero_lote">N Lote:</label>
+                            <input type="text" id="numero_lote" name="numero_lote" class="form-control" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Fila 2 -->
+                    <div class="form-row">
+                        <div class="form-group">
                             <label for="cantidad_ingresada">Cantidad Ingresada:</label>
-                            <div class="quantity-input">
-                                <button type="button" class="btn-minus quantity-integer">-</button>
+                            <div class="input-quantity">
+                                <button type="button" class="btn-minus quantity-int">-</button>
                                 <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" value="0" min="0" required>
-                                <button type="button" class="btn-plus quantity-integer">+</button>
+                                <button type="button" class="btn-plus quantity-int">+</button>
                             </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="unidad_medida">Unidad de Medida:</label>
-                                                <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
-                                            </div>
-                                        </div>
-                                        <!-- Fila 3 -->
-                                        <div class="form-row">
-                                        <div class="form-group">
-                            <label for="precio_unitario">Precio Unitario:</label>
-                            <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="unidad_medida">Presentacion:</label>
+                            <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
                         </div>
                         <div class="form-group">
                             <label for="precio_total">Precio Total:</label>
-                            <div class="quantity-input">
+                            <div class="input-quantity">
                                 <button type="button" class="btn-minus quantity-decimal">-</button>
                                 <input type="number" step="0.01" id="precio_total" name="precio_total" class="form-control" value="0.00">
                                 <button type="button" class="btn-plus quantity-decimal">+</button>
                             </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="presentacion">Presentación:</label>
-                                                <select id="presentacion" name="presentacion" class="form-control" required>
-                                                    <option value="cajas">Cajas</option>
-                                                    <option value="bultos">Bultos</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <!-- Botones -->
-                                        <div class="form-actions">
-                                            <button type="submit" class="btn btn-primary">Guardar</button>
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio_unitario">Precio Unitario:</label>
+                            <input type="number" step="0.01" id="precio_unitario" name="precio_unitario" class="form-control" readonly>
                         </div>
                     </div>
+
+                    <!-- Botones -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 
                     <hr>

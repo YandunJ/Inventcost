@@ -1,0 +1,48 @@
+/* Tipografía y colores globales */
+body {
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    color: #333;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Títulos */
+h1, h3 {
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: #007bff;
+    border-bottom: 2px solid #1c497a;
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #4a4a4a;
+}
+
+/* Inputs globales */
+input, select, textarea {
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Botones */
+button {
+    font-size: 14px;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+/* Clases utilitarias */
+.text-center {
+    text-align: center;
+}

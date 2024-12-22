@@ -1,0 +1,60 @@
+/* Modal */
+.modal-form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.modal-form-container .form-row {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.modal-form-container .form-group {
+    flex: 1;
+}
+
+.modal-form-container input,
+.modal-form-container select,
+.modal-form-container textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+/* Input quantity alignment */
+.input-quantity {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espacio entre los elementos */
+}
+
+.input-quantity input {
+    flex: 1;
+    text-align: center; /* Centrar el texto */
+    height: 40px; /* Altura consistente */
+}
+
+.input-quantity .btn-minus,
+.input-quantity .btn-plus {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.input-quantity .currency {
+    font-weight: bold;
+    margin-left: 5px;
+}

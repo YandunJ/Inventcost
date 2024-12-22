@@ -70,17 +70,18 @@ DELIMITER ;
 call fpulpas.Catalogo_data();
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Catalogo_data_id`(IN p_cat_id INT)
+CREATE PROCEDURE Catalogo_data_id(IN p_cat_id INT)
 BEGIN
     SELECT 
-        cat_id AS id_articulo,
-        cat_nombre AS nombre_articulo,
-        ctg_id,
-        prs_id
-    FROM catalogo
-    WHERE cat_id = p_cat_id;
+        c.cat_id, 
+        c.cat_nombre, 
+        c.ctg_id, 
+        c.prs_id 
+    FROM catalogo c
+    WHERE c.cat_id = p_cat_id;
 END$$
+
 DELIMITER ;
 
 
-call fpulpas.Catalogo_data_id(1);
+call fpulpas.Catalogo_data_id(2);

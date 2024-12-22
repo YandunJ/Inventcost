@@ -198,7 +198,7 @@
             }
                 // Función para obtener frutas
                     public function obtenerFrutas() {
-                        $query = "SELECT id_articulo, nombre_articulo FROM invent_catalogo WHERE id_categoria = 1";
+                        $query = "SELECT cat_id, cat_nombre FROM catalogo WHERE ctg_id = 1";
                         $stmt = $this->conn->prepare($query);
                         if (!$stmt) {
                             throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
