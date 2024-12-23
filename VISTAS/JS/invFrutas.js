@@ -51,39 +51,6 @@ $(document).ready(function() {
 
 
 
-    $(document).ready(function () {
-        // Función genérica para actualizar los valores
-        function updateQuantity(amount, inputId, step) {
-            const inputField = document.getElementById(inputId);
-            if (!inputField) return;
-    
-            const minValue = parseFloat(inputField.getAttribute('min')) || 0;
-            const currentValue = parseFloat(inputField.value) || minValue;
-    
-            // Calcula el nuevo valor
-            const newValue = Math.max(currentValue + (amount * step), minValue);
-            inputField.value = newValue.toFixed(step === 1 ? 0 : 2);
-    
-            // Dispara el evento de entrada para actualizaciones dinámicas
-            inputField.dispatchEvent(new Event('input'));
-        }
-    
-        // Incremento y decremento de valores
-        $(".btn-minus, .btn-plus").on("click", function () {
-            const inputId = $(this).siblings("input").attr("id");
-            const step = $(this).hasClass("quantity-decimal") ? 0.01 : 1;
-            const amount = $(this).hasClass("btn-plus") ? 1 : -1;
-            updateQuantity(amount, inputId, step);
-        });
-    
-        // Calcular Precio Unitario dinámicamente
-        $('#cantidad_ingresada, #precio_total').on('input', function () {
-            const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0
-            const precioTotal = parseFloat($('#precio_total').val()) || 0;
-            const precioUnitario = precioTotal / cantidad;
-            $('#precio_unitario').val(precioUnitario.toFixed(2));
-        });
-    });
     
         
 // Inicializar DataTable
@@ -143,51 +110,40 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
 
 
 
-    $('#tablaMateriaPrimas').on('click', '.details-btn', function() {
-        const loteID = $(this).data('id');
-        cargarDetallesLote(loteID);
-    });
-    function cargarDetallesLote(loteID) {
-        $.ajax({
-            url: '../AJAX/ctrInvFrutas.php',
-            type: 'POST',
-            data: { action: 'obtenerDetalleLote', lote_id: loteID },
-            dataType: 'json',
-            success: function(response) {
-                if (response.status === 'success') {
-                    // Llenar el modal con los datos recibidos
-                    $('#detalleFecha').text(response.data.Fecha);
-                    $('#detalleHora').text(response.data.Hora);
-                    $('#detalleLote').text(response.data.Numero_Lote);
-                    $('#detalleProveedor').text(response.data.Proveedor);
-                    $('#detalleArticulo').text(response.data.Artículo);
-                    $('#detalleCantidadIngresada').text(response.data.Cantidad_Ingresada); // Nuevo
-                    $('#detalleCantidadRestante').text(response.data.Cantidad_Restante);
-                    $('#detalleUnidadMedida').text(response.data.Unidad_Medida); // Nuevo
-                    $('#detallePresentacion').text(response.data.Presentación); // Nuevo
-                    $('#detallePrecioUnitario').text(response.data.Precio_Unitario); // Nuevo
-                    $('#detallePrecioTotal').text(response.data.Precio_Total);
-                    $('#detalleEstado').text(response.data.Estado);
-                    $('#detalleBrix').text(response.data.Brix);
-                    $('#detallePesoUnitario').text(response.data.Peso_Unitario);
-                    $('#detalleBultos').text(response.data.Bultos_Canastas);
-                    $('#detalleObservacion').text(response.data.Observación);
-                    $('#detalleAprobacion').text(response.data.Aprobación);
-    
-                    // Mostrar el modal
-                    $('#detalleModal').modal('show');
-                } else {
-                    alert('Error: ' + response.message);
-                }
-            },
-            error: function() {
-                alert('Error en la solicitud AJAX.');
-            }
-        });
-    }
-    
+$(document).ready(function () {
+    // Función genérica para actualizar los valores
+    function updateQuantity(amount, inputId, step) {
+        const inputField = document.getElementById(inputId);
+        if (!inputField) return;
 
- 
+        const minValue = parseFloat(inputField.getAttribute('min')) || 0;
+        const currentValue = parseFloat(inputField.value) || minValue;
+
+        // Calcula el nuevo valor
+        const newValue = Math.max(currentValue + (amount * step), minValue);
+        inputField.value = newValue.toFixed(step === 1 ? 0 : 2);
+
+        // Dispara el evento de entrada para actualizaciones dinámicas
+        inputField.dispatchEvent(new Event('input'));
+    }
+
+    // Incremento y decremento de valores
+    $(".btn-minus, .btn-plus").on("click", function () {
+        const inputId = $(this).siblings("input").attr("id");
+        const step = $(this).hasClass("quantity-decimal") ? 0.01 : 1;
+        const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+        updateQuantity(amount, inputId, step);
+    });
+
+    // Calcular Precio Unitario dinámicamente
+    $('#cantidad_ingresada, #precio_total').on('input', function () {
+        const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0
+        const precioTotal = parseFloat($('#precio_total').val()) || 0;
+        const precioUnitario = precioTotal / cantidad;
+        $('#precio_unitario').val(precioUnitario.toFixed(2));
+    });
+});
+
 // Abrir el modal y manejar lógica de nuevo registro
 $('button[data-is-new="true"]').on('click', function () {
     const isNew = $(this).data('is-new'); // Indicar que es un nuevo registro
@@ -270,12 +226,12 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function () {
     });
 });
 
-
 // Enviar el formulario para agregar o actualizar la materia prima
 $('.form-actions .btn-primary').on('click', function (event) {
     event.preventDefault();
 
-    const $form = $('#materiaPrimaForm');
+    const formData = $('#materiaPrimaForm').serialize();
+    console.log(formData);  
     const isEditing = $('#Form_MP').data('isEditing');
     const action = isEditing ? 'actualizarMateriaPrima' : 'guardarMateriaPrima';
 
@@ -287,10 +243,11 @@ $('.form-actions .btn-primary').on('click', function (event) {
     $.ajax({
         url: '../AJAX/ctrInvFrutas.php',
         type: 'POST',
-        data: $form.serialize() + `&action=${action}`,
+        data: $('#materiaPrimaForm').serialize() + `&action=${action}`,
         dataType: 'json',
-        success: function (response) {
-            if (response.status === 'success') {
+        success: function(response) {
+            console.log(response);
+            if (response && response.status === 'success') {
                 Swal.fire(
                     'Éxito',
                     isEditing ? 'Registro actualizado correctamente' : 'Registro agregado correctamente',
@@ -300,15 +257,18 @@ $('.form-actions .btn-primary').on('click', function (event) {
                     materiaPrimasTable.ajax.reload();
                 });
             } else {
-                Swal.fire('Error', response.message, 'error');
+                Swal.fire('Error', response.message || 'Ocurrió un error inesperado.', 'error');
             }
+            
         },
-        error: function () {
-            Swal.fire('Error', 'Ocurrió un error al guardar los datos.', 'error');
+        error: function(xhr, status, error) {
+            Swal.fire('Error', 'Error de comunicación con el servidor', 'error');
+            console.error("Error: ", error);
+            console.error("Response: ", xhr.responseText);
         }
+        
     });
 });
-
 
 // Al hacer clic en el botón Eliminar
 $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
@@ -350,63 +310,5 @@ $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
 });
 
     
-        // let formModified = false;
-
-        // // Detectar cambios en el formulario
-        // $("#materiaPrimaForm input, #materiaPrimaFormselect").on("input change", function() {
-        //     formModified = true;
-        // });
-        
-        // // Evento beforeunload para detectar si se intenta cerrar o recargar la página
-        // window.addEventListener("beforeunload", function(e) {
-        //     if (formModified) {
-        //         const confirmationMessage = "Tienes datos sin guardar. ¿Estás seguro de que deseas salir?";
-        //         e.returnValue = confirmationMessage; // Establece el mensaje
-        //         return confirmationMessage;
-        //     }
-        // });
-        
-        // Capturar clics en el menú lateral
-        // $("a").on("click", function(e) {
-        //     if (formModified) {
-        //         e.preventDefault(); // Prevenir la navegación
-        //         Swal.fire({
-        //             title: "Tienes datos sin guardar",
-        //             text: "¿Estás seguro de que deseas salir sin guardar?",
-        //             icon: "warning",
-        //             showCancelButton: true,
-        //             confirmButtonText: "Sí, salir",
-        //             cancelButtonText: "Cancelar"
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 window.location.href = $(this).attr("href"); // Redirigir si confirma
-        //             }
-        //         });
-        //     }
-        // });
-        
-        // El botón de cancelar regresa a la página anterior
-       // El botón de cancelar regresa a la página anterior
-            $("#cancelarBtn").on("click", function() {
-
-            if (formModified) {
-                Swal.fire({
-                    title: "Tienes datos sin guardar",
-                    text: "¿Estás seguro de que deseas salir sin guardar?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Sí, salir",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.history.back(); // Regresa a la página anterior
-                    }
-                });
-            } else {
-                window.history.back(); // Regresa a la página anterior
-            }
-        });
-        
-
 
 });

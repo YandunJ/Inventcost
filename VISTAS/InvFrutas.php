@@ -79,7 +79,7 @@
                         </div>
                         <div class="form-group">
                             <label for="precio_unitario">Precio Unitario:</label>
-                            <input type="number" id="precio_unitario" name="precio_unitario" value="0.00" min="0" step="0.01" required>
+                            <input type="number" id="precio_unitario" name="precio_unitario" value="0.00" min="0" step="0.01"  readonly  required>
                         </div>
                     </div>
 

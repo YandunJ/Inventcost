@@ -18,37 +18,36 @@ switch ($action) {
     case 'generarNumeroLote':
         generarNumeroLote();
         break;
-    // case 'cargarFrutasPorProveedor':
-    //     cargarFrutasPorProveedor();
-    //     break;
-    
+
     case 'cargarProveedores':
         cargarProveedores();
         break;
+
+        case 'cargarMateriaPrima':
+            cargarMateriaPrima();
+            break;
     case 'guardarMateriaPrima':
         guardarMateriaPrima();
         break;
-    case 'cargarMateriaPrima':
-        cargarMateriaPrima();
-        break;
-    case 'eliminarMateriaPrima':
-        eliminarMateriaPrima();
-        break;
-    case 'obtenerMateriaPrima':
-        obtenerMateriaPrima();
-        break;
+
     case 'actualizarMateriaPrima':
         actualizarMateriaPrima();
         break;
-  
-    case 'obtenerDetalleLote':
-        obtenerDetalleLote();
+
+    case 'eliminarMateriaPrima':
+        eliminarMateriaPrima();
         break;
-            
+
+    // case 'obtenerMateriaPrima':
+    //     obtenerMateriaPrima();
+    //     break;
+
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
+
+
 function generarNumeroLote() {
     try {
         $materiaPrima = new MateriaPrima();
@@ -78,31 +77,6 @@ function cargarFrutas() {
 }
 
 
-// function cargarFrutasPorProveedor() {
-//     global $conn;
-//     $proveedor_id = isset($_POST['proveedor_id']) ? intval($_POST['proveedor_id']) : 0;
-
-//     if ($proveedor_id === 0) {
-//         echo json_encode(['status' => 'error', 'message' => 'Proveedor no válido']);
-//         return;
-//     }
-
-//     $materiaPrima = new MateriaPrima($conn);
-//     try {
-//         $frutas = $materiaPrima->obtenerFrutasPorProveedor($proveedor_id);
-
-//         if (empty($frutas)) {
-//             echo json_encode([
-//                 'status' => 'error', 
-//                 'message' => "No se encontraron frutas para este proveedor: $proveedor_id"
-//             ]);
-//         } else {
-//             echo json_encode(['status' => 'success', 'data' => $frutas]);
-//         }
-//     } catch (Exception $e) {
-//         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-//     }
-// }
 
 function cargarProveedores() {
     global $conn;
@@ -122,39 +96,42 @@ function cargarProveedores() {
     }
 }
 
-    function guardarMateriaPrima() {
-        try {
-            $materiaPrima = new MateriaPrima();
+function guardarMateriaPrima() {
+    try {
+        $materiaPrima = new MateriaPrima();
 
-            // Captura los valores de los campos del formulario
-            $fecha = $_POST['fecha'];
-            $hora = $_POST['hora'];
-            $id_articulo = $_POST['id_articulo'];
-            $proveedor_id = $_POST['proveedor_id'];
-            $numero_lote = $_POST['numero_lote'];
-            $cantidad_ingresada = $_POST['cantidad_ingresada'];
-            $precio_unitario = $_POST['precio_unitario'];
-            $presentacion = $_POST['presentacion'];  // Asegúrate de incluir este campo en el formulario
-            $bultos_o_canastas = $_POST['bultos_o_canastas'];
-            $peso_unitario = $_POST['peso_unitario'];
-            $brix = $_POST['brix'];
-            $observacion = $_POST['observacion'];
+        // Captura los valores de los campos del formulario
+        $cat_id = $_POST['id_articulo'] ?? null;
+        $proveedor_id = $_POST['proveedor_id'] ?? null;
+        $numero_lote = $_POST['numero_lote'] ?? null;
+        $cantidad_ingresada = $_POST['cantidad_ingresada'] ?? null;
+        $precio_unitario = $_POST['precio_unitario'] ?? null;
+        $precio_total = $_POST['precio_total'] ?? null;
+        $brix = $_POST['brix'] ?? null;
+        $observacion = $_POST['observacion'] ?? null;
 
-            // Llamada al método para guardar los datos en la base de datos
-            $result = $materiaPrima->guardarInventarioMateriaPrima(
-                $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
-                $cantidad_ingresada, $precio_unitario, $presentacion,
-                $bultos_o_canastas, $peso_unitario, $brix, $observacion
-            );
-
-            echo json_encode([
-                'status' => $result ? 'success' : 'error',
-                'message' => $result ? 'Registro guardado correctamente' : 'No se pudo guardar el registro'
-            ]);
-        } catch (Exception $e) {
-            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        // Verifica que todos los campos obligatorios estén presentes
+        if (is_null($cat_id) || is_null($proveedor_id) || is_null($numero_lote) || is_null($cantidad_ingresada) || is_null($precio_unitario) || is_null($precio_total) || is_null($brix)) {
+            throw new Exception("Todos los campos son obligatorios.");
         }
+
+        // Llamada al método para guardar los datos en la base de datos
+        $result = $materiaPrima->guardarInventarioMateriaPrima(
+            $cat_id, $proveedor_id, $numero_lote, $cantidad_ingresada,
+            $precio_unitario, $precio_total, $brix, $observacion
+        );
+
+        if (!$result) {
+            throw new Exception("Error al guardar los datos en la base de datos");
+        }
+        echo json_encode(['status' => 'success', 'message' => 'Registro guardado correctamente']);
+
+    } catch (Exception $e) {
+        error_log($e->getMessage());  // Log de error
+        echo json_encode(['status' => 'error', 'message' => 'Ocurrió un error: ' . $e->getMessage()]);
     }
+}
+
 
     function actualizarMateriaPrima() {
         if (isset($_POST['id_inv'], $_POST['fecha'], $_POST['hora'], $_POST['id_articulo'], $_POST['proveedor_id'], $_POST['numero_lote'], $_POST['cantidad_ingresada'], $_POST['precio_unitario'], $_POST['presentacion'], $_POST['brix'], $_POST['bultos_o_canastas'], $_POST['peso_unitario'], $_POST['observacion'])) {
@@ -195,26 +172,26 @@ function cargarProveedores() {
         }
     }
     
-        function obtenerMateriaPrima() {
-            // Validamos que se esté pasando el id_inv
-            if (isset($_POST['id_inv'])) {
-                $id_inv = $_POST['id_inv']; // Obtenemos el id_inv desde el POST
-                $materiaPrima = new MateriaPrima();
+        // function obtenerMateriaPrima() {
+        //     // Validamos que se esté pasando el id_inv
+        //     if (isset($_POST['id_inv'])) {
+        //         $id_inv = $_POST['id_inv']; // Obtenemos el id_inv desde el POST
+        //         $materiaPrima = new MateriaPrima();
         
-                // Llamamos a la función para obtener los datos del inventario
-                $data = $materiaPrima->obtenerMateriaPrimaPorId($id_inv);
+        //         // Llamamos a la función para obtener los datos del inventario
+        //         $data = $materiaPrima->obtenerMateriaPrimaPorId($id_inv);
         
-                if ($data) {
-                    // Si se obtuvo el registro, lo retornamos en formato JSON
-                    echo json_encode(['status' => 'success', 'data' => $data]);
-                } else {
-                    // Si no se encuentra el registro, enviamos un mensaje de error
-                    echo json_encode(['status' => 'error', 'message' => 'No se pudo obtener la materia prima.']);
-                }
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'El ID del inventario no fue proporcionado.']);
-            }
-        }
+        //         if ($data) {
+        //             // Si se obtuvo el registro, lo retornamos en formato JSON
+        //             echo json_encode(['status' => 'success', 'data' => $data]);
+        //         } else {
+        //             // Si no se encuentra el registro, enviamos un mensaje de error
+        //             echo json_encode(['status' => 'error', 'message' => 'No se pudo obtener la materia prima.']);
+        //         }
+        //     } else {
+        //         echo json_encode(['status' => 'error', 'message' => 'El ID del inventario no fue proporcionado.']);
+        //     }
+        // }
         
 
 function eliminarMateriaPrima() {
@@ -228,25 +205,6 @@ function eliminarMateriaPrima() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);  // Muestra el mensaje de error en caso de falla
     }
 }
-
-function obtenerDetalleLote() {
-    global $conn;
-    $lote_id = $_POST['lote_id'];
-    $materiaPrima = new MateriaPrima();
-
-    try {
-        $data = $materiaPrima->obtenerDetalleLote($lote_id);
-        if ($data) {
-            echo json_encode(['status' => 'success', 'data' => $data]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'No se encontraron detalles para el lote especificado.']);
-        }
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
-
-
 
  
 ?>
