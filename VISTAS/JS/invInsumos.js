@@ -33,9 +33,9 @@ $.ajax({
         let options = '<option value="">Seleccione insumo</option>';
         if (response.status === 'success' && Array.isArray(response.data)) {
             response.data.forEach(function (insumo) {
-                options += `<option value="${insumo.id_articulo}">${insumo.nombre_articulo}</option>`;
+                options += `<option value="${insumo.cat_id}">${insumo.cat_nombre}</option>`;
             });
-            $("#id_articulo").html(options);
+            $("#cat_id").html(options);
         } else {
             alert("Error al cargar los insumos.");
             console.error("Error loading insumos: ", response);
@@ -51,7 +51,8 @@ $.ajax({
 
     
 
-    $('#id_articulo').change(function() {
+    // Obtener unidad de medida al cambiar el insumo
+    $('#cat_id').change(function() {
         let idArticulo = $(this).val();
 
         if (idArticulo) {
@@ -64,12 +65,12 @@ $.ajax({
                     if (response.status === 'success') {
                         $('#unidad_medida').val(response.unidad_medida);
                     } else {
-                        alert("Error al cargar la unidad de medida.");
+                        alert("Error al cargar la presentación.");
                         console.error("Error loading unit: ", response);
                     }
                 },
                 error: function(xhr, status, error) {
-                    alert("Ocurrió un error al cargar la unidad de medida.");
+                    alert("Ocurrió un error al cargar la presentación.");
                     console.error("Error: ", error);
                     console.error("Response: ", xhr.responseText);
                 }
@@ -78,6 +79,7 @@ $.ajax({
             $('#unidad_medida').val(''); // Limpiar el campo si no hay selección
         }
     });
+
 
    
     $('#unidad_medida').on('change', function() {
@@ -127,69 +129,62 @@ $.ajax({
     
     
         
-   // Calcular el precio total
-$('#cantidad, #precio_unitario').on('input', function() {
-    const cantidad = parseFloat($('#cantidad').val()) || 0;
-    const precioUnitario = parseFloat($('#precio_unitario').val()) || 0;
-    const precioTotal = cantidad * precioUnitario;
-    $('#precio_total').val(precioTotal.toFixed(2));
+//    // Calcular el precio total
+// $('#cantidad, #precio_unitario').on('input', function() {
+//     const cantidad = parseFloat($('#cantidad').val()) || 0;
+//     const precioUnitario = parseFloat($('#precio_unitario').val()) || 0;
+//     const precioTotal = cantidad * precioUnitario;
+//     $('#precio_total').val(precioTotal.toFixed(2));
+// });
+
+const insumosTable = $('#inventarioInsumosdt').DataTable({
+    ajax: {
+        url: '../AJAX/ctrInvInsumos.php',
+        type: 'POST',
+        data: { action: 'cargarInsumosTabla' },
+        dataSrc: function (json) {
+            if (json.status === 'success') {
+                return json.data;
+            } else {
+                alert('Error: ' + json.message);
+                return [];
+            }
+        }
+    },
+    columns: [
+        { data: 'Lote' },
+        { data: 'Proveedor' },
+        { data: 'Insumo' },
+        { data: 'Unidad_Medida' },
+        { data: 'Cantidad' },
+        { data: 'Cantidad_Restante' },
+        { data: 'Precio_Unitario' },
+        { data: 'Precio_Total' },
+        { data: 'Presentacion' },
+        { data: 'Estado' },
+        {
+            data: 'ID',
+            render: function (data, type, row) {
+                return `
+                    <div class="btn-group">
+                        <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item edit-btn" href="#" data-id="${data}">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a class="dropdown-item delete-btn" href="#" data-id="${data}">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    ],
+    language: dataTableLanguage // Lenguaje personalizado
 });
-
-
-    // Inicializar DataTable
-    
-        const insumosTable = $('#inventarioInsumosdt').DataTable({
-            ajax: {
-                url: '../AJAX/ctrInvInsumos.php',
-                type: 'POST',
-                data: { action: 'cargarInsumosTabla' },
-                dataSrc: function(json) {
-                    if (json.status === 'success') {
-                        return json.data;
-                    } else {
-                        alert('Error: ' + json.message);
-                        return [];
-                    }
-                }
-            },
-            columns: [
-                { data: 'Lote' },
-                { data: 'Proveedor' },
-                { data: 'Insumo' },
-                
-                
-                
-                { data: 'Unidad_Medida' },
-                { data: 'Cantidad' },
-                { data: 'Cantidad_Restante' },
-                { data: 'Precio_Unitario' },
-                { data: 'Precio_Total' },
-                { data: 'Presentacion' },
-                { data: 'Estado' },
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                        return `
-                            <div class="btn-group">
-                                <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fas fa-cog"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
-                                        <i class="fas fa-edit"></i> Editar
-                                    </a>
-                                    <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
-                                        <i class="fas fa-trash-alt"></i> Eliminar
-                                    </a>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-            ]
-            ,
-        language: dataTableLanguage
-        });
 
 // Abrir modal de nuevo registro
 $('button[data-is-new="true"]').on('click', function () {
@@ -222,19 +217,14 @@ $('button[data-is-new="true"]').on('click', function () {
     $('#Form_Insumos').modal('show'); // Abre el modal
 });
 
-
-
-
-    
     
    // Al hacer clic en el botón Agregar/Actualizar
    $('#InsumosForm').on('submit', function(event) {
     event.preventDefault(); // Previene la recarga de la página
     const formData = $(this).serialize(); // Asegúrate de que los nombres coincidan en el formulario HTML
-    const actionType = $('#id_inv').val() ? 'actualizar' : 'registrar';
 
     Swal.fire({
-        title: `¿Estás seguro de que deseas ${actionType} este insumo?`,
+        title: '¿Estás seguro de que deseas registrar este insumo?',
         icon: 'question',
         showCancelButton: true,
         confirmButtonText: 'Sí, continuar',
@@ -248,10 +238,8 @@ $('button[data-is-new="true"]').on('click', function () {
                 dataType: "json",
                 success: function(response) {
                     if (response.status === 'success') {
-                        Swal.fire('Éxito', `Insumo ${actionType}ado exitosamente.`, 'success');
+                        Swal.fire('Éxito', 'Insumo registrado exitosamente.', 'success');
                         $('#InsumosForm')[0].reset();
-                        console.log("Valor de presentación:", $("#presentacion").val());
-
                         insumosTable.ajax.reload(); // Recargar la tabla
                     } else {
                         Swal.fire('Error', response.message, 'error');
@@ -283,7 +271,7 @@ $('#inventarioInsumosdt').on('click', '.edit-btn', function () {
 
                 // Rellena los campos del formulario con los datos del insumo
                 $('#id_inv').val(data.id_inv);
-                $('#id_articulo').val(data.id_articulo);
+                $('#cat_id').val(data.cat_id);
                 $('#proveedor_id').val(data.proveedor_id);
                 $('#fecha').val(data.fecha);
                 $('#hora').val(data.hora);
@@ -310,7 +298,7 @@ $('#inventarioInsumosdt').on('click', '.edit-btn', function () {
         const formData = {
             action: 'actualizarInsumo',
             id_inv: $('#id_inv').val(),
-            id_articulo: $('#id_articulo').val(),
+            cat_id: $('#cat_id').val(),
             proveedor_id: $('#proveedor_id').val(),
             fecha: $('#fecha').val(),
             hora: $('#hora').val(),

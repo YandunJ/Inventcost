@@ -71,12 +71,12 @@ switch ($action) {
         $id_articulo = isset($_POST['id_articulo']) ? $_POST['id_articulo'] : '';
     
         if ($id_articulo) {
-            // Consulta para obtener la unidad de medida uniendo las tablas
+            // Consulta para obtener la unidad de medida (presentación) uniendo las tablas
             $query = "
-                SELECT um.uni_nombre 
-                FROM invent_catalogo ic
-                JOIN unidades_medida um ON ic.uni_id = um.uni_id
-                WHERE ic.id_articulo = ?
+                SELECT p.prs_nombre 
+                FROM catalogo c
+                JOIN presentacion p ON c.prs_id = p.prs_id
+                WHERE c.cat_id = ?
             ";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("i", $id_articulo);
@@ -85,7 +85,7 @@ switch ($action) {
             $unidad = $result->fetch_assoc();
     
             if ($unidad) {
-                echo json_encode(['status' => 'success', 'unidad_medida' => $unidad['uni_nombre']]);
+                echo json_encode(['status' => 'success', 'unidad_medida' => $unidad['prs_nombre']]);
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Unidad de medida no encontrada']);
             }
@@ -93,6 +93,7 @@ switch ($action) {
             echo json_encode(['status' => 'error', 'message' => 'ID de artículo no válido']);
         }
     }
+    
     
 
     function cargarInsumos() {
@@ -116,36 +117,56 @@ switch ($action) {
         $insumosModel = new InventarioInsumos();
     
         // Capturar datos del formulario y ajustar nombres según el SP y la tabla
-        $id_articulo = $_POST['id_articulo'];
         $proveedor_id = $_POST['proveedor_id'];
-        $fecha = $_POST['fecha'];
-        $hora = $_POST['hora'];
+        $cat_id = $_POST['id_articulo'];
+        $fecha_elaboracion = $_POST['fecha_elaboracion'];
+        $fecha_caducidad = $_POST['fecha_caducidad'];
         $numero_lote = $_POST['numero_lote'];
+        $presentacion = $_POST['unidad_medida'];
         $cantidad_ingresada = $_POST['cantidad_ingresada'];
-        $presentacion = $_POST['presentacion'];
         $precio_unitario = $_POST['precio_unitario'];
-        $unidad_medida = $_POST['unidad_medida']; // Captura este parámetro adicional
+        $precio_total = $_POST['precio_total'];
     
         try {
             // Llamada al método de inserción con los parámetros necesarios
-            $insumosModel->insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario, $unidad_medida);
+            $insumosModel->insertarInsumo($proveedor_id, $cat_id, $fecha_elaboracion, $fecha_caducidad, $numero_lote, $presentacion, $cantidad_ingresada, $precio_unitario, $precio_total);
             echo json_encode(['status' => 'success', 'message' => 'Insumo agregado exitosamente']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    function cargarInsumosTabla() {
+        global $conn;
+        header('Content-Type: application/json');
+        $insumosModel = new InventarioInsumos($conn);
     
-function cargarInsumosTabla() {
-    global $conn;
-    header('Content-Type: application/json');
-    $insumosModel = new InventarioInsumos($conn);
-    try {
-        $data = $insumosModel->obtenerInvenInsumos();
-        echo json_encode(['status' => 'success', 'data' => $data]);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        try {
+            $data = $insumosModel->obtenerInvenInsumos();
+    
+            // Mapeo para las columnas requeridas por el DataTable
+            $mappedData = array_map(function ($row) {
+                return [
+                    'Lote' => $row['lote'],
+                    'Proveedor' => $row['proveedor'], // Reemplazar con nombre de proveedor si es necesario
+                    'Insumo' => $row['insumo'], // Reemplazar con nombre de insumo si es necesario
+                    'Unidad_Medida' => 'Unidad', // Ajusta según sea necesario
+                    'Cantidad' => $row['cant_ingresada'],
+                    'Cantidad_Restante' => $row['cant_restante'],
+                    'Precio_Unitario' => $row['p_u'],
+                    'Precio_Total' => $row['p_t'],
+                    'Presentacion' => $row['presentacion'],
+                    'Estado' => 'Activo', // Agregar lógica si se maneja el estado
+                    'ID' => $row['id_inv']
+                ];
+            }, $data);
+    
+            echo json_encode(['status' => 'success', 'data' => $mappedData]);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
     }
-}
+    
 
 
 function cargarInsumoId() {

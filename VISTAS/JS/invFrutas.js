@@ -78,9 +78,9 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         { data: 'CantidadDisponible' },
         { data: 'PrecioUnitario'},
         { data: 'PrecioTotal' },
-        { data: 'Estado' },
         { data: 'Brix'},    
         { data: 'Observacion'},
+        { data: 'Estado' },
         {
             data: null,
             render: function (data, type, row) {

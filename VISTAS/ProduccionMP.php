@@ -4,14 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producción</title>
-    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
-    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <!-- <link rel="stylesheet" href="../FILES/tableMP.css"> -->
-    <link rel="stylesheet" href="../FILES/InvMPModal.css">
-    <link rel="stylesheet" href="../FILES/global-style.css">
-    <link rel="stylesheet" href="../FILES/Table-Compact.css">
+    <link rel="stylesheet" href="../FILES/global.css">
 
 </head>
 <body class="hold-transition sidebar-mini">
@@ -78,7 +71,7 @@
                                     <th>Precio Unit.</th>
                                     
                                     
-                    <th>Detalles</th> <!-- Nueva columna -->
+                    
                     <th>Cantidad a Consumir</th>
                     <th>Seleccionar</th>
                 </tr>

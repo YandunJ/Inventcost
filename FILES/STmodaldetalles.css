@@ -1,0 +1,16 @@
+/* Estilo específico para el modal de entradas */
+.modal-entradas {
+    max-width: 90% !important; /* Aumentar el ancho máximo del modal */
+    width: 90% !important; /* Asegurar que el modal ocupe el 90% del ancho de la pantalla */
+}
+
+.modal-entradas .modal-body {
+    max-height: 70vh; /* Limitar la altura máxima del cuerpo del modal */
+    overflow-y: auto; /* Habilitar el desplazamiento vertical si el contenido es demasiado alto */
+}
+
+.table-compact {
+    width: 100% !important; /* Asegurar que la tabla ocupe el 100% del ancho disponible */
+    display: table; /* Mantener el comportamiento de tabla */
+}
+

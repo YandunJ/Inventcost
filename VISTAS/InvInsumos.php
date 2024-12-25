@@ -47,7 +47,7 @@
                         </div>
                         <div class="form-group">
                             <label for="id_articulo">Insumo:</label>
-                            <select id="id_articulo" name="id_articulo" class="form-control" required>
+                            <select id="cat_id" name="id_articulo" class="form-control" required>
                                 <option value="">Seleccione un insumo</option>
                             </select>
                         </div>
@@ -76,9 +76,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="unidad_medida">Presentacion:</label>
-                            <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
-                        </div>
+        <label for="unidad_medida">Presentación:</label>
+        <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
+    </div>
                         <div class="form-group">
                             <label for="precio_total">Precio Total:</label>
                             <div class="input-quantity">
@@ -109,24 +109,24 @@
                     <table id="inventarioInsumosdt" class="table table-bordered table-hover table-compact">
     <thead>
         <tr>
+            <th>Lote</th>
+            <th>Proveedor</th>
+            <th>Insumo</th>
+            <th>Ud Medida</th>
+            <th>Cantidad</th>
+            <th>Stock</th>
+            <th>Precio Unitario</th>
+            <th>Precio Total</th>
+            <th>Presentación</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Las filas se cargarán dinámicamente con DataTable -->
+    </tbody>
+</table>
 
-                             <th>lote</th>
-                             <th>Proveedor</th>
-                            <th>Insumo</th>
-                            <th>Ud Medida</th>
-                            <th>Cantidad</th>
-                            <th>Stock</th>
-                            <th>Precio Unitario</th>
-                            <th>Precio Total</th>
-                            <th>Presentación</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Rows will be populated dynamically from the backend -->
-                        </tbody>
-                    </table>
                 </div>
             </section>
             <!-- /.content -->

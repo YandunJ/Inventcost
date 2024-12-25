@@ -7,27 +7,23 @@ require_once "../MODELO/modKardex.php";
 
 $conn = (new Cls_DataConnection())->FN_getConnect();
 
-if (!isset($_POST['action']) || empty($_POST['action'])) {
-    // Retornar un error más manejable en lugar de continuar
-    http_response_code(400); // Bad Request
-    echo json_encode(['status' => 'error', 'message' => 'Parámetro de acción faltante o inválido.']);
-    exit;
-}
-
-$action = $_POST['action'];
+$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
 
 switch ($action) {
     case 'cargarKardex':
-        cargarKardex($conn);
+        cargarKardex();
         break;
-
+    case 'cargarEntradas':
+        cargarEntradas();
+        break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
 
-function cargarKardex($conn) {
-    header('Content-Type: application/json');
+function cargarKardex() {
+    global $conn;
+    $kardexModel = new KardexModel($conn);
     try {
         $fechaInicio = $_POST['fechaInicio'] ?? null;
         $fechaFin = $_POST['fechaFin'] ?? null;
@@ -47,14 +43,28 @@ function cargarKardex($conn) {
             throw new Exception("Categoría inválida: $categoria");
         }
 
-        $kardexModel = new KardexModel();
         $datos = $kardexModel->obtenerKardex($fechaInicio, $fechaFin, $mapaCategorias[$categoria]);
-
         echo json_encode(['status' => 'success', 'data' => $datos]);
     } catch (Exception $e) {
-        http_response_code(500); // Error interno del servidor
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 
+function cargarEntradas() {
+    global $conn;
+    $kardexModel = new KardexModel($conn);
+    try {
+        $articuloId = $_POST['articuloId'] ?? null;
+
+        if (!$articuloId) {
+            throw new Exception("Falta el ID del artículo.");
+        }
+
+        $datos = $kardexModel->obtenerEntradas($articuloId);
+        error_log(print_r($datos, true)); // Usar error_log para depurar
+        echo json_encode(['status' => 'success', 'data' => $datos]);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+}
 ?>

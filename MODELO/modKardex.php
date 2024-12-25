@@ -1,5 +1,4 @@
 <?php
-// MODELO/modKardex.php
 class KardexModel {
     private $conn;
 
@@ -9,28 +8,42 @@ class KardexModel {
     }
 
     public function obtenerKardex($fechaInicio, $fechaFin, $categoria) {
-        try {
-            $stmt = $this->conn->prepare("CALL DatosKardex(?, ?, ?)");
-            if (!$stmt) {
-                throw new Exception("Error al preparar la consulta: " . $this->conn->error);
-            }
-
-            $stmt->bind_param("sss", $fechaInicio, $fechaFin, $categoria);
-            if (!$stmt->execute()) {
-                throw new Exception("Error al ejecutar la consulta: " . $stmt->error);
-            }
-
-            $result = $stmt->get_result();
-            $datos = [];
-            while ($row = $result->fetch_assoc()) {
-                $datos[] = $row;
-            }
-
-            $stmt->close();
-            return $datos;
-        } catch (Exception $e) {
-            throw new Exception("Error en obtenerKardex: " . $e->getMessage());
+        $stmt = $this->conn->prepare("CALL Kardex_data(?, ?, ?)");
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta: " . $this->conn->error);
         }
+
+        $stmt->bind_param("sss", $fechaInicio, $fechaFin, $categoria);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $datos = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $datos[] = $row;
+        }
+
+        $stmt->close();
+        return $datos;
+    }
+
+    public function obtenerEntradas($articuloId) {
+        $stmt = $this->conn->prepare("CALL Kardex_entradas(?)");
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $articuloId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $datos = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $datos[] = $row;
+        }
+
+        $stmt->close();
+        error_log(print_r($datos, true)); // Usar error_log para depurar
+        return $datos;
     }
 }
 ?>

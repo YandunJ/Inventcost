@@ -14,10 +14,10 @@ class InventarioInsumos {
         $fecha = date('dmy');
 
         $stmt = $this->conn->prepare("
-            SELECT numero_lote 
+            SELECT lote 
             FROM inventario 
-            WHERE numero_lote LIKE CONCAT(?, ?, '%')
-            ORDER BY CAST(SUBSTRING(numero_lote, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
+            WHERE lote LIKE CONCAT(?, ?, '%')
+            ORDER BY CAST(SUBSTRING(lote, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
             LIMIT 1
         ");
         $stmt->bind_param('ssss', $prefijo, $fecha, $prefijo, $fecha);
@@ -32,44 +32,56 @@ class InventarioInsumos {
 
         return $prefijo . $fecha . $nuevoConsecutivo;
     }
-    
-
-    public function insertarInsumo($id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario, $unidad_medida) {
-        $stmt = $this->conn->prepare("CALL ac_InsertarINS(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('iisssdsds', $id_articulo, $proveedor_id, $fecha, $hora, $numero_lote, $cantidad_ingresada, $presentacion, $precio_unitario, $unidad_medida);
+    public function insertarInsumo(
+        $proveedor_id, 
+        $cat_id, 
+        $fecha_elaboracion, 
+        $fecha_caducidad, 
+        $numero_lote, 
+        $presentacion, 
+        $cantidad_ingresada, 
+        $precio_unitario, 
+        $precio_total
+    ) {
+        $stmt = $this->conn->prepare("CALL ins_reg(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param(
+            'iisssddds', // Ajustamos el orden para reflejar el SP
+            $proveedor_id,
+            $cat_id,
+            $fecha_elaboracion,
+            $fecha_caducidad,
+            $numero_lote,
+            $presentacion,
+            $cantidad_ingresada,
+            $precio_unitario,
+            $precio_total
+        );
     
         if ($stmt->execute()) {
             return true;
         } else {
             throw new Exception("Error al insertar el insumo: " . $stmt->error);
         }
-        
-        $stmt->close();
-    }
     
-
-    // FUNCION ANTERIOR PARA INSERTAR O ACTULIZAR NO SE USA ACTULAMENTE: 
-    public function insertarActualizar($inventins_id, $insumo_id, $proveedor_id, $fecha_cad, $unidad_medida, $cantidad, $precio_unitario, $precio_total) {
-        $stmt = $this->conn->prepare("CALL inventario_insumos(?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param('iiissddd', $inventins_id, $insumo_id, $proveedor_id, $fecha_cad, $unidad_medida, $cantidad, $precio_unitario, $precio_total);
-        $stmt->execute();
         $stmt->close();
     }
 
+    
     public function obtenerInvenInsumos() {
-        $sql = "CALL sp_Obt_inven_INS()";
+        $sql = "CALL ins_data()";
         $result = $this->conn->query($sql);
-
+    
         if (!$result) {
             throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
         }
-
+    
         $data = [];
         while ($row = $result->fetch_assoc()) {
             $data[] = $row;
         }
         return $data;
     }
+    
     public function obtenerInsumoPorID($inventins_id) {
         $stmt = $this->conn->prepare("CALL Obt_INS_por_id(?)"); // Cambio en el nombre del SP
         $stmt->bind_param('i', $inventins_id);
@@ -100,6 +112,15 @@ class InventarioInsumos {
     }
 
     
+    
+    // FUNCION ANTERIOR PARA INSERTAR O ACTULIZAR NO SE USA ACTULAMENTE: 
+    public function insertarActualizar($inventins_id, $insumo_id, $proveedor_id, $fecha_cad, $unidad_medida, $cantidad, $precio_unitario, $precio_total) {
+        $stmt = $this->conn->prepare("CALL inventario_insumos(?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param('iiissddd', $inventins_id, $insumo_id, $proveedor_id, $fecha_cad, $unidad_medida, $cantidad, $precio_unitario, $precio_total);
+        $stmt->execute();
+        $stmt->close();
+    }
+
     // public function obtenerProveedoresPorCategoria($id_categoria) {
     //     $query = "
     //         SELECT DISTINCT p.proveedor_id, p.nombre_empresa 
@@ -158,7 +179,7 @@ class InventarioInsumos {
     // }
     
     public function obtenerInsumos() {
-        $query = "SELECT id_articulo, nombre_articulo FROM invent_catalogo WHERE id_categoria = 2";
+        $query = "SELECT cat_id, cat_nombre FROM catalogo WHERE ctg_id = 2";
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
             throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);

@@ -6,9 +6,9 @@ $(document).ready(function () {
         paging: true,
         searching: true,
         ajax: {
-            url: '../AJAX/ctrProduccionMP.php',
+            url: '../AJAX/ctrInvFrutas.php',
             type: 'POST',
-            data: { action: 'obtenerMateriaPrima' },
+            data: { action: 'cargarMateriaPrima' },
             dataSrc: function (json) {
                 return json.status === 'success' ? json.data : [];
             }
@@ -16,18 +16,18 @@ $(document).ready(function () {
         columns: [
             { data: 'Lote' },
             { data: 'Proveedor' },
-            { data: 'Artículo' },
-            { data: 'unidad_medida' },
-            { data: 'Cantidad_Disponible' },
-            { data: 'precio_unitario' },
-            {
-                data: 'ID',
-                render: function (data) {
-                    return `<button class="btn btn-info btn-sm details-btn" data-id="${data}">
-                                <i class="fas fa-info-circle"></i> Detalles
-                            </button>`;
-                }
-            },
+            { data: 'Articulo' },
+            { data: 'UnidadMedida' },
+            { data: 'CantidadDisponible' },
+            { data: 'PrecioUnitario' },
+            // {
+            //     data: 'ID',
+            //     render: function (data) {
+            //         return `<button class="btn btn-info btn-sm details-btn" data-id="${data}">
+            //                     <i class="fas fa-info-circle"></i> Detalles
+            //                 </button>`;
+            //     }
+            // },
             {
                 data: null,
                 render: function (data, type, row) {

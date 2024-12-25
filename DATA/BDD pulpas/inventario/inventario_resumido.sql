@@ -1,4 +1,4 @@
-SELECT * FROM fpulpas.inventario;
+	SELECT * FROM fpulpas.inventario;
 
 CREATE TABLE `inventario` (
     id_inv INT AUTO_INCREMENT PRIMARY KEY, -- Clave principal
@@ -30,84 +30,83 @@ CREATE TABLE `inventario` (
 
 DELIMITER $$
 
-CREATE PROCEDURE `mp_reg`(
-    IN p_cat_id INT,
-    IN p_proveedor_id INT,
-    IN p_lote VARCHAR(50),
-    IN p_presentacion VARCHAR(20),
-    IN p_cant_ingresada DECIMAL(10, 2),
-    IN p_p_u DECIMAL(10, 2),
-    IN p_p_t DECIMAL(10, 2),
-    IN p_brix DECIMAL(5, 2),
-    IN p_observacion TEXT
+CREATE PROCEDURE `Kardex_entradas`(
+    IN p_articuloId INT
 )
 BEGIN
-    -- Asignar 'KILOGRAMOS' si p_presentacion es NULL o vacío
-    IF p_presentacion IS NULL OR p_presentacion = '' THEN
-        SET p_presentacion = 'KILOGRAMOS';
-    END IF;
-
-    INSERT INTO inventario (
-        cat_id, proveedor_id, lote, presentacion, 
-        cant_ingresada, cant_restante, p_u, p_t, estado, 
-        brix, fecha_elaboracion, fecha_caducidad, observacion
-    )
-    VALUES (
-        p_cat_id, p_proveedor_id, p_lote, p_presentacion, 
-        p_cant_ingresada, p_cant_ingresada, p_p_u, p_p_t, 'disponible', 
-        p_brix, NULL, NULL, p_observacion
-    );
+    SELECT 
+        inv.fecha_hora AS FechaHora,
+        inv.lote AS Lote,
+        prov.nombre_empresa AS Proveedor,
+        cat.cat_nombre AS Articulo,
+        inv.presentacion AS Presentacion,
+        inv.cant_ingresada AS CantidadInicial,
+        inv.cant_restante AS CantidadDisponible,
+        inv.p_u AS PrecioUnitario,
+        inv.p_t AS PrecioTotal,
+        inv.estado AS Estado,
+        inv.brix AS Brix,
+        inv.observacion AS Observacion,
+        'Entrada' AS TipoMovimiento
+    FROM 
+        inventario AS inv
+    INNER JOIN 
+        catalogo AS cat ON inv.cat_id = cat.cat_id
+    INNER JOIN 
+        proveedores AS prov ON inv.proveedor_id = prov.proveedor_id
+    WHERE 
+        inv.cat_id = p_articuloId
+    ORDER BY 
+        inv.fecha_hora DESC;
 END$$
 
 DELIMITER ;
 
+CALL Kardex_entradas(3); -- Reemplaza 3 con el ID del artículo que deseas probar
+
+	DELIMITER $$
+
+	CREATE PROCEDURE `Kardex_data`(
+		IN p_fechaInicio DATE,
+		IN p_fechaFin DATE,
+		IN p_categoria INT
+	)
+	BEGIN
+		SELECT 
+			cat.cat_nombre AS articulo,
+			ctg.ctg_nombre AS categoria,
+			inv.presentacion,
+			'Unidad' AS unidad, -- Ajusta esto si tienes un campo específico para la unidad
+			SUM(inv.cant_ingresada) AS entradas,
+			SUM(inv.cant_ingresada - inv.cant_restante) AS salidas,
+			SUM(inv.cant_restante) AS saldo
+		FROM 
+			inventario AS inv
+		INNER JOIN 
+			catalogo AS cat ON inv.cat_id = cat.cat_id
+		INNER JOIN 
+			categorias AS ctg ON cat.ctg_id = ctg.ctg_id
+		WHERE 
+			inv.fecha_hora BETWEEN p_fechaInicio AND p_fechaFin
+			AND cat.ctg_id = p_categoria
+		GROUP BY 
+			cat.cat_nombre, ctg.ctg_nombre, inv.presentacion
+		ORDER BY 
+			cat.cat_nombre;
+	END$$
+
+	DELIMITER ;
+
 CALL mp_reg(
-    2,                     -- cat_id
+    4,                     -- cat_id
     5,                     -- proveedor_id
     'MP_2212241',          -- lote
-    '',                    -- presentacion (vacío, se asignará 'KILOGRAMOS')
     100.00,                -- cant_ingresada
     10.50,                 -- p_u
     1050.00,               -- p_t
     12.5,                  -- brix
     'Materia prima de alta calidad' -- observacion
 );
-
-
-
-DELIMITER $$
-CREATE PROCEDURE `mp_act`(
-    IN p_id_inv INT,
-    IN p_cat_id INT,
-    IN p_proveedor_id INT,
-    IN p_lote VARCHAR(50),
-    IN p_presentacion VARCHAR(20),
-    IN p_cant_ingresada DECIMAL(10, 2),
-    IN p_cant_restante DECIMAL(10, 2),
-    IN p_p_u DECIMAL(10, 2),
-    IN p_p_t DECIMAL(10, 2),
-    IN p_brix DECIMAL(5, 2),
-    IN p_observacion TEXT
-)
-BEGIN
-    UPDATE inventario
-    SET 
-        cat_id = p_cat_id,
-        proveedor_id = p_proveedor_id,
-        lote = p_lote,
-        presentacion = p_presentacion,
-        cant_ingresada = p_cant_ingresada,
-        cant_restante = p_cant_restante,
-        p_u = p_p_u,
-        p_t = p_p_t,
-        brix = p_brix,
-        observacion = p_observacion,
-        fecha_elaboracion = NULL,
-        fecha_caducidad = NULL
-    WHERE id_inv = p_id_inv;
-END$$
-DELIMITER ;
-
 
 CALL mp_act(
     1,                     -- id_inv
@@ -123,33 +122,141 @@ CALL mp_act(
     12.5,                  -- brix
     'Actualización del registro de materia prima' -- observacion
 );
+call fpulpas.mp_data();
 
 
 DELIMITER $$
-
-CREATE PROCEDURE `mp_data`()
+CREATE PROCEDURE ins_reg(
+    IN p_proveedor_id INT,
+    IN p_cat_id INT,
+    IN p_fecha_elaboracion DATE,
+    IN p_fecha_caducidad DATE,
+    IN p_lote VARCHAR(50),
+    IN p_presentacion VARCHAR(20),
+    IN p_cant_ingresada DECIMAL(10, 2),
+    IN p_p_u DECIMAL(10, 2),
+    IN p_p_t DECIMAL(10, 2)
+)
 BEGIN
-    SELECT 
-        i.id_inv AS ID,
-        i.fecha_hora AS FechaHora,
-        i.lote AS Lote,
-        p.nombre_empresa AS Proveedor,
-        c.cat_nombre AS Articulo,
-        i.presentacion AS UnidadMedida,
-        i.cant_ingresada AS CantidadIngresada,
-        i.cant_restante AS CantidadDisponible,
-        i.p_u AS PrecioUnitario,
-        i.p_t AS PrecioTotal,
-        i.estado AS Estado,
-        i.brix AS Brix,
-        i.observacion AS Observacion
+    INSERT INTO inventario (
+        fecha_hora,
+        proveedor_id,
+        cat_id,
+        lote,
+        presentacion,
+        cant_ingresada,
+        cant_restante,
+        p_u,
+        p_t,
+        fecha_elaboracion,
+        fecha_caducidad
+    )
+    VALUES (
+        NOW(),
+        p_proveedor_id,
+        p_cat_id,
+        p_lote,
+        p_presentacion,
+        p_cant_ingresada,
+        p_cant_ingresada, -- cant_restante es igual a la ingresada inicialmente
+        p_p_u,
+        p_p_t,
+        p_fecha_elaboracion,
+        p_fecha_caducidad
+    );
+END$$
+DELIMITER ;
+CALL ins_reg(
+    1,                     -- ID de proveedor
+    5,                     -- ID de categoría (insumo)
+    '2024-12-01',          -- Fecha de elaboración
+    '2025-12-01',          -- Fecha de caducidad
+    'INS_2212241',         -- Número de lote
+    'Caja',                -- Presentación
+    100,                   -- Cantidad ingresada
+    50.00,                 -- Precio unitario
+    5000.00                -- Precio total
+);
+
+
+
+DELIMITER $$
+CREATE PROCEDURE ins_act(
+    IN p_id_inv INT,
+    IN p_proveedor_id INT,
+    IN p_cat_id INT,
+    IN p_fecha_elaboracion DATE,
+    IN p_fecha_caducidad DATE,
+    IN p_lote VARCHAR(50),
+    IN p_presentacion VARCHAR(20),
+    IN p_cant_ingresada DECIMAL(10, 2),
+    IN p_p_u DECIMAL(10, 2),
+    IN p_p_t DECIMAL(10, 2)
+)
+BEGIN
+    UPDATE inventario
+    SET
+        proveedor_id = p_proveedor_id,
+        cat_id = p_cat_id,
+        lote = p_lote,
+        presentacion = p_presentacion,
+        cant_ingresada = p_cant_ingresada,
+        cant_restante = p_cant_ingresada, -- También actualizamos la cantidad restante
+        p_u = p_p_u,
+        p_t = p_p_t,
+        fecha_elaboracion = p_fecha_elaboracion,
+        fecha_caducidad = p_fecha_caducidad
+    WHERE id_inv = p_id_inv;
+END$$
+DELIMITER ;
+
+
+
+DELIMITER $$
+CREATE PROCEDURE ins_data()
+BEGIN
+    SELECT
+        i.id_inv,
+        i.fecha_hora,
+        p.nombre_empresa AS proveedor,
+        c.cat_nombre AS insumo,
+        i.lote,
+        i.presentacion,
+        i.cant_ingresada,
+        i.cant_restante,
+        i.p_u,
+        i.p_t,
+        i.fecha_elaboracion,
+        i.fecha_caducidad
     FROM inventario i
-    INNER JOIN catalogo c ON i.cat_id = c.cat_id
-    INNER JOIN proveedores p ON i.proveedor_id = p.proveedor_id
-    WHERE i.brix IS NOT NULL; -- Filtra solo los registros de materia prima
+    JOIN proveedores p ON i.proveedor_id = p.proveedor_id
+    JOIN catalogo c ON i.cat_id = c.cat_id
+    WHERE c.ctg_id = 2; -- Suponiendo que "ctg_id = 1" diferencia los insumos
+END$$
+DELIMITER ;
+	
+
+DELIMITER $$
+CREATE PROCEDURE ins_data_id(
+    IN p_id_inv INT
+)
+BEGIN
+    SELECT
+        id_inv,
+        fecha_hora,
+        proveedor_id,
+        cat_id,
+        lote,
+        presentacion,
+        cant_ingresada,
+        cant_restante,
+        p_u,
+        p_t,
+        fecha_elaboracion,
+        fecha_caducidad
+    FROM inventario
+    WHERE id_inv = p_id_inv;
 END$$
 
 DELIMITER ;
-
-call fpulpas.mp_data();
 

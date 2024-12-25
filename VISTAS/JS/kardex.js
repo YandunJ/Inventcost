@@ -45,9 +45,18 @@ $(document).ready(function () {
             { data: 'unidad', defaultContent: 'N/A' },
             { data: 'entradas' },
             { data: 'salidas' },
-            { data: 'saldo' }
-        ]
-        ,
+            { data: 'saldo' },
+            {
+                data: null,
+                render: function (data, type, row) {
+                    return `
+                        <button class="btn btn-primary btn-sm ver-entradas" data-id="${row.articulo}">
+                            Ver
+                        </button>
+                    `;
+                }
+            }
+        ],
         language: dataTableLanguage
     });
 
@@ -63,4 +72,53 @@ $(document).ready(function () {
 
     // Cargar datos del mes actual al iniciar
     tablaKardex.ajax.reload();
+
+    // Inicializar DataTable para el modal
+    const tablaEntradas = $('#tablaEntradas').DataTable({
+        columns: [
+            { data: 'FechaHora' },
+            { data: 'Lote' },
+            { data: 'Proveedor' },
+            { data: 'Articulo' },
+            { data: 'Presentacion' },
+            { data: 'CantidadInicial' },
+            { data: 'CantidadDisponible' },
+            { data: 'PrecioUnitario' },
+            { data: 'PrecioTotal' },
+            { data: 'Estado' },
+            { data: 'Brix' },
+            { data: 'Observacion' },
+            { data: 'TipoMovimiento' }
+        ],
+        language: dataTableLanguage
+    });
+
+    // Manejar el evento de clic en el botón "Ver"
+    $('#tablaKardex').on('click', '.ver-entradas', function () {
+        const articuloId = $(this).data('id');
+        console.log("ID del artículo:", articuloId); // Verificar el ID del artículo
+
+        // Cargar los datos de entradas para el artículo seleccionado
+        $.ajax({
+            url: '../AJAX/ctrKardex.php',
+            type: 'POST',
+            data: { action: 'cargarEntradas', articuloId: articuloId },
+            dataType: 'json',
+            success: function (response) {
+                console.log("Respuesta del servidor:", response); // Verificar la respuesta del servidor
+                if (response.status === 'success') {
+                    console.log("Datos recibidos:", response.data); // Agrega esto para depurar
+                    tablaEntradas.clear().rows.add(response.data).draw();
+                    $('#modalEntradas').modal('show');
+                } else {
+                    Swal.fire('Error', response.message || 'No se encontraron datos.', 'error');
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire('Error', 'Ocurrió un error al cargar los datos.', 'error');
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
+    });
 });

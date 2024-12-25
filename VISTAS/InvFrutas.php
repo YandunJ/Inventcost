@@ -115,7 +115,7 @@
                     <table id="tablaMateriaPrimas" class="table table-bordered table-hover table-compact">
     <thead>
         <tr>
-            <th>Fecha y Hora</th>
+            <th>Fecha</th>
             <th>Lote</th>
             <th>Proveedor</th>
             <th>Artículo</th>
@@ -124,9 +124,9 @@
             <th>Cant. Disp.</th>
             <th>Precio Unit.</th>
             <th>Precio Total</th>
-            <th>Estado</th>
             <th>Brix</th>
             <th>Observación</th>
+            <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </thead>
