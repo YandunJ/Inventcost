@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Costos</title>
     <link rel="stylesheet" href="../FILES/global.css">
+    <link rel="stylesheet" href="../Public/plugins/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -21,7 +22,7 @@
                     <h1 class="text-center">Catálogo de Costos</h1>
                     <div class="text-right mb-3">
                         <!-- Botón para abrir el modal -->
-                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario">
+                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
                             Agregar Costo
                         </button>
                     </div>
@@ -41,23 +42,25 @@
                                         <input type="hidden" id="id_costo" name="id_costo" value="0">
                                         <div class="form-group">
                                             <label for="nombre">Nombre del Costo:</label>
-                                            <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Mano de Obra, Agua, Electricidad">
+                                            <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej:Despulpado, Agua, Electricidad">
                                         </div>
                                         <div class="form-group">
                                             <label for="categoria">Categoría:</label>
                                             <select id="categoria" name="categoria" class="form-control" required>
-                                                <option value="1">Mano de Obra</option>
-                                                <option value="2">Costos Asociados</option>
+                                                <!-- Opciones se cargarán dinámicamente -->
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="estado">Estado:</label>
-                                            <select id="estado" name="estado" class="form-control" required>
-                                                <option value="disponible">Disponible</option>
-                                                <option value="stock bajo">Stock Bajo</option>
-                                                <option value="agotado">Agotado</option>
-                                            </select>
-                                        </div>
+    <label for="estado">Estado:</label>
+    <div class="custom-switch-container">
+        <label class="switch">
+            <input type="checkbox" id="estado" name="estado" value="1" checked>
+            <span class="slider round"></span>
+        </label>
+        <span id="estado-text">Habilitado</span>
+    </div>
+</div>
+
                                         <button type="submit" class="btn btn-primary">Guardar</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                     </form>
@@ -70,7 +73,7 @@
                     <table id="costTable" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Nombre</th>
                                 <th>Categoría</th>
                                 <th>Estado</th>
@@ -99,7 +102,8 @@
     <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-    <script src="JS/costCatalog.js"></script>
+    <script src="../Public/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <script src="JS/cost.js"></script>
     <script src="JS/validaciones.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 </body>

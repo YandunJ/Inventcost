@@ -29,14 +29,12 @@ CREATE TABLE `inventario` (
 );
 
 DELIMITER $$
-
 CREATE PROCEDURE `Kardex_entradas`(
-    IN p_articuloId INT
+    IN p_articuloId INT,
+    IN p_fechaInicio DATE,
+    IN p_fechaFin DATE
 )
 BEGIN
-    -- Depuración
-    
-
     SELECT 
         inv.fecha_hora AS FechaHora,
         inv.lote AS Lote,
@@ -59,14 +57,16 @@ BEGIN
         proveedores AS prov ON inv.proveedor_id = prov.proveedor_id
     WHERE 
         inv.cat_id = p_articuloId
+        AND inv.fecha_hora BETWEEN p_fechaInicio AND p_fechaFin
     ORDER BY 
         inv.fecha_hora DESC;
 END$$
 
 DELIMITER ;
 
+CALL Kardex_entradas(2, '2024-12-01', '2024-12-31');
 
-CALL Kardex_entradas(3); -- Reemplaza 3 con el ID del artículo que deseas probar
+
 
 	DELIMITER $$
 

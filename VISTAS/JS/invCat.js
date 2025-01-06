@@ -80,7 +80,7 @@ $(document).ready(function () {
             }
         },
         "columns": [
-            { "data": "cat_id" },             // Asegúrate de que "cat_id" existe en el SP
+                     // Asegúrate de que "cat_id" existe en el SP
             { "data": "cat_nombre" },         // Asegúrate de que "cat_nombre" existe en el SP
                // Asegúrate de que "cat_descripcion" existe en el SP
             { "data": "categoria" },          // Alias definido en el SP

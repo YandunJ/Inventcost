@@ -5,7 +5,7 @@ CREATE TABLE catalogo (
     cat_nombre VARCHAR(100) NOT NULL,
     ctg_id INT NOT NULL, -- Campo para clave foránea hacia `categorias.ctg_id`
     prs_id INT NOT NULL,       -- Campo para clave foránea hacia `presentacion.prs_id`
-    cat_estado ENUM('disponible','stock bajo','agotado','vigente','descontinuada') DEFAULT 'disponible',
+    cat_estado ENUM('disponible','stock bajo','agotado','habilitado','deshabilitado') DEFAULT 'disponible',
     cat_fecha_creacion DATE NOT NULL,
     cat_stock INT DEFAULT 0,
     FOREIGN KEY (ctg_id) REFERENCES categorias(ctg_id),
@@ -51,6 +51,32 @@ CALL Catalogo_CRUD(1, 0, 'Pera', 1, 2);
 CALL Catalogo_CRUD(2, 1, 'Pera Actualizada', 2, 3);
 
 DELIMITER $$
+CREATE PROCEDURE Costos_CRUD(
+    IN p_opcion INT,
+    IN p_cat_id INT,
+    IN p_cat_nombre VARCHAR(100),
+    IN p_ctg_id INT,
+    IN p_cat_estado ENUM('habilitado','deshabilitado')
+)
+BEGIN
+    IF p_opcion = 1 THEN
+        -- Registrar
+        INSERT INTO catalogo (cat_nombre, ctg_id, prs_id, cat_estado, cat_fecha_creacion)
+        VALUES (p_cat_nombre, p_ctg_id, 1, p_cat_estado, CURDATE());
+    ELSEIF p_opcion = 2 THEN
+        -- Actualizar
+        UPDATE catalogo
+        SET cat_nombre = p_cat_nombre,
+            ctg_id = p_ctg_id,
+            cat_estado = p_cat_estado
+        WHERE cat_id = p_cat_id;
+    END IF;
+END$$
+DELIMITER ;
+CALL Costos_CRUD(1, 0, 'Costo Adicional', 5, 'habilitado');
+CALL Costos_CRUD(2, 1, 'Costo Adicional', 4, 'habilitado');}
+
+DELIMITER $$
 CREATE PROCEDURE Catalogo_data()
 BEGIN
     SELECT 
@@ -63,11 +89,29 @@ BEGIN
         p.prs_nombre AS presentacion
     FROM catalogo cat
     INNER JOIN categorias c ON cat.ctg_id = c.ctg_id
-    INNER JOIN presentacion p ON cat.prs_id = p.prs_id;
+    INNER JOIN presentacion p ON cat.prs_id = p.prs_id
+    WHERE cat.ctg_id IN (1, 2, 3);
 END$$
 DELIMITER ;
 
 call fpulpas.Catalogo_data();
+
+DELIMITER $$
+CREATE PROCEDURE Costos_data()
+BEGIN
+    SELECT 
+        cat.cat_id,
+        cat.cat_nombre,
+        cat.cat_estado,
+        cat.cat_fecha_creacion,
+        c.ctg_nombre AS categoria
+    FROM catalogo cat
+    INNER JOIN categorias c ON cat.ctg_id = c.ctg_id
+    WHERE cat.ctg_id IN (4, 5);
+END$$
+DELIMITER ;
+
+call fpulpas.Costos_data();
 
 DELIMITER $$
 CREATE PROCEDURE Catalogo_data_id(IN p_cat_id INT)
@@ -82,6 +126,19 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
 call fpulpas.Catalogo_data_id(2);
+
+DELIMITER $$
+CREATE PROCEDURE Costos_data_id(IN p_cat_id INT)
+BEGIN
+    SELECT 
+        c.cat_id, 
+        c.cat_nombre, 
+        c.ctg_id,
+        c.cat_estado,
+        cat.ctg_nombre AS categoria
+    FROM catalogo c
+    INNER JOIN categorias cat ON c.ctg_id = cat.ctg_id
+    WHERE c.cat_id = p_cat_id AND c.ctg_id IN (4, 5);
+END$$
+DELIMITER ;

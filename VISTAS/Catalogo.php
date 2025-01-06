@@ -22,7 +22,7 @@
                     <h1 class="text-center">Catálogo Inventario</h1>
                     <div class="text-right mb-3">
                         <!-- Botón para abrir el modal -->
-                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
+                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
     Agregar
 </button>
 
@@ -65,7 +65,7 @@
                     <table id="inventoryTable" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Nombre</th>
                                 <th>Categoría</th>
                                 <th>Presentacion</th>
