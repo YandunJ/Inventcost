@@ -17,9 +17,6 @@ switch ($action) {
     case 'getUnidadesMedida':
         getUnidadesMedida();
         break;
-    // case 'cargarProveedores':
-    //     cargarProveedores();
-    //     break;
     case 'getArticuloById':
         getArticuloById();
         break;
@@ -32,9 +29,6 @@ switch ($action) {
     case 'obtenerArticulos':
         obtenerArticulos();
         break;
-    // case 'deleteArticulo':
-    //     deleteArticulo();
-    //     break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -49,6 +43,9 @@ function getCategorias() {
         if (isset($categorias['error'])) {
             throw new Exception($categorias['error']);
         }
+
+        // Solo devolver las primeras tres categorías
+        $categorias = array_slice($categorias, 0, 3);
 
         echo json_encode(['status' => 'success', 'data' => $categorias]);
     } catch (Exception $e) {
@@ -70,21 +67,6 @@ function getUnidadesMedida() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
-// function cargarProveedores() {
-//     try {
-//         $model = new InvCatalogo();
-//         $proveedores = $model->obtenerProveedores();
-
-//         if (isset($proveedores['error'])) {
-//             throw new Exception($proveedores['error']);
-//         }
-
-//         echo json_encode(['status' => 'success', 'data' => $proveedores]);
-//     } catch (Exception $e) {
-//         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-//     }
-// }
 
 function getArticuloById() {
     $id_articulo = $_POST['id_articulo'] ?? null;
@@ -123,7 +105,6 @@ function addArticulo() {
             1, // Operación: Agregar
             0, // ID (se ignora en inserción)
             $_POST['nombre'],
-            
             $_POST['id_categoria'],
             $_POST['unidad_medida']
         );
@@ -154,7 +135,6 @@ function updateArticulo() {
             2, // Operación: Actualizar
             $_POST['id_articulo'],
             $_POST['nombre'],
-            
             $_POST['id_categoria'],
             $_POST['unidad_medida']
         );
@@ -168,7 +148,6 @@ function updateArticulo() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
 
 function obtenerArticulos() {
     try {
@@ -184,29 +163,4 @@ function obtenerArticulos() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-// function deleteArticulo() {
-//     $id_articulo = $_POST['articulo_id'] ?? null;
-
-//     if (!$id_articulo) {
-//         echo json_encode(['status' => 'error', 'message' => 'El ID del artículo es obligatorio.']);
-//         return;
-//     }
-
-//     try {
-//         $inventarioModel = new InvCatalogo();
-//         $result = $inventarioModel->deleteArticulo($id_articulo);
-
-//         if (is_array($result) && isset($result['error'])) {
-//             throw new Exception($result['error']);
-//         }
-
-//         echo json_encode([
-//             'status' => $result ? 'success' : 'error',
-//             'message' => $result ? 'Artículo eliminado correctamente.' : 'No se pudo eliminar el artículo.'
-//         ]);
-//     } catch (Exception $e) {
-//         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-//     }
-// }
-
 ?>

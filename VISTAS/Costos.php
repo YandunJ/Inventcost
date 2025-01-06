@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artículos de Inventario</title>
-
+    <title>Catálogo de Costos</title>
     <link rel="stylesheet" href="../FILES/global.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -19,13 +18,12 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1 class="text-center">Catálogo Inventario</h1>
+                    <h1 class="text-center">Catálogo de Costos</h1>
                     <div class="text-right mb-3">
                         <!-- Botón para abrir el modal -->
-                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
-    Agregar
-</button>
-
+                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario">
+                            Agregar Costo
+                        </button>
                     </div>
                     
                     <!-- Modal para el formulario -->
@@ -33,25 +31,32 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalFormularioLabel">Agregar Insumo</h5>
+                                    <h5 class="modal-title" id="modalFormularioLabel">Agregar Costo al Catálogo</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="inventoryForm">
-                                        <input type="hidden" id="id_articulo" name="id_articulo" value="0">
+                                    <form id="costForm">
+                                        <input type="hidden" id="id_costo" name="id_costo" value="0">
                                         <div class="form-group">
-                                            <label for="nombre">Nombre del artículo:</label>
-                                            <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Manzana">
+                                            <label for="nombre">Nombre del Costo:</label>
+                                            <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej: Mano de Obra, Agua, Electricidad">
                                         </div>
                                         <div class="form-group">
-                                            <label for="categoria_select">Categoría:</label>
-                                            <select id="categoria_select" name="id_categoria" class="form-control" required></select>
+                                            <label for="categoria">Categoría:</label>
+                                            <select id="categoria" name="categoria" class="form-control" required>
+                                                <option value="1">Mano de Obra</option>
+                                                <option value="2">Costos Asociados</option>
+                                            </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="unidad_medida">Unidad de Medida:</label>
-                                            <select id="unidad_medida" name="unidad_medida" class="form-control" required></select>
+                                            <label for="estado">Estado:</label>
+                                            <select id="estado" name="estado" class="form-control" required>
+                                                <option value="disponible">Disponible</option>
+                                                <option value="stock bajo">Stock Bajo</option>
+                                                <option value="agotado">Agotado</option>
+                                            </select>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Guardar</button>
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -61,17 +66,15 @@
                         </div>
                     </div>
                     
-                    <!-- Tabla de inventario -->
-                    <table id="inventoryTable" class="table table-bordered table-hover table-compact">
+                    <!-- Tabla de costos -->
+                    <table id="costTable" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Nombre</th>
                                 <th>Categoría</th>
-                                <th>Presentacion</th>
                                 <th>Estado</th>
                                 <th>Fecha de Creación</th>
-                                <th>Stock</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -96,8 +99,7 @@
     <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-
-    <script src="JS/invCat.js"></script>
+    <script src="JS/costCatalog.js"></script>
     <script src="JS/validaciones.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 </body>

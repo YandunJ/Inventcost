@@ -44,6 +44,7 @@ function cargarKardex() {
         }
 
         $datos = $kardexModel->obtenerKardex($fechaInicio, $fechaFin, $mapaCategorias[$categoria]);
+        error_log("Datos recibidos en cargarKardex: " . print_r($_POST, true));
         echo json_encode(['status' => 'success', 'data' => $datos]);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
@@ -53,18 +54,29 @@ function cargarKardex() {
 function cargarEntradas() {
     global $conn;
     $kardexModel = new KardexModel($conn);
+
     try {
         $articuloId = $_POST['articuloId'] ?? null;
+        $fechaInicio = $_POST['fechaInicio'] ?? null;
+        $fechaFin = $_POST['fechaFin'] ?? null;
 
-        if (!$articuloId) {
-            throw new Exception("Falta el ID del artículo.");
+        if (!$articuloId || !$fechaInicio || !$fechaFin) {
+            throw new Exception("Faltan parámetros obligatorios: artículo o fechas.");
         }
 
-        $datos = $kardexModel->obtenerEntradas($articuloId);
-        error_log(print_r($datos, true)); // Usar error_log para depurar
-        echo json_encode(['status' => 'success', 'data' => $datos]);
+        $datos = $kardexModel->obtenerEntradas($articuloId, $fechaInicio, $fechaFin);
+        
+        if (empty($datos)) {
+            echo json_encode(['status' => 'error', 'message' => 'No se encontraron registros.']);
+        } else {
+            echo json_encode(['status' => 'success', 'data' => $datos]);
+        }
     } catch (Exception $e) {
+        error_log("Error en cargarEntradas: " . $e->getMessage());
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
+
+
 ?>

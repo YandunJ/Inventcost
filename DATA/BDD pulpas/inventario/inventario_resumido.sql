@@ -1,4 +1,4 @@
-	SELECT * FROM fpulpas.inventario;
+SELECT * FROM fpulpas.inventario;
 
 CREATE TABLE `inventario` (
     id_inv INT AUTO_INCREMENT PRIMARY KEY, -- Clave principal
@@ -34,6 +34,9 @@ CREATE PROCEDURE `Kardex_entradas`(
     IN p_articuloId INT
 )
 BEGIN
+    -- Depuración
+    
+
     SELECT 
         inv.fecha_hora AS FechaHora,
         inv.lote AS Lote,
@@ -61,6 +64,7 @@ BEGIN
 END$$
 
 DELIMITER ;
+
 
 CALL Kardex_entradas(3); -- Reemplaza 3 con el ID del artículo que deseas probar
 
@@ -96,6 +100,9 @@ CALL Kardex_entradas(3); -- Reemplaza 3 con el ID del artículo que deseas proba
 	END$$
 
 	DELIMITER ;
+    
+    -- Llamada al procedimiento almacenado Kardex_data
+CALL Kardex_data('2024-12-01', '2024-12-31', 2);
 
 CALL mp_reg(
     4,                     -- cat_id

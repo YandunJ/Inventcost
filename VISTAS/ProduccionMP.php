@@ -48,7 +48,7 @@
                         <a class="nav-link" id="manoObra-tab" data-toggle="tab" href="#manoObra" role="tab">Mano de Obra</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="costosAsociados-tab" data-toggle="tab" href="#costosAsociados" role="tab">Costos Asociados</a>
+                        <a class="nav-link" id="costosAsociados-tab" data-toggle="tab" href="#costosAsociados" role="tab">Costos Indirectos</a>
                     </li>
                 </ul>
 
@@ -164,7 +164,7 @@
     <table class="table table-bordered table-hover" id="tablaOtrosCostos">
         <thead>
             <tr>
-                <th>Producto</th>
+                <th>Descripcion</th>
                 <th>Cantidad</th>
                 <th>Precio Unitario ($)</th>
                 <th>Costo Total ($)</th>
@@ -219,7 +219,7 @@
                         <input type="text" id="subtotalMO" class="form-control text-right font-weight-bold" value="0.00" readonly>
                     </div>
                     <div class="col-md-3">
-                        <label for="subtotalCA">Subtotal Costos Asociados:</label>
+                        <label for="subtotalCA">Subtotal Costos Indirectos:</label>
                         <input type="text" id="subtotalCA" class="form-control text-right font-weight-bold" value="0.00" readonly>
                     </div>
                 </div>

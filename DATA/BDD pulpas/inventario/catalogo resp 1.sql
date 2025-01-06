@@ -5,7 +5,7 @@ CREATE TABLE catalogo (
     cat_nombre VARCHAR(100) NOT NULL,
     ctg_id INT NOT NULL, -- Campo para clave foránea hacia `categorias.ctg_id`
     prs_id INT NOT NULL,       -- Campo para clave foránea hacia `presentacion.prs_id`
-    cat_estado ENUM('disponible', 'stock bajo', 'agotado') DEFAULT 'disponible',
+    cat_estado ENUM('disponible','stock bajo','agotado','vigente','descontinuada') DEFAULT 'disponible',
     cat_fecha_creacion DATE NOT NULL,
     cat_stock INT DEFAULT 0,
     FOREIGN KEY (ctg_id) REFERENCES categorias(ctg_id),

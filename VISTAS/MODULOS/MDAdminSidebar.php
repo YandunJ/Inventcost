@@ -72,6 +72,13 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                         <p>Produccion</p>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                    <a href="Costos.php" class="nav-link">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <p>Costos</p>
+                    </a>
+                </li>
                     
                          
                         <!-- New dropdown for production modules 

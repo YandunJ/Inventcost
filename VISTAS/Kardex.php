@@ -6,40 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kardex de Inventario</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    <style>
-        /* Estilo específico para el datepicker */
-        #monthPicker {
-            cursor: pointer; /* Cambiar el cursor al pasar sobre el campo */
-            background-color: #f8f9fa; /* Fondo claro */
-            border: 1px solid #ced4da; /* Borde gris claro */
-            border-radius: 0.25rem; /* Bordes redondeados */
-            padding: 0.375rem 0.75rem; /* Espaciado interno */
-            font-size: 1rem; /* Tamaño de fuente */
-        }
-
-        #monthPicker:focus {
-            border-color: #80bdff; /* Borde azul claro al enfocar */
-            outline: 0; /* Quitar el borde de enfoque predeterminado */
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra azul clara al enfocar */
-        }
-
-        .datepicker-dropdown {
-            z-index: 1050 !important; /* Asegurar que el datepicker se muestre sobre otros elementos */
-        }
-
-        .datepicker table tr td,
-        .datepicker table tr th {
-            padding: 0.5rem; /* Espaciado interno en las celdas */
-            text-align: center; /* Centrar el texto */
-            vertical-align: middle; /* Centrar verticalmente */
-        }
-
-        .datepicker table tr td.day:hover,
-        .datepicker table tr td.day.focused {
-            background: #007bff; /* Fondo azul al pasar el cursor */
-            color: #fff; /* Texto blanco al pasar el cursor */
-        }
-    </style>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -99,44 +65,29 @@
         </div>
     </div>
 
-    <!-- Modal para mostrar los registros de entradas -->
-    <div class="modal fade" id="modalEntradas" tabindex="-1" role="dialog" aria-labelledby="modalEntradasLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-entradas" role="document"> <!-- Aplicar la clase CSS específica -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEntradasLabel">Registros de Entradas</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+<!-- Modal para mostrar los registros de entradas -->
+<div class="modal fade" id="modalEntradas" tabindex="-1" role="dialog" aria-labelledby="modalEntradasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEntradasLabel">Registros de Entradas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="contenidoEntradas">
+                    <!-- Aquí se cargarán los registros de entradas -->
+                    <p class="text-center">Cargando datos...</p>
                 </div>
-                <div class="modal-body">
-                    <table id="tablaEntradas" class="table table-bordered table-hover table-compact">
-                        <thead>
-                            <tr>
-                                <th>Fecha y Hora</th>
-                                <th>Lote</th>
-                                <th>Proveedor</th>
-                                <th>Artículo</th>
-                                <th>Presentación</th>
-                                <th>Cant. Inicial</th>
-                                <th>Cant. Disp.</th>
-                                <th>Precio Unit.</th>
-                                <th>Precio Total</th>
-                                <th>Estado</th>
-                                <th>Brix</th>
-                                <th>Observación</th>
-                                <th>Tipo Movimiento</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

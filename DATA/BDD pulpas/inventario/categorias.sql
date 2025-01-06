@@ -13,3 +13,7 @@ VALUES
 ('Insumos', 'Materiales utilizados en la producción'),
 ('Productos Terminado', 'Paquetes de Pulpa Procesada');
 
+
+INSERT INTO categorias (ctg_nombre, ctg_descripcion) VALUES
+('Mano de Obra', 'Actividades relacionadas con el trabajo realizado por empleados'),
+('Costos Asociados', 'Descripción de costos relacionados con la producción');

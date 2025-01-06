@@ -12,7 +12,7 @@
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
- 
+    <link rel="stylesheet" href="../FILES/global.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">

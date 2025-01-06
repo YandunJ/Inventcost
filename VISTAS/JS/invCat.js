@@ -8,7 +8,7 @@ $(document).ready(function () {
         success: function (response) {
             if (response.status === 'success' && Array.isArray(response.data)) {
                 let options = "<option value=''>Seleccione una categoría</option>";
-                response.data.forEach(function (categoria) {
+                response.data.slice(0, 3).forEach(function (categoria) { // Solo las primeras tres categorías
                     options += `<option value="${categoria.ctg_id}">${categoria.ctg_nombre}</option>`;
                 });
                 $("#categoria_select").html(options);
@@ -21,6 +21,8 @@ $(document).ready(function () {
             console.error("Response: ", xhr.responseText);
         }
     });
+
+
 
     // Cargar todas las unidades de medida inicialmente
     let allUnits = [];
@@ -53,9 +55,9 @@ $(document).ready(function () {
         let filteredUnits = [];
 
         if (selectedCategory === "1") { // Materia Prima
-            filteredUnits = allUnits.filter(unit => unit.prs_nombre === "Kilogramos");
-        } else if (selectedCategory === "2") { // Insumos
-            filteredUnits = allUnits; // Mostrar todas las unidades
+            filteredUnits = allUnits.filter(unit => unit.prs_nombre === "KILOGRAMOS");
+        } else {
+            filteredUnits = allUnits; // Mostrar todas las unidades para otras categorías
         }
 
         // Actualizar el select de unidades de medida
@@ -66,32 +68,6 @@ $(document).ready(function () {
         $("#unidad_medida").html(options);
     });
 
-
-    
-    
-    // $.ajax({
-    //     url: "../AJAX/ctrInvCatalogo.php",
-    //     type: "POST",
-    //     data: { action: 'cargarProveedores' },
-    //     dataType: "json",
-    //     success: function(response) {
-    //         let options = '<option value="">Seleccione un proveedor</option>';
-    //         if (response.status === 'success' && Array.isArray(response.data)) {
-    //             response.data.forEach(function(proveedor) {
-    //                 options += `<option value="${proveedor.proveedor_id}">${proveedor.nombre_empresa}</option>`;
-    //             });
-    //             $("#proveedor_id").html(options);
-    //         } else {
-    //             alert("Error al cargar los proveedores.");
-    //             console.error("Error loading proveedores: ", response);
-    //         }
-    //     },
-    //     error: function(xhr, status, error) {
-    //         alert("Ocurrió un error al cargar los proveedores.");
-    //         console.error("Error: ", error);
-    //         console.error("Response: ", xhr.responseText);
-    //     }
-    // });
 
     var table = $('#inventoryTable').DataTable({
         "ajax": {
@@ -121,9 +97,10 @@ $(document).ready(function () {
                                 <i class="fas fa-cog"></i>
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item edit-btn" href="#" data-id="${row.cat_id}">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
+                          <a class="dropdown-item edit-btn" href="#" data-id="${row.cat_id}" data-toggle="modal" data-target="#modalFormulario" data-action="edit">
+    <i class="fas fa-edit"></i> Editar
+</a>
+
                             </div>
                         </div>
                     `;
@@ -174,15 +151,14 @@ $(document).ready(function () {
     });
 });
 
-
-
 // Cargar datos en el formulario al editar
 $('#inventoryTable').on('click', '.edit-btn', function () {
     console.log("Abrir modal para editar");
     let id_articulo = $(this).data('id');
     console.log("ID del artículo a editar:", id_articulo);
+
     // Cambiar título del modal
-    $('#modalFormularioLabel').text('Editar Artículo');
+    $('#modalFormularioLabel').text('Editar Insumo');
 
     // AJAX para cargar datos del artículo
     $.ajax({
@@ -210,24 +186,35 @@ $('#inventoryTable').on('click', '.edit-btn', function () {
             } else {
                 Swal.fire('Error', response.message, 'error');
             }
-        }
-        
-        ,
+        },
         error: function () {
             Swal.fire('Error', 'No se pudo cargar el artículo.', 'error');
         }
     });
 });
 
+// Detectar acción y cambiar el título del modal
+$('#modalFormulario').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botón que activó el modal
+    var action = button.data('action'); // Extraer acción (add o edit)
 
-// Abrir el modal para agregar
-// Abrir el modal para agregar
+    if (action === 'edit') {
+        $('#modalFormularioLabel').text('Editar Insumo');
+    } else {
+        $('#modalFormularioLabel').text('Agregar Insumo');
+    }
+});
+
+// Limpiar campos al cerrar el modal
 $('#modalFormulario').on('hidden.bs.modal', function () {
     $('#inventoryForm')[0].reset(); // Reinicia todos los campos
     $('#categoria_select').val('').trigger('change');
     $('#unidad_medida').val('').trigger('change');
     $('#id_articulo').val('0'); // Resetear campo oculto
+    $('#modalFormularioLabel').text('Agregar Insumo'); // Resetear título por defecto
 });
+
+
 
 // // Eliminar artículo de inventario
 // $('#inventoryTable tbody').on('click', '.delete-btn', function () {
