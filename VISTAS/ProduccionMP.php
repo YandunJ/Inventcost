@@ -102,7 +102,7 @@
 
     </div>
 
-    <div class="tab-pane fade" id="manoObra" role="tabpanel">
+  <div class="tab-pane fade" id="manoObra" role="tabpanel">
     <h3>Mano de Obra</h3>
     <!-- Tabla de Mano de Obra -->
     <table class="table table-bordered table-hover table-compact" id="tablaManoObra">
@@ -118,80 +118,36 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Materia Prima</td>
-                <td><input type="number" class="form-control cantidad-personas" min="0" value="2"></td>
-                <td><input type="text" class="form-control precio-ht" value="2.50" readonly></td>
-                <td><input type="number" class="form-control horas-por-dia" min="0" value="2"></td>
-                <td class="horas-trabajador">4</td>
-                <td class="costo-dia">$10.00</td>
-                <td class="costo-total">$10.00</td>
-            </tr>
-            <tr>
-                <td>Selección</td>
-                <td><input type="number" class="form-control cantidad-personas" min="0" value="4"></td>
-                <td><input type="text" class="form-control precio-ht" value="2.50" readonly></td>
-                <td><input type="number" class="form-control horas-por-dia" min="0" value="16"></td>
-                <td class="horas-trabajador">64</td>
-                <td class="costo-dia">$160.00</td>
-                <td class="costo-total">$160.00</td>
-            </tr>
-            <tr>
-                <td>Envasado</td>
-                <td><input type="number" class="form-control cantidad-personas" min="0" value="0"></td>
-                <td><input type="text" class="form-control precio-ht" va    lue="2.50" readonly></td>
-                <td><input type="number" class="form-control horas-por-dia" min="0" value="2"></td>
-                <td class="horas-trabajador">0</td>
-                <td class="costo-dia">$0.00</td>
-                <td class="costo-total">$0.00</td>
-            </tr>
         </tbody>
         <tfoot>
             <tr class="font-weight-bold">
                 <td colspan="6" class="text-right">TOTAL MANO DE OBRA:</td>
-                <td id="totalManoObra">$170.00</td>
+                <td id="totalManoObra">$0.00</td>
             </tr>
         </tfoot>
     </table>
 </div>
 
-                    <!-- Pestaña Costos Asociados -->
-                    <div class="tab-pane fade" id="costosAsociados" role="tabpanel">
-                    <h3>Otros Costos</h3>
-    
 
-    <!-- Tabla de Otros Costos -->
-    <table class="table table-bordered table-hover" id="tablaOtrosCostos">
+               <!-- Pestaña Costos Indirectos -->
+<div class="tab-pane fade" id="costosAsociados" role="tabpanel">
+    <h3>Costos Indirectos</h3>
+    <!-- Tabla de Costos Indirectos -->
+    <table class="table table-bordered table-hover table-compact" id="tablaCostosIndirectos">
         <thead>
             <tr>
-                <th>Descripcion</th>
+                <th>Descripción</th>
                 <th>Cantidad</th>
                 <th>Precio Unitario ($)</th>
                 <th>Costo Total ($)</th>
-                
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>CIF ELECTRICIDAD-Q</td>
-                <td><input type="number" class="form-control cantidad" value="2" min="1" onchange="calcularCostoTotal(this)"></td>
-                <td><input type="number" class="form-control precio-unitario" value="150" min="0" onchange="calcularCostoTotal(this)"></td>
-                <td class="costo-total">300</td>
-              
-            </tr>
-            <tr>
-                <td>CIF AGUA-Q</td>
-                <td><input type="number" class="form-control cantidad" value="3" min="1" onchange="calcularCostoTotal(this)"></td>
-                <td><input type="number" class="form-control precio-unitario" value="50" min="0" onchange="calcularCostoTotal(this)"></td>
-                <td class="costo-total">150</td>
-              
-            </tr>
         </tbody>
         <tfoot>
             <tr class="font-weight-bold">
-                <td colspan="3" class="text-right">TOTAL OTROS COSTOS:</td>
-                <td id="totalOtrosCostos">450</td>
-                <td></td>
+                <td colspan="3" class="text-right">TOTAL COSTOS INDIRECTOS:</td>
+                <td id="totalCostosIndirectos">$0.00</td>
             </tr>
         </tfoot>
     </table>

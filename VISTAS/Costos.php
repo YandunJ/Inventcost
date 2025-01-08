@@ -19,7 +19,7 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1 class="text-center">Catálogo de Costos</h1>
+                    <h1 class="text-center">Catálogo Costos</h1>
                     <div class="text-right mb-3">
                         <!-- Botón para abrir el modal -->
                         <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
@@ -32,7 +32,7 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="modalFormularioLabel">Agregar Costo al Catálogo</h5>
+                                    <h5 class="mo   dal-title" id="modalFormularioLabel">Agregar Costo al Catálogo</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                     </button>

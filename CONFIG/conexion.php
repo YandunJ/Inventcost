@@ -8,8 +8,15 @@ class Cls_DataConnection {
         if ($conexion->connect_error) {
             die("Error al conectar la base de datos: " . $conexion->connect_error);
         }
+    
+        // Ajustes recomendados para evitar errores de conexión
+        $conexion->options(MYSQLI_OPT_CONNECT_TIMEOUT, 10); // Tiempo de espera en segundos
+        $conexion->query("SET SESSION wait_timeout = 600"); // Tiempo de espera en el servidor
+        $conexion->query("SET SESSION interactive_timeout = 600");
+    
         return $conexion;
     }
+    
 
     public function ejecutarSP($query, $params = []) {
         $conexion = $this->FN_getConnect();

@@ -51,7 +51,8 @@ $(document).ready(function () {
                     return `<input type="checkbox" class="form-check-input select-mp" value="${data}">`;
                 }
             }
-        ]
+        ],
+        "language": dataTableLanguage
     });
 
     const LotesINS = $('#LotesINS').DataTable({
@@ -97,9 +98,9 @@ $(document).ready(function () {
                     return `<input type="checkbox" class="form-check-input seleccionar-checkbox">`;
                 }
             }
-        ]
+        ],
+        "language": dataTableLanguage
     });
-
     // Ajustar columnas al cambiar de pestaña
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         const target = $(e.target).attr("href");
@@ -169,43 +170,175 @@ $(document).on('click', '.decrementar', function () {
         alert("Producción registrada correctamente.");
     });
 
+  
+    // Inicializar el DataTable para Mano de Obra
+    var table = $('#tablaManoObra').DataTable({
+        "ajax": {
+            "url": "../AJAX/ctrCost.php",
+            "type": "POST",
+            "data": { action: "obtenerCostos", opcion: 1 }, // Usar la opción 1
+            "dataSrc": function (json) {
+                // Filtrar los datos para mostrar solo los de la categoría "Mano de Obra" y estado "habilitado"
+                return json.data.filter(function (item) {
+                    return item.categoria === 'Mano de Obra' && item.cat_estado === 'habilitado';
+                });
+            }
+        },
+        "columns": [
+            { "data": "cat_nombre" },
+            {
+                "data": null,
+                "render": function () {
+                    return `
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                            </div>
+                            <input type="number" class="form-control cantidad-personas" min="0" value="0">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                            </div>
+                        </div>`;
+                }
+            },
+            {
+                "data": null,
+                "render": function () {
+                    return `
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                            </div>
+                            <input type="number" class="form-control precio-ht" min="0" step="0.01" value="0">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                            </div>
+                        </div>`;
+                }
+            },
+            {
+                "data": null,
+                "render": function () {
+                    return `
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                            </div>
+                            <input type="number" class="form-control horas-por-dia" min="0" value="0">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                            </div>
+                        </div>`;
+                }
+            },
+            { "data": null, className: 'horas-trabajador', defaultContent: '0' },
+            { "data": null, className: 'costo-dia', defaultContent: '$0.00' },
+            { "data": null, className: 'costo-total', defaultContent: '$0.00' }
+        ],
+        "language": dataTableLanguage
+    });
 
-    function calcularManoObra() {
-        let totalManoObra = 0;
+      // Inicializar el DataTable para Costos Indirectos
+    var tablaCostosIndirectos = $('#tablaCostosIndirectos').DataTable({
+        "ajax": {
+            "url": "../AJAX/ctrCost.php",
+            "type": "POST",
+            "data": { action: "obtenerCostos", opcion: 1 }, // Usar la opción 1
+            "dataSrc": function (json) {
+                // Filtrar los datos para mostrar solo los de la categoría "Costos Indirectos" y estado "habilitado"
+                return json.data.filter(function (item) {
+                    return item.categoria === 'Costos Indirectos' && item.cat_estado === 'habilitado';
+                });
+            }
+        },
+        "columns": [
+            { "data": "cat_nombre" },
+            {
+                "data": null,
+                "render": function () {
+                    return `
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                            </div>
+                            <input type="number" class="form-control cantidad-unidades" min="0" value="0">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                            </div>
+                        </div>`;
+                }
+            },
+            {
+                "data": null,
+                "render": function () {
+                    return `
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                            </div>
+                            <input type="number" class="form-control precio-unitario" min="0" step="0.01" value="0">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                            </div>
+                        </div>`;
+                }
+            },
+            { "data": null, className: 'costo-total', defaultContent: '$0.00' }
+        ],
+        "language": dataTableLanguage
+    });
 
-        $('#tablaManoObra tbody tr').each(function () {
-            const cantidadPersonas = parseInt($(this).find('.cantidad-personas').val()) || 0;
-            const precioHT = parseFloat($(this).find('.precio-ht').val()) || 0;
-            const horasPorDia = parseInt($(this).find('.horas-por-dia').val()) || 0;
+    // Evento para recalcular totales al cambiar cantidades en Costos Indirectos
+    $('#tablaCostosIndirectos').on('input', '.cantidad-unidades, .precio-unitario', function () {
+        const row = $(this).closest('tr');
+        const cantidadUnidades = parseFloat(row.find('.cantidad-unidades').val()) || 0;
+        const precioUnitario = parseFloat(row.find('.precio-unitario').val()) || 0;
 
-            // Cálculos
-            const totalHorasTrabajador = cantidadPersonas * horasPorDia;
-            const costoDia = totalHorasTrabajador * precioHT;
-            const costoTotal = costoDia; // Por ahora se iguala al costo día
+        const costoTotal = cantidadUnidades * precioUnitario;
 
-            // Mostrar valores calculados
-            $(this).find('.horas-trabajador').text(totalHorasTrabajador);
-            $(this).find('.costo-dia').text(`$${costoDia.toFixed(2)}`);
-            $(this).find('.costo-total').text(`$${costoTotal.toFixed(2)}`);
+        row.find('.costo-total').text(`$${costoTotal.toFixed(2)}`);
 
-            // Acumular total general
-            totalManoObra += costoTotal;
+        recalcularTotalCostosIndirectos();
+    });
+
+    // Función para recalcular el total de Costos Indirectos
+    function recalcularTotalCostosIndirectos() {
+        let total = 0;
+        $('#tablaCostosIndirectos .costo-total').each(function () {
+            const costo = parseFloat($(this).text().replace('$', '')) || 0;
+            total += costo;
         });
-
-        // Mostrar total en el footer
-        $('#totalManoObra').text(`$${totalManoObra.toFixed(2)}`);
+        $('#totalCostosIndirectos').text(`$${total.toFixed(2)}`);
     }
 
-    // Eventos para recalcular cuando los valores cambien
-    $('#tablaManoObra').on('input', '.cantidad-personas, .horas-por-dia', calcularManoObra);
 
-    // Inicializar cálculo al cargar
-    calcularManoObra();
+    // Evento para recalcular totales al cambiar cantidades
+    $('#tablaManoObra').on('input', '.cantidad-personas, .horas-por-dia, .precio-ht', function () {
+        const row = $(this).closest('tr');
+        const cantidadPersonas = parseFloat(row.find('.cantidad-personas').val()) || 0;
+        const precioHT = parseFloat(row.find('.precio-ht').val()) || 0;
+        const horasPorDia = parseFloat(row.find('.horas-por-dia').val()) || 0;
 
+        const horasTrabajador = cantidadPersonas * horasPorDia;
+        const costoDia = horasTrabajador * precioHT;
+        const costoTotal = costoDia; // Aquí podrías agregar lógica para multiplicar por días de producción.
 
+        row.find('.horas-trabajador').text(horasTrabajador);
+        row.find('.costo-dia').text(`$${costoDia.toFixed(2)}`);
+        row.find('.costo-total').text(`$${costoTotal.toFixed(2)}`);
 
+        recalcularTotalManoObra();
+    });
 
-
+    // Función para recalcular el total de Mano de Obra
+    function recalcularTotalManoObra() {
+        let total = 0;
+        $('#tablaManoObra .costo-total').each(function () {
+            const costo = parseFloat($(this).text().replace('$', '')) || 0;
+            total += costo;
+        });
+        $('#totalManoObra').text(`$${total.toFixed(2)}`);
+    }
 
 
 
