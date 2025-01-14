@@ -18,17 +18,5 @@ const dataTableLanguage = {
     processing: "Procesando..."
 };
 
-$(document).ready(function () {
-    const dtInstance = $('#tablaMateriaPrimas').DataTable();
-
-    // Detectar cambios en el estado del panel lateral
-    $('.sidebar-mini').on('collapsed.lte.pushmenu expanded.lte.pushmenu', function () {
-        setTimeout(() => {
-            dtInstance.columns.adjust().draw(); // Ajustar columnas
-        }, 300); // Tiempo de espera para asegurar la animación
-    });
-});
-
-
 
 

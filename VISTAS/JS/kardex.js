@@ -179,4 +179,54 @@ $(document).ready(function () {
 
         $('#modalEntradas').modal('show');
     });
+
+    // Generar reporte en PDF
+    $('#btnReporteEntradas').on('click', function () {
+        const doc = new jspdf.jsPDF();
+        const fecha = $('#monthPicker').val();
+        const categoria = $('#selectCategoria').val();
+        const data = tablaKardex.rows().data().toArray();
+    
+        // URL del logo
+        const logoUrl = 'http://localhost/adfrutas/FILES/fran2.png'; // Reemplaza con la URL correcta de tu logo
+    
+        // Cargar la imagen del logo
+        const img = new Image();
+        img.src = logoUrl;
+        img.onload = function () {
+            // Agregar el logo y el nombre de la empresa en el encabezado
+            doc.addImage(img, 'PNG', 10, 10, 30, 30); // Ajusta las coordenadas y el tamaño según sea necesario
+            doc.setFontSize(18);
+            doc.text('FRANFRUIT', 50, 20); // Ajusta las coordenadas según sea necesario
+    
+            // Dibujar líneas para el encabezado
+            doc.setLineWidth(0.5);
+            doc.line(10, 40, 200, 40); // Línea horizontal superior
+            doc.line(10, 60, 200, 60); // Línea horizontal inferior
+            doc.line(10, 40, 10, 60);  // Línea vertical izquierda
+            doc.line(200, 40, 200, 60); // Línea vertical derecha
+    
+            // Agregar texto en el encabezado
+            doc.setFontSize(12);
+            doc.text('Reporte de Kardex', 15, 50);
+            doc.text(`Fecha: ${fecha}`, 120, 50);
+            doc.text(`Categoría: ${categoria}`, 120, 55);
+    
+            const headers = [["Artículo", "Categoría", "Presentación", "Unidad", "Entradas", "Salidas", "Saldo"]];
+            const rows = data.map(item => [item.articulo, item.categoria, item.presentacion, item.unidad, item.entradas, item.salidas, item.saldo]);
+    
+            doc.autoTable({
+                startY: 70, // Ajusta la posición de inicio de la tabla según sea necesario
+                head: headers,
+                body: rows,
+                theme: 'striped'
+            });
+    
+            // Abrir el PDF en una nueva pestaña
+            window.open(doc.output('bloburl'), '_blank');
+        };
+        img.onerror = function () {
+            console.error("Error al cargar la imagen del logo.");
+        };
+    });
 });

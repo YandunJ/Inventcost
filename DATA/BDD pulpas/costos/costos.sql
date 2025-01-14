@@ -1,14 +1,18 @@
 SELECT * FROM fpulpas.costos_asociados;
 
-CREATE TABLE costos_asociados (
-    id_costo INT AUTO_INCREMENT PRIMARY KEY,      -- Clave primaria autoincremental
-    id_produccion INT,                            -- ID de la producción
-    descripcion VARCHAR(100) NOT NULL,            -- Descripción del costo (ej. Luz, Agua, Transporte)
-    cantidad DECIMAL(10, 2) NOT NULL,             -- Cantidad utilizada (ej. litros, kilovatios, etc.)
-    costo_unitario DECIMAL(10, 2) NOT NULL,       -- Costo por unidad
-    costo_total DECIMAL(10, 2) NOT NULL,          -- Costo total (cantidad * costo_unitario)
-    FOREIGN KEY (id_produccion) REFERENCES produccion(id_produccion) ON DELETE CASCADE
+CREATE TABLE costos_indirectos (
+    cost_id INT AUTO_INCREMENT PRIMARY KEY,
+    pro_id INT NOT NULL,
+    cat_id INT NOT NULL,
+    cost_cant DECIMAL(10, 2) NOT NULL,
+    cost_unit DECIMAL(10, 2) NOT NULL,
+    cost_total DECIMAL(10, 2),
+
+    FOREIGN KEY (pro_id) REFERENCES produccion(pro_id) ON DELETE CASCADE,
+    FOREIGN KEY (cat_id) REFERENCES catalogo(cat_id) ON DELETE RESTRICT
 );
+
+
 
 -- Registro de costos asociados para una producción específica
 INSERT INTO costos_asociados (id_produccion, descripcion, cantidad, costo_unitario, costo_total)

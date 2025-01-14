@@ -51,3 +51,57 @@
     width: 100% !important;
     display: table; /* Mantener el comportamiento de tabla */
 }
+
+/* Estilos para los checkboxes en DataTables */
+.dataTables_wrapper .form-check-input {
+    width: 23px;
+    height: 23px;
+    cursor: pointer;
+    margin: 0 -12px;
+}
+
+.dataTables_wrapper .form-check-input:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Estilos para los botones de incremento/decremento en DataTables */
+.dataTables_wrapper .input-group .btn {
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dataTables_wrapper .input-group .btn-outline-secondary {
+    border-color: #ced4da;
+    color: #495057;
+}
+
+.dataTables_wrapper .input-group .btn-outline-secondary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+/* Estilos para el input de cantidad */
+.dataTables_wrapper .input-group .form-control.cantidad-consumir {
+    text-align: center;
+    height: 30px;
+    padding: 0;
+    font-size: 14px;
+}
+
+/* Eliminar las flechas de los campos de entrada numéricos */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}

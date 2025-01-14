@@ -1,19 +1,17 @@
 SELECT * FROM fpulpas.produccion;
 
 CREATE TABLE produccion (
-    id_produccion INT NOT NULL AUTO_INCREMENT,   -- Clave primaria autoincremental
-    fecha_produccion DATE NOT NULL,             -- Fecha de la producción
-    cantidad_producida DECIMAL(10,2) NULL,      -- Cantidad total producida (puede ser nula)
-    estado VARCHAR(20) DEFAULT 'en proceso',    -- Estado de la producción
-    subt_MtPm DECIMAL(10,2) DEFAULT '0.00',     -- Subtotal de materia prima
-    subt_MnOb DECIMAL(10,2) DEFAULT '0.00',     -- Subtotal de mano de obra
-    subt_Ins DECIMAL(10,2) DEFAULT '0.00',      -- Subtotal de insumos
-    subt_otros_costos DECIMAL(10,2) DEFAULT '0.00', -- Otros costos
-    total_produccion DECIMAL(10,2) DEFAULT '0.00',  -- Total de producción
-    PRIMARY KEY (id_produccion)
+    pro_id INT AUTO_INCREMENT PRIMARY KEY,
+    pro_fecha DATETIME NOT NULL,
+    pro_lote VARCHAR(255) NOT NULL,
+    pro_cant_producida DECIMAL(10,2) NULL,
+    pro_estado VARCHAR(20) DEFAULT 'en proceso',
+    pro_subtotal_mtpm DECIMAL(10,2) DEFAULT '0.00',
+    pro_subtotal_ins DECIMAL(10,2) DEFAULT '0.00',
+    pro_subtotal_mo DECIMAL(10,2) DEFAULT '0.00',
+    pro_subtotal_ci DECIMAL(10,2) DEFAULT '0.00',
+    pro_total DECIMAL(10,2) DEFAULT '0.00'
 );
-
-
 
 -- Registro de producción
 INSERT INTO produccion (fecha_produccion, cantidad_producida, estado)
