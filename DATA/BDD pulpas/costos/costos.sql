@@ -1,4 +1,4 @@
-SELECT * FROM fpulpas.costos_asociados;
+SELECT * FROM fpulpas.costos_indirectos;
 
 CREATE TABLE costos_indirectos (
     cost_id INT AUTO_INCREMENT PRIMARY KEY,

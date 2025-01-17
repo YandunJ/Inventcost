@@ -2,7 +2,7 @@ $(document).ready(function () {
 // ============================
 // Inicialización de DataTables
 // ===========================
-function inicializarDataTable(selector, ajaxUrl, data, columnas) {
+function inicializarDataTable(selector, ajaxUrl, data, columnas, filtro = null) {
     return $(selector).DataTable({
         autoWidth: false,
         responsive: true,
@@ -13,7 +13,14 @@ function inicializarDataTable(selector, ajaxUrl, data, columnas) {
             type: 'POST',
             data: data,
             dataSrc: function (json) {
-                return json.status === 'success' ? json.data : [];
+                if (json.status === 'success') {
+                    // Aplica el filtro si existe
+                    if (filtro) {
+                        return json.data.filter(filtro);
+                    }
+                    return json.data;
+                }
+                return [];
             }
         },
         columns: columnas,
@@ -21,6 +28,31 @@ function inicializarDataTable(selector, ajaxUrl, data, columnas) {
     });
 }
 
+   // Función para obtener los lotes de materia prima seleccionados
+   function getLotesMP() {
+    let lotes = [];
+    $('#LotesMP tbody tr').each(function () {
+        if ($(this).find('.select-mp').is(':checked')) {
+            const id_inv = $(this).find('.select-mp').val();
+            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            lotes.push({ id_inv: id_inv, cantidad: cantidad });
+        }
+    });
+    return lotes;
+}
+
+// Función para obtener los lotes de insumos seleccionados
+function getLotesINS() {
+    let lotes = [];
+    $('#LotesINS tbody tr').each(function () {
+        if ($(this).find('.seleccionar-checkbox').is(':checked')) {
+            const id_inv = $(this).find('.seleccionar-checkbox').val();
+            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            lotes.push({ id_inv: id_inv, cantidad: cantidad });
+        }
+    });
+    return lotes;
+}
 function recalcularSubtotal(selectorTabla, campoSubtotal, precioColumna) {
     let total = 0;
     $(`${selectorTabla} tbody tr`).each(function () {
@@ -31,38 +63,182 @@ function recalcularSubtotal(selectorTabla, campoSubtotal, precioColumna) {
     $(campoSubtotal).val(total.toFixed(2));
     recalcularCostoTotalProduccion();
 }
+  // Función para registrar la producción
+  $('#btnRegistrarProduccionModal').on('click', function () {
+    const cant_producida = $('#cant_producida').val() || 0;
+    const lotes_mp = JSON.stringify(getLotesMP());
+    const lotes_ins = JSON.stringify(getLotesINS());
 
-// MP
+    $.ajax({
+        url: '../AJAX/ctrProduccionMP.php',
+        type: 'POST',
+        data: {
+            action: 'registrarProduccion',
+            cant_producida: cant_producida,
+            lotes_mp: lotes_mp,
+            lotes_ins: lotes_ins
+        },
+        success: function (response) {
+            try {
+                const result = JSON.parse(response);
+                if (result.status === 'success') {
+                    alert('Producción registrada correctamente');
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (e) {
+                alert('Error en la respuesta del servidor: ' + response);
+            }
+        },
+        error: function (xhr, status, error) {
+            alert('Error en la solicitud AJAX: ' + error);
+        }
+    });
+});
+
+
+//   $('#btnRegistrarProduccionModal').on('click', function () {
+//     const lote = $('#lote').val();
+//     const cant_producida = $('#cant_producida').val();
+//     const estado = $('#estado').val() || 'en proceso'; // Valor predeterminado
+//     const subtotal_mtpm = $('#subtotalMP').val();
+//     const subtotal_ins = $('#subtotalINS').val();
+//     const subtotal_mo = $('#subtotalMO').val();
+//     const subtotal_ci = $('#subtotalCA').val();
+//     const total = $('#totalProduccion').val();
+//     const detalle = JSON.stringify(getDetalle());
+//     const mano_obra = JSON.stringify(getManoObra());
+//     const costos_indirectos = JSON.stringify(getCostosIndirectos());
+
+//     $.ajax({
+//         url: '../AJAX/ctrProduccionMP.php',
+//         type: 'POST',
+//         data: {
+//             action: 'registrarProduccion',
+//             lote: lote,
+//             cant_producida: cant_producida,
+//             estado: estado,
+//             subtotal_mtpm: subtotal_mtpm,
+//             subtotal_ins: subtotal_ins,
+//             subtotal_mo: subtotal_mo,
+//             subtotal_ci: subtotal_ci,
+//             total: total,
+//             detalle: detalle,
+//             mano_obra: mano_obra,
+//             costos_indirectos: costos_indirectos
+//         },
+//         success: function (response) {
+//             try {
+//                 const result = JSON.parse(response);
+//                 if (result.status === 'success') {
+//                     alert('Producción registrada correctamente');
+//                     location.reload();
+//                 } else {
+//                     alert('Error: ' + result.message);
+//                 }
+//             } catch (e) {
+//                 alert('Error en la respuesta del servidor: ' + response);
+//             }
+//         },
+//         error: function (xhr, status, error) {
+//             alert('Error en la solicitud AJAX: ' + error);
+//         }
+//     });
+// });
+
+function getDetalle() {
+    let detalles = [];
+    $('#LotesMP tbody tr').each(function () {
+        if ($(this).find('.select-mp').is(':checked')) {
+            const inv_id = $(this).find('.select-mp').val();
+            const inv_lote = $(this).find('td:eq(0)').text(); // Asumiendo que el lote está en la primera columna
+            const pdet_cantidad_usada = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            detalles.push({
+                inv_id: inv_id,
+                inv_lote: inv_lote,
+                pdet_cantidad_usada: pdet_cantidad_usada,
+                pdet_cantidad_producida: 0, // Ajusta según sea necesario
+                pdet_cantidad_desperdiciada: 0 // Ajusta según sea necesario
+            });
+        }
+    });
+    return detalles;
+}
+
+function getManoObra() {
+    let manoObra = [];
+    $('#tablaManoObra tbody tr').each(function () {
+        const cat_id = $(this).find('td:eq(0)').data('cat-id'); // Asegúrate de que el ID de la categoría esté en la primera columna
+        const mo_cant_personas = parseFloat($(this).find('.cantidad-personas').val()) || 0;
+        const mo_precio_hora = parseFloat($(this).find('.precio-ht').val()) || 0;
+        const mo_horas_trabajadas = parseFloat($(this).find('.horas-por-dia').val()) || 0;
+        const mo_horas_totales = mo_cant_personas * mo_horas_trabajadas;
+        const mo_costo_dia = mo_horas_totales * mo_precio_hora;
+        const mo_costo_total = mo_costo_dia; // Ajusta según sea necesario
+        manoObra.push({
+            cat_id: cat_id,
+            mo_cant_personas: mo_cant_personas,
+            mo_precio_hora: mo_precio_hora,
+            mo_horas_trabajadas: mo_horas_trabajadas,
+            mo_horas_totales: mo_horas_totales,
+            mo_costo_dia: mo_costo_dia,
+            mo_costo_total: mo_costo_total
+        });
+    });
+    return manoObra;
+}
+
+function getCostosIndirectos() {
+    let costosIndirectos = [];
+    $('#tablaCostosIndirectos tbody tr').each(function () {
+        const cat_id = $(this).find('td:eq(0)').data('cat-id'); // Asegúrate de que el ID de la categoría esté en la primera columna
+        const cost_cant = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
+        const cost_unit = parseFloat($(this).find('.precio-unitario').val()) || 0;
+        const cost_total = cost_cant * cost_unit;
+        costosIndirectos.push({
+            cat_id: cat_id,
+            cost_cant: cost_cant,
+            cost_unit: cost_unit,
+            cost_total: cost_total
+        });
+    });
+    return costosIndirectos;
+}
+
+    // MP
 const columnasMP = [
-    { data: 'Lote' },
-    { data: 'Proveedor' },
-    { data: 'Articulo' },
-    { data: 'UnidadMedida' },
-    { data: 'CantidadDisponible' },
-    { data: 'PrecioUnitario' },
-    {
-        data: null,
-        render: function (data, type, row) {
-            return `
-            <div class="input-group cantidad-group">
-                <div class="input-group-prepend">
-                    <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
-                </div>
-                <input type="number" class="form-control cantidad-consumir text-center" 
-                       value="0" min="0" max="${row.Cantidad_Disponible}" step="1" disabled>
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
-                </div>
-            </div>`;
+        { data: 'Lote' },
+        { data: 'Proveedor' },
+        { data: 'Articulo' },
+        { data: 'UnidadMedida' },
+        { data: 'CantidadDisponible' },
+        { data: 'PrecioUnitario' },
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                <div class="input-group cantidad-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
+                    </div>
+                    <input type="number" class="form-control cantidad-consumir text-center" 
+                           value="0" min="0" max="${row.Cantidad_Disponible}" step="1" disabled>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
+                    </div>
+                </div>`;
+            }
+        },
+        {
+            data: 'ID',
+            render: function (data) {
+                return `<input type="checkbox" class="form-check-input select-mp" value="${data}">`;
+            }
         }
-    },
-    {
-        data: 'ID',
-        render: function (data) {
-            return `<input type="checkbox" class="form-check-input select-mp" value="${data}">`;
-        }
-    }
 ];
+    
+
 // INSUMOS
 const columnasINS = [
     { data: 'Lote' },
@@ -80,7 +256,7 @@ const columnasINS = [
                     <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
                 </div>
                 <input type="number" class="form-control cantidad-consumir text-center" 
-                       value="0" min="0" max="${row.Cantidad_Disponible}" step="1" disabled>
+                       value="0" min="0" max="${row.Cantidad_Restante}" step="1" disabled>
                 <div class="input-group-append">
                     <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
                 </div>
@@ -89,14 +265,33 @@ const columnasINS = [
     },
     {
         data: null,
-        render: function () {
-            return `<input type="checkbox" class="form-check-input seleccionar-checkbox">`;
+        render: function (data, type, row) {
+            return `<input type="checkbox" class="form-check-input seleccionar-checkbox" value="${row.ID}">`;
         }
     }
+    
 ];
 
-const LotesMP = inicializarDataTable('#LotesMP', '../AJAX/ctrInvFrutas.php', { action: 'cargarMateriaPrima' }, columnasMP);
-const LotesINS = inicializarDataTable('#LotesINS', '../AJAX/ctrInvInsumos.php', { action: 'cargarInsumosTabla' }, columnasINS);
+const LotesMP = inicializarDataTable(
+    '#LotesMP',
+    '../AJAX/ctrInvFrutas.php',
+    { action: 'cargarMateriaPrima' },
+    columnasMP,
+    function (row) {
+        return row.CantidadDisponible > 0; // Filtro: solo mostrar registros con cantidad disponible
+    }
+);
+
+const LotesINS = inicializarDataTable(
+    '#LotesINS',
+    '../AJAX/ctrInvInsumos.php',
+    { action: 'cargarInsumosTabla' },
+    columnasINS,
+    function (row) {
+        return row.Cantidad_Restante > 0; // Filtro: solo mostrar registros con cantidad restante
+    }
+);
+
 
 $('#LotesMP').on('input', '.cantidad-consumir', function () {
     recalcularSubtotal('#LotesMP', '#subtotalMP', 5);
@@ -351,6 +546,13 @@ $(document).on('click', '.incrementar', function () {
 });
 $(document).on('click', '.decrementar', function () {
     ajustarCantidad(this, false);
+});
+   // Validación para redondear valores a enteros
+   $('#LotesMP').on('blur', '.cantidad-consumir', function () {
+    const input = $(this);
+    const valorActual = parseFloat(input.val()) || 0;
+    const valorRedondeado = Math.round(valorActual);
+    input.val(valorRedondeado);
 });
 
 // ============================

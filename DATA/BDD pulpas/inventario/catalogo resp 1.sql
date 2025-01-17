@@ -12,6 +12,8 @@ CREATE TABLE catalogo (
     FOREIGN KEY (prs_id) REFERENCES presentacion(prs_id)
 );
 
+
+
 DELIMITER $$
 CREATE PROCEDURE Catalogo_CRUD(
     IN p_opcion INT,
@@ -142,3 +144,4 @@ BEGIN
     WHERE c.cat_id = p_cat_id AND c.ctg_id IN (4, 5);
 END$$
 DELIMITER ;
+call fpulpas.Costos_data_id(3);

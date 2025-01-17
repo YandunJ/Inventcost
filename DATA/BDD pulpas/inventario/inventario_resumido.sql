@@ -28,6 +28,32 @@ CREATE TABLE `inventario` (
     FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
 );
 
+
+
+DELIMITER $$
+
+CREATE TRIGGER check_stock
+BEFORE UPDATE ON inventario
+FOR EACH ROW
+BEGIN
+    -- Verificar si la cantidad restante es menor que 0
+    IF NEW.cant_restante < 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: No se puede consumir más de lo disponible.';
+    END IF;
+
+    -- Actualizar estado según la cantidad restante
+    IF NEW.cant_restante = 0 THEN
+        SET NEW.estado = 'agotado';
+    ELSEIF NEW.cant_restante < (NEW.cant_ingresada * 0.2) THEN
+        SET NEW.estado = 'stock bajo';
+    ELSE
+        SET NEW.estado = 'disponible';
+    END IF;
+END$$
+
+DELIMITER ;
+
 DELIMITER $$
 CREATE PROCEDURE `Kardex_entradas`(
     IN p_articuloId INT,
@@ -66,8 +92,6 @@ DELIMITER ;
 
 CALL Kardex_entradas(2, '2024-12-01', '2024-12-31');
 
-
-
 	DELIMITER $$
 
 	CREATE PROCEDURE `Kardex_data`(
@@ -103,6 +127,78 @@ CALL Kardex_entradas(2, '2024-12-01', '2024-12-31');
     
     -- Llamada al procedimiento almacenado Kardex_data
 CALL Kardex_data('2024-12-01', '2024-12-31', 2);
+
+
+DELIMITER $$
+
+CREATE PROCEDURE `Kardex_movimientos`(
+    IN p_articuloId INT,
+    IN p_fechaInicio DATE,
+    IN p_fechaFin DATE,
+    IN p_tipoMovimiento VARCHAR(10) -- "Entrada" o "Salida"
+)
+BEGIN
+    IF p_tipoMovimiento = 'Entrada' THEN
+        SELECT 
+            inv.fecha_hora AS FechaHora,
+            inv.lote AS Lote,
+            prov.nombre_empresa AS Proveedor,
+            cat.cat_nombre AS Articulo,
+            inv.presentacion AS Presentacion,
+            inv.cant_ingresada AS CantidadInicial,
+            inv.cant_restante AS CantidadDisponible,
+            inv.p_u AS PrecioUnitario,
+            inv.p_t AS PrecioTotal,
+            inv.estado AS Estado,
+            inv.brix AS Brix,
+            inv.observacion AS Observacion
+        FROM 
+            inventario AS inv
+        INNER JOIN 
+            catalogo AS cat ON inv.cat_id = cat.cat_id
+        INNER JOIN 
+            proveedores AS prov ON inv.proveedor_id = prov.proveedor_id
+        WHERE 
+            inv.cat_id = p_articuloId
+            AND inv.fecha_hora BETWEEN p_fechaInicio AND p_fechaFin
+        ORDER BY 
+            inv.fecha_hora DESC;
+    ELSE
+        -- Aquí se puede agregar la lógica para salidas si es necesario
+        SELECT 'Salida lógica aún no implementada' AS Placeholder;
+    END IF;
+END$$
+
+DELIMITER ;
+
+CALL Kardex_movimientos(1, '2025-01-01', '2025-01-31', 'Entrada');
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_reg`(
+    IN p_cat_id INT,
+    IN p_proveedor_id INT,
+    IN p_lote VARCHAR(50),
+    IN p_cant_ingresada DECIMAL(10, 2),
+    IN p_p_u DECIMAL(10, 2),
+    IN p_p_t DECIMAL(10, 2),
+    IN p_brix DECIMAL(5, 2),
+    IN p_observacion TEXT
+)
+BEGIN
+    INSERT INTO inventario (
+        cat_id, proveedor_id, lote, presentacion, 
+        cant_ingresada, cant_restante, p_u, p_t, estado, 
+        brix, fecha_elaboracion, fecha_caducidad, observacion
+    )
+    VALUES (
+        p_cat_id, p_proveedor_id, p_lote, DEFAULT, -- 'DEFAULT' asigna el valor por defecto configurado en la tabla
+        p_cant_ingresada, p_cant_ingresada, p_p_u, p_p_t, 'disponible', 
+        p_brix, NULL, NULL, p_observacion
+    );
+END$$
+DELIMITER ;
+
 
 CALL mp_reg(
     4,                     -- cat_id

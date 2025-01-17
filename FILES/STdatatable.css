@@ -13,7 +13,7 @@
 }
 
 .table-compact td {
-    padding: 6px; /* Reducir el padding */
+    padding: 4px; /* Reducir el padding para hacer las celdas más pequeñas verticalmente */
     font-size: 13px; /* Tamaño reducido para celdas */
 }
 

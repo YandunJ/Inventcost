@@ -1,4 +1,14 @@
 /* Modal */
+
+/* Estilos para el encabezado del modal */
+.modal-header h3 {
+    font-size: 1.2rem; /* Ajusta el tamaño de la fuente */
+    margin: 0; /* Elimina el margen */
+}
+
+.modal-header {
+    padding: 10px 15px; /* Reduce el padding vertical */
+}
 .modal-form-container {
     display: flex;
     flex-direction: column;

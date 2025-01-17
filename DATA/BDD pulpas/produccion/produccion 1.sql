@@ -1,9 +1,10 @@
 SELECT * FROM fpulpas.produccion;
 
+-- pro_lote VARCHAR(255) NOT NULL, 
+
 CREATE TABLE produccion (
     pro_id INT AUTO_INCREMENT PRIMARY KEY,
-    pro_fecha DATETIME NOT NULL,
-    pro_lote VARCHAR(255) NOT NULL,
+    pro_fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     pro_cant_producida DECIMAL(10,2) NULL,
     pro_estado VARCHAR(20) DEFAULT 'en proceso',
     pro_subtotal_mtpm DECIMAL(10,2) DEFAULT '0.00',
@@ -13,94 +14,269 @@ CREATE TABLE produccion (
     pro_total DECIMAL(10,2) DEFAULT '0.00'
 );
 
--- Registro de producción
-INSERT INTO produccion (fecha_produccion, cantidad_producida, estado)
-VALUES ('2024-10-20', 500.00, 'en proceso');
-
-INSERT INTO produccion (fecha_produccion, cantidad_producida, estado)
-VALUES ('2024-10-20', 500.00, 'en proceso'); -- Esta producción está produciendo 500 unidades
-
 DELIMITER $$
 
-CREATE PROCEDURE Consumo_inv (
-    IN p_id_inv INT,            -- ID del inventario (lote a consumir)
-    IN p_cantidad_usada DECIMAL(10,2),  -- Cantidad a consumir
-    OUT p_mensaje VARCHAR(255) -- Mensaje de salida
+CREATE PROCEDURE PROD_sp(
+    IN cant_producida DECIMAL(10, 2),
+    IN lotes_mp JSON,
+    IN lotes_ins JSON
 )
 BEGIN
-    DECLARE v_cantidad_restante DECIMAL(10,2); -- Variable para verificar el stock
-    DECLARE v_id_produccion INT;               -- Variable para una referencia de producción automática
+    DECLARE pro_id INT;
+    DECLARE subtotal_mtpm DECIMAL(10, 2) DEFAULT 0;
+    DECLARE subtotal_ins DECIMAL(10, 2) DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
+    DECLARE lote_id INT;
+    DECLARE cantidad DECIMAL(10, 2);
+    DECLARE precio DECIMAL(10, 2);
+    DECLARE stock_actual DECIMAL(10, 2);
+    DECLARE mensaje_error VARCHAR(255);
+    DECLARE prev_safe_updates INT;
 
-    -- Etiqueta para el bloque
-    sp_label: BEGIN
-        -- Verificar existencia del lote y cantidad suficiente
-        SELECT cantidad_restante
-        INTO v_cantidad_restante
-        FROM inventario
-        WHERE id_inv = p_id_inv AND estado = 'disponible';
+    -- Guardar estado original de SQL_SAFE_UPDATES
+    SET prev_safe_updates = @@SQL_SAFE_UPDATES;
+    SET SQL_SAFE_UPDATES = 0;
 
-        IF v_cantidad_restante IS NULL THEN
-            SET p_mensaje = 'Lote no encontrado o no disponible.';
-            LEAVE sp_label;
-        END IF;
+    -- Insertar en producción (sin especificar fecha)
+    INSERT INTO produccion (pro_cant_producida)
+    VALUES (cant_producida);
+    SET pro_id = LAST_INSERT_ID();
 
-        IF v_cantidad_restante < p_cantidad_usada THEN
-            SET p_mensaje = 'Cantidad insuficiente en el lote.';
-            LEAVE sp_label;
-        END IF;
+    -- Procesar lotes de materia prima
+    IF JSON_LENGTH(lotes_mp) > 0 THEN
+        WHILE i < JSON_LENGTH(lotes_mp) DO
+            SET lote_id = JSON_UNQUOTE(JSON_EXTRACT(lotes_mp, CONCAT('$[', i, '].id_inv')));
+            SET cantidad = JSON_UNQUOTE(JSON_EXTRACT(lotes_mp, CONCAT('$[', i, '].cantidad')));
 
-        -- Generar un registro de producción genérico si es necesario
-        INSERT INTO produccion (fecha_produccion, estado)
-        VALUES (CURDATE(), 'consumo registrado');
-        SET v_id_produccion = LAST_INSERT_ID();
+            -- Verificar stock disponible
+            SELECT cant_restante INTO stock_actual
+            FROM inventario
+            WHERE id_inv = lote_id;
 
-        -- Registrar el consumo en prod_detalle
-        INSERT INTO prod_detalle (
-            id_produccion, id_inv, cantidad_usada, cantidad_desperdiciada, cantidad_producida
-        )
-        VALUES (
-            v_id_produccion, p_id_inv, p_cantidad_usada, 0, 0
-        );
+            IF stock_actual < cantidad THEN
+                SET mensaje_error = CONCAT('Error: No hay suficiente stock en el lote ', lote_id, '. Stock disponible: ', stock_actual);
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = mensaje_error;
+            END IF;
 
-        -- Actualizar cantidad restante en inventario
-        UPDATE inventario
-        SET cantidad_restante = cantidad_restante - p_cantidad_usada
-        WHERE id_inv = p_id_inv;
+            -- Obtener precio unitario
+            SELECT p_u INTO precio FROM inventario WHERE id_inv = lote_id;
 
-        -- Mensaje de éxito
-        SET p_mensaje = CONCAT('Consumo registrado en producción ID ', v_id_produccion, ' y stock actualizado correctamente.');
-    END sp_label;
+            -- Insertar detalle
+            INSERT INTO prod_detalle (pro_id, id_inv, pdet_cantidad_usada)
+            VALUES (pro_id, lote_id, cantidad);
+
+            -- Actualizar inventario
+            UPDATE inventario
+            SET cant_restante = cant_restante - cantidad
+            WHERE id_inv = lote_id;
+
+            -- Calcular subtotal
+            SET subtotal_mtpm = subtotal_mtpm + (cantidad * precio);
+            SET i = i + 1;
+        END WHILE;
+    END IF;
+
+    -- Procesar lotes de insumos
+    SET i = 0;
+    IF JSON_LENGTH(lotes_ins) > 0 THEN
+        WHILE i < JSON_LENGTH(lotes_ins) DO
+            SET lote_id = JSON_UNQUOTE(JSON_EXTRACT(lotes_ins, CONCAT('$[', i, '].id_inv')));
+            SET cantidad = JSON_UNQUOTE(JSON_EXTRACT(lotes_ins, CONCAT('$[', i, '].cantidad')));
+
+            -- Verificar stock disponible
+            SELECT cant_restante INTO stock_actual
+            FROM inventario
+            WHERE id_inv = lote_id;
+
+            IF stock_actual < cantidad THEN
+                SET mensaje_error = CONCAT('Error: No hay suficiente stock en el lote ', lote_id, '. Stock disponible: ', stock_actual);
+                SIGNAL SQLSTATE '45000'
+                SET MESSAGE_TEXT = mensaje_error;
+            END IF;
+
+            -- Obtener precio unitario
+            SELECT p_u INTO precio FROM inventario WHERE id_inv = lote_id;
+
+            -- Insertar detalle
+            INSERT INTO prod_detalle (pro_id, id_inv, pdet_cantidad_usada)
+            VALUES (pro_id, lote_id, cantidad);
+
+            -- Actualizar inventario
+            UPDATE inventario
+            SET cant_restante = cant_restante - cantidad
+            WHERE id_inv = lote_id;
+
+            -- Calcular subtotal
+            SET subtotal_ins = subtotal_ins + (cantidad * precio);
+            SET i = i + 1;
+        END WHILE;
+    END IF;
+
+    -- Actualizar subtotales en producción
+    UPDATE produccion
+    SET pro_subtotal_mtpm = subtotal_mtpm,
+        pro_subtotal_ins = subtotal_ins,
+        pro_total = subtotal_mtpm + subtotal_ins
+    WHERE pro_id = pro_id;
+
+    -- Restaurar estado original de SQL_SAFE_UPDATES
+    SET SQL_SAFE_UPDATES = prev_safe_updates;
 END$$
 
 DELIMITER ;
 
+CALL PROD_sp(
+    50.00, -- Cantidad producida
+    '[{"id_inv": 12, "cantidad": 5.00}', -- Lotes de materia prima
+    '[{"id_inv": 10, "cantidad": 5.00}]' -- Lotes de insumos
+);
 
-CALL Consumo_inv(1, 5.00, @mensaje);
-SELECT @mensaje AS Resultado;
+
+CALL PROD_sp(
+    '2025-01-16 12:00:00',  -- Fecha de producción
+    100.00,                 -- Cantidad producida
+    '[{"id_inv": 1, "cantidad": 2.5}, {"id_inv": 2, "cantidad": 3.0}, {"id_inv": 3, "cantidad": 3.5}]',  -- Lotes de materia prima
+    '[{"id_inv": 4, "cantidad": 4.0}, {"id_inv": 5, "cantidad": 2.5}, {"id_inv": 6, "cantidad": 1.0}]'   -- Lotes de insumos
+);
+
+CALL PROD_sp(
+    8.00, -- Cantidad producida
+    '[{"id_inv": 10, "cantidad": 5.00}]', -- Lote único de materia prima (ID 7)
+    '[{"id_inv": 11, "cantidad": 1.00}, {"id_inv": 6, "cantidad": 3.00}]' -- Dos lotes de insumos (IDs 6 y 20)
+);
+
+CALL PROD_sp(
+    8.00, -- Cantidad producida
+    '[{"id_inv": 10, "cantidad": 5.00}]', -- Lote único de materia prima (ID 7)
+    '[{"id_inv": 11, "cantidad": 1.00}' -- Dos lotes de insumos (IDs 6 y 20)
+);
+
+SET SQL_SAFE_UPDATES = 1;
+
+SET SQL_SAFE_UPDATES = 1;
 
 
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_Obt_inven_MP`()
+
+DELIMITER //
+
+CREATE PROCEDURE Consumo_inv(
+    IN p_lote VARCHAR(255),
+    IN p_cant_producida DECIMAL(10,2),
+    IN p_estado VARCHAR(20),
+    IN p_subtotal_mtpm DECIMAL(10,2),
+    IN p_subtotal_ins DECIMAL(10,2),
+    IN p_subtotal_mo DECIMAL(10,2),
+    IN p_subtotal_ci DECIMAL(10,2),
+    IN p_total DECIMAL(10,2),
+    IN p_detalle JSON,
+    IN p_mano_obra JSON,
+    IN p_costos_indirectos JSON
+)
+BEGIN
+    DECLARE last_pro_id INT;
+
+    -- Insertar en la tabla produccion
+    INSERT INTO produccion (pro_lote, pro_cant_producida, pro_estado, pro_subtotal_mtpm, pro_subtotal_ins, pro_subtotal_mo, pro_subtotal_ci, pro_total)
+    VALUES (p_lote, p_cant_producida, p_estado, p_subtotal_mtpm, p_subtotal_ins, p_subtotal_mo, p_subtotal_ci, p_total);
+
+    SET last_pro_id = LAST_INSERT_ID();
+
+    -- Insertar en la tabla prod_detalle
+    INSERT INTO prod_detalle (pro_id, inv_id, inv_lote, pdet_cantidad_usada, pdet_cantidad_producida, pdet_cantidad_desperdiciada)
+    SELECT last_pro_id, JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.inv_id')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.inv_lote')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.pdet_cantidad_usada')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.pdet_cantidad_producida')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.pdet_cantidad_desperdiciada'))
+    FROM JSON_TABLE(p_detalle, '$[*]' COLUMNS (value JSON PATH '$')) AS j;
+
+    -- Insertar en la tabla mano_obra
+    INSERT INTO mano_obra (pro_id, cat_id, mo_cant_personas, mo_precio_hora, mo_horas_trabajadas, mo_horas_totales, mo_costo_dia, mo_costo_total)
+    SELECT last_pro_id, JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.cat_id')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.mo_cant_personas')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.mo_precio_hora')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.mo_horas_trabajadas')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.mo_horas_totales')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.mo_costo_dia')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.mo_costo_total'))
+    FROM JSON_TABLE(p_mano_obra, '$[*]' COLUMNS (value JSON PATH '$')) AS j;
+
+    -- Insertar en la tabla costos_indirectos
+    INSERT INTO costos_indirectos (pro_id, cat_id, cost_cant, cost_unit, cost_total)
+    SELECT last_pro_id, JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.cat_id')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.cost_cant')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.cost_unit')), JSON_UNQUOTE(JSON_EXTRACT(j.value, '$.cost_total'))
+    FROM JSON_TABLE(p_costos_indirectos, '$[*]' COLUMNS (value JSON PATH '$')) AS j;
+END //
+
+DELIMITER ;
+
+
+CALL Consumo_inv(
+    
+    'PT_1401251',           -- p_lote
+    100.00,                 -- p_cant_producida
+    'completado',           -- p_estado
+    500.00,                 -- p_subtotal_mtpm
+    300.00,                 -- p_subtotal_ins
+    200.00,                 -- p_subtotal_mo
+    100.00,                 -- p_subtotal_ci
+    1100.00,                -- p_total
+    '[{"inv_id": 1, "pdet_cantidad_usada": 10, "pdet_cantidad_producida": 5, "pdet_cantidad_desperdiciada": 0}]',  -- p_detalle
+    '[{"cat_id": 1, "mo_cant_personas": 5, "mo_precio_hora": 20, "mo_horas_trabajadas": 8, "mo_horas_totales": 40, "mo_costo_dia": 800, "mo_costo_total": 800}]',  -- p_mano_obra
+    '[{"cat_id": 1, "cost_cant": 2, "cost_unit": 50, "cost_total": 100}]'  -- p_costos_indirectos
+);
+
+
+CREATE DEFINER=root@localhost PROCEDURE sp_ObtenerMovimientosAgrupadosConDetalle(IN KardexIDs VARCHAR(255))
 BEGIN
     SELECT 
-        inv.id_inv AS ID,
-        inv.numero_lote AS Lote,
-        prov.nombre_empresa AS Proveedor,
-        cat.nombre_articulo AS Artículo,
-        inv.unidad_medida AS unidad_medida,
-        inv.cantidad_ingresada AS cantidad_ingresada, 
-        inv.cantidad_restante AS Cantidad_Disponible,
-        inv.precio_unitario AS precio_unitario,
-        inv.precio_total AS Precio_Total,
-        inv.estado AS Estado
-         -- o inv.precio_unitario si prefieres
-    FROM 
-        inventario inv
-    JOIN 
-        proveedores prov ON inv.proveedor_id = prov.proveedor_id
-    JOIN 
-        invent_catalogo cat ON inv.id_articulo = cat.id_articulo
-    WHERE 
-        cat.id_categoria = 1; -- Filtra solo los registros de Materia Prima
-END$$
-DELIMITER ;
+        -- Producto: Dependiendo de si es maquinaria, tanque o catálogo, mostrar la categoría desde Catalogo
+        CASE 
+            WHEN t.tan_tipo IS NOT NULL THEN (SELECT c.Categoria FROM Catalogo c WHERE c.ID_Catalogo = t.tan_tipo LIMIT 1)  -- Mostrar la categoria de tanque
+            WHEN m.Marca IS NOT NULL THEN (SELECT c.Categoria FROM Catalogo c WHERE c.ID_Catalogo = m.Marca LIMIT 1)        -- Mostrar la categoria de maquinaria
+            ELSE (SELECT c.Categoria FROM Catalogo c WHERE c.ID_Catalogo = k.kar_ID_Producto LIMIT 1)        -- Mostrar la categoria del producto desde Catalogo
+        END AS Producto,
+
+        -- Mostrar el código del producto: Si es un tanque, mostrar tan_Codigo, si es maquinaria, mostrar Codigo
+        CASE
+            WHEN t.tan_tipo IS NOT NULL THEN t.tan_Codigo      -- Si es un tanque, mostrar el código del tanque
+            WHEN m.Marca IS NOT NULL THEN m.Codigo              -- Si es maquinaria, mostrar el código de la maquinaria
+            ELSE k.kar_ID_Producto                              -- Si no es ni tanque ni maquinaria, mostrar el ID de producto directamente
+        END AS Codigo,
+
+        -- Marca: Obtener la categoría de la marca desde el Catalogo
+        CASE
+            WHEN c.Categoria IS NOT NULL THEN c.Categoria -- Mostrar la Categoria de Marca solo si no está vacía
+            ELSE NULL  -- Si no existe, no mostrar
+        END AS Marca,
+
+        -- Capacidad: Obtener la categoría de la capacidad desde el Catalogo
+        CASE
+            WHEN c2.Categoria IS NOT NULL THEN c2.Categoria -- Mostrar la Categoria de Capacidad solo si no está vacía
+            ELSE NULL  -- Si no existe, no mostrar
+        END AS Capacidad,
+
+        -- Descripción: La lógica para mostrar las descripciones
+        CASE
+            WHEN t.tan_tipo IS NOT NULL THEN NULL -- Si es un tanque, dejar el campo en blanco
+            WHEN m.Descripcion IS NOT NULL THEN m.Descripcion  -- Descripción de Maquinaria si existe
+            WHEN c.Categoria IS NOT NULL THEN c.Categoria      -- Mostrar la Categoria asociada a la Marca si no existe Descripcion en Maquinaria
+            WHEN c2.Categoria IS NOT NULL THEN c2.Categoria    -- Mostrar la Categoria asociada a la Capacidad si no existe Descripcion ni en Maquinaria ni en Marca
+            ELSE NULL                                          -- Dejar en blanco si todas son nulas
+        END AS Descripcion,
+
+        -- El resto de los campos como están en el original
+        k.kar_Fecha AS Fecha,
+        k.kar_Cantidad AS Cantidad,
+        k.kar_Numero_Lote AS Numero_Lote,
+        k.kar_Fecha_Caducidad AS Fecha_Caducidad,
+        k.kar_Registro_Sanitario AS Registro_Sanitario,
+        k.kar_Costo_Compra AS Costo_Compra,
+        k.kar_Costo_Actual AS Costo_Actual,
+        k.kar_Tipo_Movimiento AS Tipo_Movimiento
+
+    FROM Kardex k
+    LEFT JOIN Catalogo c ON k.kar_Marca = c.ID_Catalogo    -- Unir con Catalogo para obtener la Categoria de Marca
+    LEFT JOIN Catalogo c2 ON k.kar_Capacidad = c2.ID_Catalogo -- Unir con Catalogo para obtener la Categoria de Capacidad
+    LEFT JOIN Tanque t ON k.kar_ID_Producto = t.tan_ID_Tanque -- Unir con Tanque para obtener tipo de producto (sin descripcion)
+    LEFT JOIN Maquinaria_Equipo m ON k.kar_ID_Producto = m.ID_Maquinaria  -- Unir con Maquinaria_Equipo para obtener la Descripcion de Maquinaria
+    WHERE FIND_IN_SET(k.kar_ID_Kardex, KardexIDs)
+      AND (
+          -- Filtrar para no mostrar productos con campos vacíos
+          t.tan_tipo IS NOT NULL OR
+          m.Marca IS NOT NULL OR
+          c.Categoria IS NOT NULL OR
+          c2.Categoria IS NOT NULL OR
+          m.Descripcion IS NOT NULL
+      );
+END
