@@ -175,17 +175,19 @@ function recalcularSubtotal(selectorTabla, campoSubtotal, precioColumna) {
     });
     return manoObra;
 }
- // Función para obtener los datos de costos indirectos
- function getCostosIndirectos() {
+   // Función para obtener los datos de costos indirectos
+   function getCostosIndirectos() {
     let costosIndirectos = [];
     $('#tablaCostosIndirectos tbody tr').each(function () {
         const cat_id = $(this).find('td:eq(0)').text(); // Obtener el ID del costo indirecto
         const cst_cant = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
+        const cst_presentacion = $(this).find('td:eq(2)').text(); // Obtener la presentación
         const cst_precio_ht = parseFloat($(this).find('.precio-unitario').val()) || 0;
         const cst_costo_total = cst_cant * cst_precio_ht;
         costosIndirectos.push({
             cat_id: cat_id,
             cst_cant: cst_cant,
+            cst_presentacion: cst_presentacion,
             cst_precio_ht: cst_precio_ht,
             cst_costo_total: cst_costo_total
         });
