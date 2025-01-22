@@ -50,6 +50,14 @@
                                                 <!-- Opciones se cargarán dinámicamente -->
                                             </select>
                                         </div>
+                                        <div class="form-group" id="unidadMedidaGroup" style="display: none;">
+                                            <label for="unidad_medida">Presentación:</label>
+                                            <select id="unidad_medida" name="unidad_medida" class="form-control">
+                                                <!-- Opciones se cargarán dinámicamente -->
+                                            </select>
+                                        </div>
+
+
                                         <div class="form-group">
     <label for="estado">Estado:</label>
     <div class="custom-switch-container">
@@ -77,6 +85,7 @@
                                 <th>Nombre</th>
                                 <th>Categoría</th>
                                 <th>Estado</th>
+                                <th>Un. Medida</th>
                                 <th>Fecha de Creación</th>
                                 <th>Acciones</th>
                             </tr>

@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    
+    let allUnits = [];
+
     // Inicializar el DataTable
     var table = $('#costTable').DataTable({
         "ajax": {
@@ -14,6 +17,7 @@ $(document).ready(function () {
             { "data": "cat_nombre" },
             { "data": "categoria" },
             { "data": "cat_estado" },
+            { "data": "prs_nombre" },
             { "data": "cat_fecha_creacion" },
             {
                 "data": null,
@@ -35,104 +39,140 @@ $(document).ready(function () {
         ],
         "language": dataTableLanguage
     });
+// Cargar categorías al iniciar
+$.ajax({
+    url: "../AJAX/ctrCost.php",
+    type: "POST",
+    data: { action: 'getCategorias' },
+    dataType: "json",
+    success: function (response) {
+        if (response.status === 'success' && Array.isArray(response.data)) {
+            let options = "<option value=''>Seleccione una categoría</option>";
+            response.data.forEach(function (categoria) {
+                options += `<option value="${categoria.ctg_id}">${categoria.ctg_nombre}</option>`;
+            });
+            $("#categoria").html(options);
+        } else {
+            console.error("Error al cargar categorías: ", response);
+        }
+    },
+    error: function (xhr, status, error) {
+        console.error("Error: ", error);
+        console.error("Response: ", xhr.responseText);
+    }
+});
 
-    // Cargar categorías al iniciar
+// Cargar todas las unidades de medida inicialmente
+$.ajax({
+    url: "../AJAX/ctrInvCatalogo.php",
+    type: "POST",
+    data: { action: 'getUnidadesMedida' },
+    dataType: "json",
+    success: function (response) {
+        if (response.status === 'success' && Array.isArray(response.data)) {
+            allUnits = response.data; // Guardar unidades en memoria
+            let options = "<option value=''>Seleccione una unidad</option>";
+            response.data.forEach(function (unidad) {
+                options += `<option value="${unidad.prs_id}">${unidad.prs_nombre}</option>`;
+            });
+            $("#unidad_medida").html(options);
+        } else {
+            console.error("Error al cargar unidades de medida: ", response);
+        }
+    },
+    error: function (xhr, status, error) {
+        console.error("Error: ", error);
+        console.error("Response: ", xhr.responseText);
+    }
+});
+
+// Mostrar/ocultar el select de unidades de medida según la categoría seleccionada
+$("#categoria").on("change", function () {
+    const selectedCategory = $(this).val();
+    if (selectedCategory === "5") { // Costos Indirectos
+        $("#unidadMedidaGroup").show();
+    } else {
+        $("#unidadMedidaGroup").hide();
+    }
+});
+
+ // Manejar la acción de agregar 
+ $('#costForm').on('submit', function (e) {
+    e.preventDefault();
+
+    let id_costo = $('#id_costo').val();
+    let action = id_costo && id_costo !== "0" ? 'updateCosto' : 'addCosto';
+
+    let formData = {
+        action: action,
+        id_costo: id_costo,
+        nombre: $('#nombre').val(),
+        categoria: $('#categoria').val(),
+        unidad_medida: $('#categoria').val() === "5" ? $('#unidad_medida').val() : null, // Obtener prs_id solo si es categoría de costos indirectos
+        estado: $('#estado').is(':checked') ? 'habilitado' : 'deshabilitado'
+    };
+
     $.ajax({
-        url: "../AJAX/ctrCost.php",
-        type: "POST",
-        data: { action: 'getCategorias' },
-        dataType: "json",
+        url: '../AJAX/ctrCost.php',
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
         success: function (response) {
-            if (response.status === 'success' && Array.isArray(response.data)) {
-                let options = "<option value=''>Seleccione una categoría</option>";
-                response.data.forEach(function (categoria) {
-                    options += `<option value="${categoria.ctg_id}">${categoria.ctg_nombre}</option>`;
-                });
-                $("#categoria").html(options);
+            if (response.status === 'success') {
+                Swal.fire('Éxito', response.message, 'success');
+                
+                // Limpiar formulario después de operación exitosa
+                $('#costForm')[0].reset();
+                $('#id_costo').val('0');
+                
+                $('#modalFormulario').modal('hide');
+                table.ajax.reload();
             } else {
-                console.error("Error al cargar categorías: ", response);
+                Swal.fire('Error', response.message, 'error');
             }
         },
-        error: function (xhr, status, error) {
-            console.error("Error: ", error);
-            console.error("Response: ", xhr.responseText);
+        error: function () {
+            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
         }
     });
+});
 
-    // Manejar la acción de agregar 
-    $('#costForm').on('submit', function (e) {
-        e.preventDefault();
+// Cargar datos en el formulario al editar
+$('#costTable').on('click', '.edit-btn', function () {
+    let id_costo = $(this).data('id');
+    $('#modalFormularioLabel').text('Editar Costo');
 
-        let id_costo = $('#id_costo').val();
-        let action = id_costo && id_costo !== "0" ? 'updateCosto' : 'addCosto';
-
-        let formData = {
-            action: action,
-            id_costo: id_costo,
-            nombre: $('#nombre').val(),
-            categoria: $('#categoria').val(),
-            estado: $('#estado').is(':checked') ? 'habilitado' : 'deshabilitado'
-        };
-
-        $.ajax({
-            url: '../AJAX/ctrCost.php',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    Swal.fire('Éxito', response.message, 'success');
-                    
-                    // Limpiar formulario después de operación exitosa
-                    $('#costForm')[0].reset();
-                    $('#id_costo').val('0');
-                    
-                    $('#modalFormulario').modal('hide');
-                    table.ajax.reload();
-                } else {
-                    Swal.fire('Error', response.message, 'error');
-                }
-            },
-            error: function () {
-                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+    // AJAX para cargar datos del costo
+    $.ajax({
+        url: '../AJAX/ctrCost.php',
+        type: 'POST',
+        data: {
+            action: 'getCostoById',
+            id_costo: id_costo
+        },
+        dataType: 'json',
+        success: function (response) {
+            if (response.status === 'success') {
+                let data = response.data;
+        
+                // Llenar los campos del formulario
+                $('#id_costo').val(data.cat_id || ''); // Evitar valores nulos
+                $('#nombre').val(data.cat_nombre || '');
+                $('#categoria').val(data.ctg_id || '').trigger('change');
+                $('#unidad_medida').val(data.prs_id || ''); // Cargar prs_id si existe
+                $('#estado').prop('checked', data.cat_estado === 'habilitado');
+        
+                $('#modalFormulario').modal('show');
+            } else {
+                Swal.fire('Error', response.message, 'error');
             }
-        });
+        },
+        error: function () {
+            Swal.fire('Error', 'No se pudo cargar el costo.', 'error');
+        }
     });
+});
 
-    // Cargar datos en el formulario al editar
-    $('#costTable').on('click', '.edit-btn', function () {
-        let id_costo = $(this).data('id');
-        $('#modalFormularioLabel').text('Editar Costo');
-
-        // AJAX para cargar datos del costo
-        $.ajax({
-            url: '../AJAX/ctrCost.php',
-            type: 'POST',
-            data: {
-                action: 'getCostoById',
-                id_costo: id_costo
-            },
-            dataType: 'json',
-            success: function (response) {
-                if (response.status === 'success') {
-                    let data = response.data;
-            
-                    // Llenar los campos del formulario
-                    $('#id_costo').val(data.cat_id || ''); // Evitar valores nulos
-                    $('#nombre').val(data.cat_nombre || '');
-                    $('#categoria').val(data.ctg_id || '').trigger('change');
-                    $('#estado').prop('checked', data.cat_estado === 'habilitado');
-            
-                    $('#modalFormulario').modal('show');
-                } else {
-                    Swal.fire('Error', response.message, 'error');
-                }
-            },
-            error: function () {
-                Swal.fire('Error', 'No se pudo cargar el costo.', 'error');
-            }
-        });
-    });
 
     // Abrir el modal para agregar
     $('#modalFormulario').on('show.bs.modal', function (event) {

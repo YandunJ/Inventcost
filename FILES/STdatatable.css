@@ -12,6 +12,7 @@
     font-size: 11px; /* Tamaño reducido para encabezados */
 }
 
+
 .table-compact td {
     padding: 4px; /* Reducir el padding para hacer las celdas más pequeñas verticalmente */
     font-size: 13px; /* Tamaño reducido para celdas */
@@ -26,6 +27,11 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilos para centrar el texto de los encabezados de las celdas */
+.dataTables_wrapper th {
+    text-align: center;
+    vertical-align: middle;
+}
 /* Botones de paginación */
 .dataTables_wrapper .paginate_button {
     background-color: #f8f9fa;

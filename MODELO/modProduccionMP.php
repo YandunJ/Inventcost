@@ -9,16 +9,16 @@ class Produccion {
         $this->conn = $conexion->FN_getConnect();
     }
 
-    public function registrarProduccion($cant_producida, $lotes_mp, $lotes_ins) {
-        $sql = "CALL PROD_sp(?, ?, ?)";
+    public function registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos) {
+        $sql = "CALL PR_consumo(?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("dss", $cant_producida, $lotes_mp, $lotes_ins);
+        $stmt->bind_param("dssss", $cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos);
     
         if ($stmt->execute()) {
             return ['status' => 'success', 'message' => 'Producción registrada correctamente'];
         } else {
             return ['status' => 'error', 'message' => $stmt->error];
-        }
+        } 
     }
 }
 ?>

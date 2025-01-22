@@ -53,28 +53,40 @@ CALL Catalogo_CRUD(1, 0, 'Pera', 1, 2);
 CALL Catalogo_CRUD(2, 1, 'Pera Actualizada', 2, 3);
 
 DELIMITER $$
+
 CREATE PROCEDURE Costos_CRUD(
     IN p_opcion INT,
     IN p_cat_id INT,
     IN p_cat_nombre VARCHAR(100),
     IN p_ctg_id INT,
+    IN p_prs_id INT, -- Nuevo parámetro para presentación
     IN p_cat_estado ENUM('habilitado','deshabilitado')
 )
 BEGIN
     IF p_opcion = 1 THEN
         -- Registrar
         INSERT INTO catalogo (cat_nombre, ctg_id, prs_id, cat_estado, cat_fecha_creacion)
-        VALUES (p_cat_nombre, p_ctg_id, 1, p_cat_estado, CURDATE());
+        VALUES (p_cat_nombre, p_ctg_id, IFNULL(p_prs_id, 1), p_cat_estado, CURDATE());
     ELSEIF p_opcion = 2 THEN
         -- Actualizar
         UPDATE catalogo
         SET cat_nombre = p_cat_nombre,
             ctg_id = p_ctg_id,
+            prs_id = IFNULL(p_prs_id, prs_id), -- Mantener prs_id actual si no se proporciona uno nuevo
             cat_estado = p_cat_estado
         WHERE cat_id = p_cat_id;
     END IF;
 END$$
+
 DELIMITER ;
+
+-- Registrar un nuevo costo indirecto
+CALL Costos_CRUD(1, 0, 'Costo Adicional', 5, 2, 'habilitado');
+
+-- Actualizar un costo existente
+CALL Costos_CRUD(2, 8, 'Costo Adicional Actualizado', 4, 3, 'habilitado');
+
+
 CALL Costos_CRUD(1, 0, 'Costo Adicional', 5, 'habilitado');
 CALL Costos_CRUD(2, 1, 'Costo Adicional', 4, 'habilitado');}
 
@@ -99,18 +111,22 @@ DELIMITER ;
 call fpulpas.Catalogo_data();
 
 DELIMITER $$
+
 CREATE PROCEDURE Costos_data()
 BEGIN
     SELECT 
         cat.cat_id,
         cat.cat_nombre,
         cat.cat_estado,
+        p.prs_nombre, -- Agregar el nombre de la presentación
         cat.cat_fecha_creacion,
         c.ctg_nombre AS categoria
     FROM catalogo cat
     INNER JOIN categorias c ON cat.ctg_id = c.ctg_id
+    LEFT JOIN presentacion p ON cat.prs_id = p.prs_id -- Unir con la tabla de presentaciones
     WHERE cat.ctg_id IN (4, 5);
 END$$
+
 DELIMITER ;
 
 call fpulpas.Costos_data();
@@ -138,6 +154,7 @@ BEGIN
         c.cat_nombre, 
         c.ctg_id,
         c.cat_estado,
+        c.prs_id ,
         cat.ctg_nombre AS categoria
     FROM catalogo c
     INNER JOIN categorias cat ON c.ctg_id = cat.ctg_id

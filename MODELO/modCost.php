@@ -11,7 +11,7 @@ class Costos {
     }
 
     // Método para agregar o actualizar un costo
-    public function addOrUpdateCosto($opcion, $cat_id, $cat_nombre, $ctg_id, $cat_estado) {
+    public function addOrUpdateCosto($opcion, $cat_id, $cat_nombre, $ctg_id, $prs_id, $cat_estado) {
         // Validar si el costo ya existe en la base de datos
         $queryExist = "SELECT COUNT(*) AS total FROM catalogo WHERE cat_nombre = ? AND ctg_id = ?";
         $paramsExist = [$cat_nombre, $ctg_id];
@@ -22,8 +22,8 @@ class Costos {
         }
 
         // Ejecutar el procedimiento almacenado para agregar o actualizar
-        $query = "CALL Costos_CRUD(?, ?, ?, ?, ?)";
-        $params = [$opcion, $cat_id, $cat_nombre, $ctg_id, $cat_estado];
+        $query = "CALL Costos_CRUD(?, ?, ?, ?, ?, ?)";
+        $params = [$opcion, $cat_id, $cat_nombre, $ctg_id, $prs_id, $cat_estado];
 
         try {
             $result = $this->conn->ejecutarSP($query, $params);
@@ -53,7 +53,7 @@ class Costos {
             return null; // Manejo de errores simplificado
         }
     }
-
+    
     // Método para obtener todos los costos
     public function getCostos() {
         try {

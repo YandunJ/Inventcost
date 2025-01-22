@@ -1,7 +1,6 @@
 SELECT * FROM fpulpas.produccion;
 
 -- pro_lote VARCHAR(255) NOT NULL, 
-
 CREATE TABLE produccion (
     pro_id INT AUTO_INCREMENT PRIMARY KEY,
     pro_fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,6 +16,121 @@ CREATE TABLE produccion (
 DELIMITER $$
 
 CREATE PROCEDURE PROD_sp(
+    IN cant_producida DECIMAL(10, 2),
+    IN lotes_mp JSON,
+    IN lotes_ins JSON,
+    IN mano_obra JSON -- Nueva entrada para mano de obra
+)
+BEGIN
+    DECLARE pro_id INT;
+    DECLARE subtotal_mtpm DECIMAL(10, 2) DEFAULT 0;
+    DECLARE subtotal_ins DECIMAL(10, 2) DEFAULT 0;
+    DECLARE subtotal_mo DECIMAL(10, 2) DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
+    DECLARE cat_id INT;
+    DECLARE cant_personas INT;
+    DECLARE precio_hora DECIMAL(10, 2);
+    DECLARE horas_trabajadas DECIMAL(10, 2);
+    DECLARE horas_totales DECIMAL(10, 2);
+    DECLARE costo_dia DECIMAL(10, 2);
+    DECLARE costo_total DECIMAL(10, 2);
+
+    -- Insertar en producción (sin especificar fecha)
+    INSERT INTO produccion (pro_cant_producida)
+    VALUES (cant_producida);
+    SET pro_id = LAST_INSERT_ID();
+
+    -- Procesar lotes de materia prima (igual que antes)
+    IF JSON_LENGTH(lotes_mp) > 0 THEN
+        SET i = 0;
+        WHILE i < JSON_LENGTH(lotes_mp) DO
+            -- Lógica de procesamiento de materia prima
+            SET i = i + 1;
+        END WHILE;
+    END IF;
+
+    -- Procesar lotes de insumos (igual que antes)
+    IF JSON_LENGTH(lotes_ins) > 0 THEN
+        SET i = 0;
+        WHILE i < JSON_LENGTH(lotes_ins) DO
+            -- Lógica de procesamiento de insumos
+            SET i = i + 1;
+        END WHILE;
+    END IF;
+
+    -- Procesar mano de obra
+    IF JSON_LENGTH(mano_obra) > 0 THEN
+        SET i = 0;
+        WHILE i < JSON_LENGTH(mano_obra) DO
+            -- Extraer valores de JSON
+            SET cat_id = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].cat_id')));
+            SET cant_personas = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_cant_personas')));
+            SET precio_hora = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_precio_hora')));
+            SET horas_trabajadas = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_horas_trabajadas')));
+            SET horas_totales = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_horas_totales')));
+            SET costo_dia = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_costo_dia')));
+            SET costo_total = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_costo_total')));
+
+            -- Insertar datos en la tabla mano_obra
+            INSERT INTO mano_obra (
+                pro_id, cat_id, mo_cant_personas, mo_precio_hora, 
+                mo_horas_trabajadas, mo_horas_totales, mo_costo_dia, mo_costo_total
+            )
+            VALUES (
+                pro_id, cat_id, cant_personas, precio_hora,
+                horas_trabajadas, horas_totales, costo_dia, costo_total
+            );
+
+            -- Calcular subtotal de mano de obra
+            SET subtotal_mo = subtotal_mo + costo_total;
+
+            SET i = i + 1;
+        END WHILE;
+    END IF;
+
+    -- Actualizar subtotales en producción
+    UPDATE produccion
+    SET pro_subtotal_mtpm = subtotal_mtpm,
+        pro_subtotal_ins = subtotal_ins,
+        pro_subtotal_mo = subtotal_mo,
+        pro_total = subtotal_mtpm + subtotal_ins + subtotal_mo
+    WHERE pro_id = pro_id;
+END$$
+
+DELIMITER ;
+
+
+CALL PROD_sp(
+    50.00, -- Cantidad producida
+    '[{"id_inv": 13, "cantidad": 2.00}]', -- Lotes de materia prima
+    '[{"id_inv": 16, "cantidad": 2.00}]', -- Lotes de insumos
+    '[
+        {
+            "cat_id": 1,
+            "mo_cant_personas": 5,
+            "mo_precio_hora": 12.50,
+            "mo_horas_trabajadas": 8.00,
+            "mo_horas_totales": 40.00,
+            "mo_costo_dia": 500.00,
+            "mo_costo_total": 500.00
+        },
+        {
+            "cat_id": 2,
+            "mo_cant_personas": 3,
+            "mo_precio_hora": 15.00,
+            "mo_horas_trabajadas": 6.00,
+            "mo_horas_totales": 18.00,
+            "mo_costo_dia": 270.00,
+            "mo_costo_total": 270.00
+        }
+    ]'
+);
+
+SP PRODUCCION CONSUMIR CANTIDADES
+
+DELIMITER $$
+
+CREATE PROCEDURE PR_consumo(
     IN cant_producida DECIMAL(10, 2),
     IN lotes_mp JSON,
     IN lotes_ins JSON
@@ -126,12 +240,14 @@ END$$
 
 DELIMITER ;
 
-CALL PROD_sp(
+CALL PR_consumo(
     50.00, -- Cantidad producida
-    '[{"id_inv": 12, "cantidad": 5.00}', -- Lotes de materia prima
-    '[{"id_inv": 10, "cantidad": 5.00}]' -- Lotes de insumos
+    '[{"id_inv": 17, "cantidad": 1.00}]', -- Lotes de materia prima
+    '[{"id_inv": 18, "cantidad": 1.00}]' -- Lotes de insumos
 );
 
+
+revisar ??? 
 
 CALL PROD_sp(
     '2025-01-16 12:00:00',  -- Fecha de producción
@@ -142,8 +258,8 @@ CALL PROD_sp(
 
 CALL PROD_sp(
     8.00, -- Cantidad producida
-    '[{"id_inv": 10, "cantidad": 5.00}]', -- Lote único de materia prima (ID 7)
-    '[{"id_inv": 11, "cantidad": 1.00}, {"id_inv": 6, "cantidad": 3.00}]' -- Dos lotes de insumos (IDs 6 y 20)
+    '[{"id_inv": 20, "cantidad": 1.00}]', -- Lote único de materia prima (ID 7)
+    '[{"id_inv": 21, "cantidad": 1.00}, {"id_inv": 22, "cantidad": 3.00}]' -- Dos lotes de insumos (IDs 6 y 20)
 );
 
 CALL PROD_sp(

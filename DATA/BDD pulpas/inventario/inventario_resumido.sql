@@ -9,7 +9,7 @@ CREATE TABLE `inventario` (
     -- Campos específicos de inventario
     lote VARCHAR(50) NOT NULL,
     presentacion VARCHAR(20) DEFAULT 'KILOGRAMOS', -- Valor predeterminado
-    cant_ingresada DECIMAL(10, 2) NOT NULL,
+    cant_ingresada DECI	MAL(10, 2) NOT NULL,
     cant_restante DECIMAL(10, 2) NOT NULL,
     p_u DECIMAL(10, 2) NOT NULL, -- Precio unitario
     p_t DECIMAL(10, 2) NOT NULL, -- Precio total

@@ -12,3 +12,4 @@ INSERT INTO presentacion (prs_nombre, prs_abreviacion, prs_estado) VALUES
 ('Kilogramos', 'kg', 'vigente'),
 ('Litros', 'lt', 'vigente'),
 ('Unidades', 'u', 'vigente');
+	

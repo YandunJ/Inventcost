@@ -46,7 +46,6 @@ function getCategorias() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
 function getCostoById() {
     $id_costo = $_POST['id_costo'] ?? null;
 
@@ -78,6 +77,8 @@ function addCosto() {
         }
     }
 
+    $prs_id = $_POST['categoria'] == 5 ? $_POST['unidad_medida'] : null; // Obtener prs_id solo si es categoría de costos indirectos
+
     try {
         $costosModel = new Costos();
         $result = $costosModel->addOrUpdateCosto(
@@ -85,6 +86,7 @@ function addCosto() {
             0, // ID (se ignora en inserción)
             $_POST['nombre'],
             $_POST['categoria'],
+            $prs_id,
             $_POST['estado']
         );
 
@@ -108,6 +110,8 @@ function updateCosto() {
         }
     }
 
+    $prs_id = $_POST['categoria'] == 5 ? $_POST['unidad_medida'] : null; // Obtener prs_id solo si es categoría de costos indirectos
+
     try {
         $costosModel = new Costos();
         $result = $costosModel->addOrUpdateCosto(
@@ -115,6 +119,7 @@ function updateCosto() {
             $_POST['id_costo'],
             $_POST['nombre'],
             $_POST['categoria'],
+            $prs_id,
             $_POST['estado']
         );
 
@@ -127,6 +132,7 @@ function updateCosto() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
 
 function obtenerCostos() {
     try {
