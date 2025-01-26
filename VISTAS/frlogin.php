@@ -26,7 +26,7 @@
                     <input type="password" id="Contrasenia" name="Contrasenia" required>
                 </div>
                 <button type="submit">
-                    <span class="box">Iniciar Sesión</span>
+                    <span class="box">Acceder</span>
                 </button>   
             </form>
         </div>

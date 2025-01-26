@@ -156,7 +156,7 @@
                                                     <tbody></tbody>
                                                     <tfoot>
                                                         <tr class="font-weight-bold">
-                                                            <td colspan="3" class="text-right">TOTAL COSTOS INDIRECTOS:</td>
+                                                            <td colspan="5" class="text-right">TOTAL COSTOS INDIRECTOS:</td>
                                                             <td id="totalCostosIndirectos">$0.00</td>
                                                         </tr>
                                                     </tfoot>
@@ -177,36 +177,50 @@
                 <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
             </div>
         </div>
-        <div class="form-group row">
+        <!-- <div class="form-group row">
             <label for="cantidadProducida" class="col-sm-2 col-form-label">Cantidad Producida (kg)</label>
             <div class="col-sm-10">
-                <input type="number" class="form-control" id="cantidadProducida" placeholder="Cantidad Producida" readonly>
+                <input type="number" class="form-control" id="cantidadProducida" placeholder="Cantidad Producida">
             </div>
-        </div>
+        </div> -->
         <div id="presentacionesContainer">
             <div class="form-group row">
                 <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
                 <div class="col-sm-4">
-                    <select class="form-control presentacionProducto">
+                    <select class="form-control" id="presentacionProducto">
                         <option value="100">100 gr</option>
                         <option value="50">50 gr</option>
+                        <option value="1000">1 kg</option>
                     </select>
-                </div>
-                <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad por Presentación</label>
+                    </div>
+                <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
                 <div class="col-sm-4">
-                    <input type="number" class="form-control cantidadPresentacion" placeholder="Cantidad por Presentación">
+                    <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
                 </div>
             </div>
+            <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
         </div>
-        <button type="button" class="btn btn-secondary" id="btnAgregarPresentacion">Agregar Presentación</button>
-        <button type="button" class="btn btn-primary" id="btnCalcularPresentaciones">Calcular Presentaciones</button>
+        <div class="mt-4">
+            <table class="table table-bordered" id="tablaPresentaciones">
+                <thead>
+                    <tr>
+                        <th>Presentación</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>Costo Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="totalPresentaciones" readonly>
+            </div>
+        </div>
     </form>
-    <div class="form-group row mt-3">
-        <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Presentaciones</label>
-        <div class="col-sm-10">
-            <input type="number" class="form-control" id="totalPresentaciones" placeholder="Total Presentaciones" readonly>
-        </div>
-    </div>
 </div>
                                             <div class="row mt-4">
                                                 <div class="col-md-12">

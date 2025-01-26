@@ -21,25 +21,28 @@ class Cls_DataConnection {
     public function ejecutarSP($query, $params = []) {
         $conexion = $this->FN_getConnect();
         $stmt = $conexion->prepare($query);
-
+    
         if (!$stmt) {
             die("Error al preparar la consulta: " . $conexion->error);
         }
-
+    
         if ($params) {
-            $tipos = str_repeat('s', count($params)); // Asumimos que todos son strings
+            $tipos = str_repeat('s', count($params)); // Asumimos que todos los parámetros son strings
             $stmt->bind_param($tipos, ...$params);
         }
-
+    
         if (!$stmt->execute()) {
             die("Error al ejecutar la consulta: " . $stmt->error);
         }
-
+    
+        // Intentamos obtener resultados, pero no todos los SP retornan un conjunto de datos
         $result = $stmt->get_result();
         $stmt->close();
         $conexion->close();
-
-        return $result;
+    
+        return $result ? $result : true; // Si no hay resultados, devolvemos true como éxito
     }
+    
+    
 }
 ?>
