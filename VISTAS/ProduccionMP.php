@@ -177,22 +177,14 @@
                 <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
             </div>
         </div>
-        <!-- <div class="form-group row">
-            <label for="cantidadProducida" class="col-sm-2 col-form-label">Cantidad Producida (kg)</label>
-            <div class="col-sm-10">
-                <input type="number" class="form-control" id="cantidadProducida" placeholder="Cantidad Producida">
-            </div>
-        </div> -->
         <div id="presentacionesContainer">
             <div class="form-group row">
                 <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
                 <div class="col-sm-4">
                     <select class="form-control" id="presentacionProducto">
-                        <option value="100">100 gr</option>
-                        <option value="50">50 gr</option>
-                        <option value="1000">1 kg</option>
+                        <option value="">Seleccione una presentación</option>
                     </select>
-                    </div>
+                </div>
                 <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
                 <div class="col-sm-4">
                     <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">

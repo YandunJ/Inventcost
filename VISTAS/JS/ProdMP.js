@@ -1,116 +1,102 @@
 $(document).ready(function () {
-    // Generar lote automáticamente (puedes ajustar esta lógica según tus necesidades)
-    function generarLote() {
-        const fecha = new Date();
-        const lote = 'L' + fecha.getFullYear() + (fecha.getMonth() + 1).toString().padStart(2, '0') + fecha.getDate().toString().padStart(2, '0') + fecha.getHours().toString().padStart(2, '0') + fecha.getMinutes().toString().padStart(2, '0') + fecha.getSeconds().toString().padStart(2, '0');
-        $('#loteProductoTerminado').val(lote);
-    }
+ // Generar lote automáticamente (puedes ajustar esta lógica según tus necesidades)
+ function generarLote() {
+    const fecha = new Date();
+    const lote = 'L' + fecha.getFullYear() + (fecha.getMonth() + 1).toString().padStart(2, '0') + fecha.getDate().toString().padStart(2, '0') + fecha.getHours().toString().padStart(2, '0') + fecha.getMinutes().toString().padStart(2, '0') + fecha.getSeconds().toString().padStart(2, '0');
+    $('#loteProductoTerminado').val(lote);
+}
 
-    // Validar que los valores de las demás pestañas estén ingresados
-    function validarValoresPrevios() {
-        const subtotalMP = parseFloat($('#subtotalMP').val()) || 0;
-        const subtotalINS = parseFloat($('#subtotalINS').val()) || 0;
-        const subtotalMO = parseFloat($('#subtotalMO').val()) || 0;
-        const subtotalCA = parseFloat($('#subtotalCA').val()) || 0;
-        const totalProduccion = parseFloat($('#totalProduccion').val()) || 0;
-
-        return subtotalMP > 0 && subtotalINS > 0 && subtotalMO > 0 && subtotalCA > 0 && totalProduccion > 0;
-    }
-
-    // Evento para cambiar a la pestaña de Producto Terminado
-    $('#productoTerminado-tab').on('click', function (e) {
-        if (!validarValoresPrevios()) {
-            e.preventDefault();
-            alert('Por favor, ingrese los valores en las pestañas anteriores antes de acceder a Producto Terminado.');
-        } else {
-            cargarPresentaciones();
+// Cargar presentaciones de Producto Terminado en el select box
+function cargarPresentacionesPT() {
+    $.ajax({
+        url: '../AJAX/ctrProduccionMP.php',
+        type: 'POST',
+        data: { action: 'obtenerPresentacionesPT' },
+        success: function (response) {
+            const result = JSON.parse(response);
+            if (result.status === 'success') {
+                let opciones = '<option value="">Seleccione una presentación</option>';
+                result.data.forEach(function (presentacion) {
+                    opciones += `<option value="${presentacion.prs_id}" data-equivalencia="${presentacion.equivalencia}">${presentacion.prs_nombre}</option>`;
+                });
+                $('#presentacionProducto').html(opciones);
+            } else {
+                console.error("Error al cargar presentaciones: ", result.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error: ", error);
+            console.error("Response: ", xhr.responseText);
         }
     });
+}
 
-    // Definir presentaciones directamente en el JavaScript
-    const presentaciones = [
-        { nombre: '100 gr', equivalencia: 100 },
-        { nombre: '50 gr', equivalencia: 50 },
-        { nombre: '1 kg', equivalencia: 1000 },
-        { nombre: '2 kg', equivalencia: 2000 } // Ejemplo de nueva presentación
-    ];
+// Agregar nueva presentación
+$('#btnAgregarPresentacion').on('click', function () {
+    const presentacionId = $('#presentacionProducto').val();
+    const cantidad = parseFloat($('#cantidadPresentacion').val()) || 0;
 
-    // Cargar presentaciones en el select
-    function cargarPresentaciones() {
-        let opciones = '';
-        presentaciones.forEach(presentacion => {
-            opciones += `<option value="${presentacion.equivalencia}">${presentacion.nombre}</option>`;
-        });
-        $('#presentacionProducto').html(opciones);
-    }
-
-    // Agregar nueva presentación
-    $('#btnAgregarPresentacion').on('click', function () {
-        const presentacion = $('#presentacionProducto').val();
-        const cantidad = parseFloat($('#cantidadPresentacion').val()) || 0;
-
-        if (presentacion && cantidad > 0) {
-            const presentacionText = $('#presentacionProducto option:selected').text();
-            const equivalencia = parseFloat(presentacion);
-            const nuevaFila = `
-                <tr>
-                    <td data-equivalencia="${equivalencia}">${presentacionText}</td>
-                    <td>${cantidad}</td>
-                    <td class="costo-unitario"></td>
-                    <td class="costo-total"></td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm eliminar-presentacion">Eliminar</button>
-                    </td>
-                </tr>`;
-            $('#tablaPresentaciones tbody').append(nuevaFila);
-            recalcularTotalPresentaciones();
-        } else {
-            alert('Por favor, seleccione una presentación y una cantidad válida.');
-        }
-    });
-
-    // Eliminar presentación
-    $('#tablaPresentaciones').on('click', '.eliminar-presentacion', function () {
-        $(this).closest('tr').remove();
+    if (presentacionId && cantidad > 0) {
+        const presentacionText = $('#presentacionProducto option:selected').text();
+        const equivalencia = parseFloat($('#presentacionProducto option:selected').attr('data-equivalencia'));
+        const nuevaFila = `
+            <tr>
+                <td data-equivalencia="${equivalencia}">${presentacionText}</td>
+                <td>${cantidad}</td>
+                <td class="costo-unitario"></td>
+                <td class="costo-total"></td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm eliminar-presentacion">Eliminar</button>
+                </td>
+            </tr>`;
+        $('#tablaPresentaciones tbody').append(nuevaFila);
         recalcularTotalPresentaciones();
-    });
+    } else {
+        alert('Por favor, seleccione una presentación y una cantidad válida.');
+    }
+});
 
-    // Calcular total de presentaciones en gramos
-    function recalcularTotalPresentaciones() {
-        let totalPresentacionesGramos = 0;
+// Eliminar presentación
+$('#tablaPresentaciones').on('click', '.eliminar-presentacion', function () {
+    $(this).closest('tr').remove();
+    recalcularTotalPresentaciones();
+});
+
+// Calcular total de presentaciones en gramos
+function recalcularTotalPresentaciones() {
+    let totalPresentacionesGramos = 0;
+    $('#tablaPresentaciones tbody tr').each(function () {
+        const cantidad = parseFloat($(this).find('td:eq(1)').text()) || 0;
+        const equivalencia = parseFloat($(this).find('td:eq(0)').attr('data-equivalencia')) || 0;
+        totalPresentacionesGramos += cantidad * equivalencia;
+    });
+    $('#totalPresentaciones').val(totalPresentacionesGramos);
+    recalcularCostoPorPresentacion();
+}
+
+// Calcular costo por presentación
+function recalcularCostoPorPresentacion() {
+    const totalProduccion = parseFloat($('#totalProduccion').val()) || 0;
+    const totalPresentacionesGramos = parseFloat($('#totalPresentaciones').val()) || 0;
+
+    if (totalPresentacionesGramos > 0) {
+        const costoPorGramo = totalProduccion / totalPresentacionesGramos;
+
         $('#tablaPresentaciones tbody tr').each(function () {
             const cantidad = parseFloat($(this).find('td:eq(1)').text()) || 0;
             const equivalencia = parseFloat($(this).find('td:eq(0)').attr('data-equivalencia')) || 0;
-            totalPresentacionesGramos += cantidad * equivalencia;
+            const costoUnitario = costoPorGramo * equivalencia;
+            const costoTotalPresentacion = cantidad * costoUnitario;
+            $(this).find('.costo-unitario').text(`$${costoUnitario.toFixed(2)}`);
+            $(this).find('.costo-total').text(`$${costoTotalPresentacion.toFixed(2)}`);
         });
-        $('#totalPresentaciones').val(totalPresentacionesGramos);
-        recalcularCostoPorPresentacion();
     }
+}
 
-    // Calcular costo por presentación
-    function recalcularCostoPorPresentacion() {
-        const totalProduccion = parseFloat($('#totalProduccion').val()) || 0;
-        const totalPresentacionesGramos = parseFloat($('#totalPresentaciones').val()) || 0;
-
-        if (totalPresentacionesGramos > 0) {
-            const costoPorGramo = totalProduccion / totalPresentacionesGramos;
-
-            $('#tablaPresentaciones tbody tr').each(function () {
-                const cantidad = parseFloat($(this).find('td:eq(1)').text()) || 0;
-                const equivalencia = parseFloat($(this).find('td:eq(0)').attr('data-equivalencia')) || 0;
-                const costoUnitario = costoPorGramo * equivalencia;
-                const costoTotalPresentacion = cantidad * costoUnitario;
-                $(this).find('.costo-unitario').text(`$${costoUnitario.toFixed(2)}`);
-                $(this).find('.costo-total').text(`$${costoTotalPresentacion.toFixed(2)}`);
-            });
-        }
-    }
-
-    // Inicializar el formulario con valores predeterminados
-    generarLote();
-    cargarPresentaciones();
-    $('#cantidadProducida').val(10); // Ejemplo de cantidad producida, puedes ajustar este valor según tus necesidades
-
+// Inicializar el formulario con valores predeterminados
+generarLote();
+cargarPresentacionesPT();
+$('#cantidadProducida').val(10); // Ejemplo de cantidad producida, puedes ajustar este valor según tus necesidades
 // ============================
 // Inicialización de DataTables
 // ===========================

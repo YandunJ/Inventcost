@@ -21,6 +21,9 @@ switch ($action) {
     case 'obtenerTodasPresentaciones':
         obtenerTodasPresentaciones();
         break;
+        case 'obtenerPresentacionesPT':
+            obtenerPresentacionesPT();
+            break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -80,4 +83,20 @@ function obtenerTodasPresentaciones() {
     }
     echo json_encode($presentaciones);
 }
+function obtenerPresentacionesPT() {
+    global $conn;
+    $sql = "SELECT prs_id, prs_nombre FROM presentacion WHERE ctg_id = 3 AND prs_estado = 'vigente'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+        echo json_encode(['status' => 'success', 'data' => $data]);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'No se encontraron presentaciones']);
+    }
+}
+
 ?>

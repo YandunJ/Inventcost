@@ -20,5 +20,18 @@ class Produccion {
             return ['status' => 'error', 'message' => $stmt->error];
         } 
     }
+
+    public function obtenerPresentacionesPT() {
+        $sql = "SELECT prs_id, prs_nombre, equivalencia FROM presentacion WHERE ctg_id = 3 AND prs_estado = 'vigente'";
+        $result = $this->conn->query($sql);
+
+        $data = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+        return $data;
+    }
 }
 ?>

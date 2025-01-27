@@ -15,27 +15,10 @@ switch ($action) {
         registrarProduccion();
         break;
 
-    case 'consultarIds':
-        $ids = isset($_POST['ids']) ? json_decode($_POST['ids'], true) : [];
-        if (empty($ids)) {
-            echo json_encode(['status' => 'error', 'message' => 'No se recibieron IDs']);
-            exit;
-        }
-    
-        $sql = "SELECT cat_id, cat_nombre FROM catalogo WHERE cat_id IN (" . implode(',', array_map('intval', $ids)) . ")";
-        $result = $conn->query($sql);
-    
-        if ($result->num_rows > 0) {
-            $data = [];
-            while ($row = $result->fetch_assoc()) {
-                $data[] = $row;
-            }
-            echo json_encode(['status' => 'success', 'data' => $data]);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'No se encontraron datos']);
-        }
+    case 'obtenerPresentacionesPT':
+        obtenerPresentacionesPT();
         break;
-    
+
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -55,6 +38,16 @@ function registrarProduccion() {
         echo json_encode($result);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
+}
+
+function obtenerPresentacionesPT() {
+    $produccion = new Produccion();
+    $data = $produccion->obtenerPresentacionesPT();
+    if (!empty($data)) {
+        echo json_encode(['status' => 'success', 'data' => $data]);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'No se encontraron presentaciones']);
     }
 }
 ?>

@@ -13,6 +13,7 @@ CREATE TABLE produccion (
     pro_total DECIMAL(10,2) DEFAULT '0.00'
 );
 
+
 DELIMITER $$
 
 CREATE PROCEDURE PROD_sp(
