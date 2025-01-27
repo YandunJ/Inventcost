@@ -10,7 +10,7 @@ CREATE TABLE `presentacion` (
   PRIMARY KEY (`prs_id`),
   KEY `fk_categoria` (`ctg_id`),
   CONSTRAINT `fk_categoria` FOREIGN KEY (`ctg_id`) REFERENCES `categorias` (`ctg_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 INSERT INTO presentacion (prs_nombre, prs_abreviacion, prs_estado) VALUES

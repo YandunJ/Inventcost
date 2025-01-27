@@ -14,6 +14,8 @@ CREATE TABLE prcostos (
     FOREIGN KEY (cat_id) REFERENCES catalogo(cat_id)    -- Relación con catálogo
     
 );
+
+
 DELIMITER $$
 
 CREATE PROCEDURE PROD_sp(
