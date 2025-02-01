@@ -84,7 +84,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 </li>
                      
                         <li class="nav-item">
-                                    <a href="ProduccionMP.php" class="nav-link">
+                                    <a href="PRODUCCION.php" class="nav-link">
                                         <i class="nav-icon fas fa-industry"></i>
                                         <p>Produccion</p>
                                     </a>

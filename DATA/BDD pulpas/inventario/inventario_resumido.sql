@@ -51,9 +51,9 @@ BEGIN
         SET NEW.estado = 'disponible';
     END IF;
 END$$
-
 DELIMITER ;
 
+-- sp 
 DELIMITER $$
 CREATE PROCEDURE `Kardex_entradas`(
     IN p_articuloId INT,

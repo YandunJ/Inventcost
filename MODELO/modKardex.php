@@ -7,13 +7,13 @@ class KardexModel {
         $this->conn = $conexion->FN_getConnect();
     }
 
-    public function obtenerKardex($fechaInicio, $fechaFin, $categoria) {
-        $stmt = $this->conn->prepare("CALL Kardex_data(?, ?, ?)");
+    public function obtenerKardex($mes, $anio, $categoria) {
+        $stmt = $this->conn->prepare("CALL kardex_G(?, ?, ?)");
         if (!$stmt) {
             throw new Exception("Error al preparar la consulta: " . $this->conn->error);
         }
 
-        $stmt->bind_param("sss", $fechaInicio, $fechaFin, $categoria);
+        $stmt->bind_param("iii", $mes, $anio, $categoria);
         $stmt->execute();
         $result = $stmt->get_result();
         $datos = [];
@@ -25,46 +25,42 @@ class KardexModel {
         $stmt->close();
         return $datos;
     }
-    public function obtenerEntradas($articuloId, $fechaInicio, $fechaFin) {
-        // Preparar consulta para obtener las entradas
-        $stmt = $this->conn->prepare("
-        SELECT 
-            fecha_hora AS FechaHora, 
-            lote AS Lote, 
-            proveedor_id AS Proveedor, 
-            cat_id AS Articulo, 
-            presentacion AS Presentacion, 
-            cant_ingresada AS CantidadInicial, 
-            cant_restante AS CantidadDisponible, 
-            p_u AS PrecioUnitario, 
-            (cant_restante * p_u) AS PrecioTotal,
-            estado AS Estado, 
-            brix AS Brix, 
-            observacion AS Observacion 
-        FROM inventario 
-        WHERE cat_id = ? 
-        AND fecha_hora BETWEEN ? AND ?
-    ");
-    
-    
+
+    public function obtenerDetalleKardex($fechaInicio, $fechaFin, $categoria, $articulo) {
+        $stmt = $this->conn->prepare("CALL kardex_det(?, ?, ?, ?)");
         if (!$stmt) {
             throw new Exception("Error al preparar la consulta: " . $this->conn->error);
         }
-    
-        // Vincular parámetros y ejecutar consulta
-        $stmt->bind_param("iss", $articuloId, $fechaInicio, $fechaFin);
+
+        $stmt->bind_param("ssii", $fechaInicio, $fechaFin, $categoria, $articulo);
         $stmt->execute();
         $result = $stmt->get_result();
         $datos = [];
-    
+
         while ($row = $result->fetch_assoc()) {
             $datos[] = $row;
         }
-    
+
         $stmt->close();
         return $datos;
     }
-    
-    
+
+    public function obtenerCategorias() {
+        $stmt = $this->conn->prepare("SELECT ctg_id, ctg_nombre FROM categorias WHERE ctg_id IN (1, 2, 3)");
+        if (!$stmt) {
+            throw new Exception("Error al preparar la consulta: " . $this->conn->error);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $categorias = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $categorias[] = $row;
+        }
+
+        $stmt->close();
+        return $categorias;
+    }
 }
 ?>

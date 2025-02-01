@@ -92,12 +92,12 @@
                                                 <table class="table table-bordered table-hover table-compact" id="LotesINS">
                                                     <thead>
                                                         <tr>
-                                                            <th>Fecha</th>
+                                                            <th>Lote</th>
                                                             <th>Proveedor</th>
                                                             <th>Insumo</th>
                                                             <th>Ud Medida</th>
                                                             <th>Disponible</th>
-                                                            <th>Precio Unitario</th>
+                                                            <th>Precio U.</th>
                                                             <th>Cantidad a Consumir</th>
                                                             <th>Seleccionar</th>
                                                         </tr>
@@ -162,94 +162,99 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-   <!-- Pestaña Producto Terminado -->
-<div class="tab-pane fade" id="productoTerminado" role="tabpanel">
-    <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-        <strong>Estimado usuario:</strong> Ingrese los detalles del producto terminado.
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div> -->
-    <form id="formProductoTerminado">
-        <div class="form-group row">
-            <label for="loteProductoTerminado" class="col-sm-2 col-form-label">Lote</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
-            </div>
-        </div>
-        <div id="presentacionesContainer">
-            <div class="form-group row">
-                <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
-                <div class="col-sm-4">
-                    <select class="form-control" id="presentacionProducto">
-                        <option value="">Seleccione una presentación</option>
-                    </select>
-                </div>
-                <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
-                <div class="col-sm-4">
-                    <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
-        </div>
-        <div class="mt-4">
-            <table class="table table-bordered" id="tablaPresentaciones">
-                <thead>
-                    <tr>
-                        <th>Presentación</th>
-                        <th>Cantidad</th>
-                        <th>Costo Unitario</th>
-                        <th>Costo Total</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="form-group row mt-3">
-            <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
-            <div class="col-sm-10">
-                <input type="number" class="form-control" id="totalPresentaciones" readonly>
-            </div>
-        </div>
-    </form>
-</div>
-                                            <div class="row mt-4">
-                                                <div class="col-md-12">
-                                                    <div class="card subtotales-container">
-                                                        <div class="card-header bg-primary text-white">
-                                                            <h5 class="card-title">Subtotales de Producción</h5>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <div class="row">
-                                                                <div class="col-md-3">
-                                                                    <label for="subtotalMP">Subtotal Materia Prima:</label>
-                                                                    <input type="text" id="subtotalMP" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <label for="subtotalINS">Subtotal Insumos:</label>
-                                                                    <input type="text" id="subtotalINS" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <label for="subtotalMO">Subtotal Mano de Obra:</label>
-                                                                    <input type="text" id="subtotalMO" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                                                                </div>
-                                                                <div class="col-md-3">
-                                                                    <label for="subtotalCA">Subtotal Costos Indirectos:</label>
-                                                                    <input type="text" id="subtotalCA" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row mt-3">
-                                                                <div class="col-md-3 offset-md-9">
-                                                                    <label for="totalProduccion">Costo Total de Producción:</label>
-                                                                    <input type="text" id="totalProduccion" class="form-control text-right font-weight-bold text-success" value="0.00" readonly>
-                                                                </div>
+                                                <!-- Pestaña Producto Terminado -->
+                                                <div class="tab-pane fade" id="productoTerminado" role="tabpanel">
+                                                    <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                                        <strong>Estimado usuario:</strong> Ingrese los detalles del producto terminado.
+                                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div> -->
+                                                    <form id="formProductoTerminado">
+                                                        <div class="form-group row">
+                                                            <label for="loteProductoTerminado" class="col-sm-2 col-form-label">Lote</label>
+                                                            <div class="col-sm-10">
+                                                                <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                        <div id="presentacionesContainer">
+                                                            <div class="form-group row">
+                                                                <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
+                                                                <div class="col-sm-4">
+                                                                    <select class="form-control" id="presentacionProducto">
+                                                                        <option value="">Seleccione una presentación</option>
+                                                                    </select>
+                                                                </div>
+                                                                <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
+                                                                <div class="col-sm-4">
+                                                                    <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
+                                                                </div>
+                                                            </div>
+                                                            <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
+                                                        </div>
+                                                        <div class="mt-4">
+                                                            <table class="table table-bordered" id="tablaPresentaciones">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Presentación</th>
+                                                                        <th>Cantidad</th>
+                                                                        <th>Costo Unitario</th>
+                                                                        <th>Costo Total</th>
+                                                                        <th>Acciones</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody></tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="form-group row mt-3">
+                                                            <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
+                                                            <div class="col-sm-10">
+                                                                <input type="number" class="form-control" id="totalPresentaciones" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </form>
                                                 </div>
-                                            </div>
-                                        </div>
+<!-- Agregar un botón para contraer/expandir la sección de subtotales -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card subtotales-container">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Subtotales de Producción</h5>
+                <button type="button" class="btn btn-light btn-sm ml-auto" id="toggleSubtotales">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="card-body" id="subtotalesContent">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="subtotalMP">Subtotal Materia Prima:</label>
+                        <input type="text" id="subtotalMP" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subtotalINS">Subtotal Insumos:</label>
+                        <input type="text" id="subtotalINS" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subtotalMO">Subtotal Mano de Obra:</label>
+                        <input type="text" id="subtotalMO" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subtotalCA">Subtotal Costos Indirectos:</label>
+                        <input type="text" id="subtotalCA" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col-md-3 offset-md-9">
+                        <label for="totalProduccion">COSTO TOTAL DE PRODUCCIÓN:</label>
+                        <input type="text" id="totalProduccion" class="form-control text-right font-weight-bold text-success" value="0.00" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                                     </div>
                                 </div>
                             </div>
@@ -396,7 +401,11 @@
 <script src="../Public/dist/js/adminlte.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
-<script src="JS/ProdMP.js"></script>
+<script src="JS/PROD.js"></script>
+<script src="JS/ProdPT.js"></script>
+<script src="JS/ProdValid.js"></script>
+<script src="JS/ProdCostos.js"></script>
+<!-- <script src="JS/ProdMano.js"></script> -->
 <script src="JS/validaciones.js"></script>
 </body>
 </html>
