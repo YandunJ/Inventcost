@@ -11,10 +11,17 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include 'MODULOS/ModuloNavbar.php'; ?>
+        <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/MDAdminSidebar.php'; ?>
-        <!-- Content Wrapper. Contains page content -->
+        <?php
+        if ($_SESSION['rol_id'] == 1) {
+            include 'MODULOS/PanelAdmin.php';
+        } elseif ($_SESSION['rol_id'] == 2) {
+            include 'MODULOS/PanelInventario.php';
+        } elseif ($_SESSION['rol_id'] == 3) {
+            include 'MODULOS/PanelProduccion.php';
+        }
+        ?>
         <div class="content-wrapper">
             <!-- Main content -->
             <section class="content">
@@ -98,7 +105,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <script src="JS/invCat.js"></script>
-    <script src="JS/validaciones.js"></script>
+    <script src="JS/DTesp.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 </body>
 </html>

@@ -13,7 +13,6 @@ CREATE TABLE prod_detalle (
 -- pdet_cantidad_producida DECIMAL(10,2) DEFAULT 0,
 -- pdet_cantidad_desperdiciada DECIMAL(10,2) DEFAULT 0,
 -- Producción con 50 kg de manzanas usadas, 5 fundas de pulpa producidas, y 2 kg de desperdicio
-
 ALTER TABLE prod_detalle ADD COLUMN inv_lote VARCHAR(50) AFTER inv_id;
 
 DELIMITER $$
@@ -157,10 +156,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
-
-
 
 DELIMITER $$
 
@@ -342,103 +337,22 @@ SELECT * FROM catalogo WHERE cat_nombre = 'SELECCION';
 
 DELIMITER $$
 
-CREATE PROCEDURE PROD_sp(
-    IN cant_producida DECIMAL(10, 2),
-    IN lotes_mp JSON,
-    IN lotes_ins JSON,
-    IN mano_obra JSON
-)
+CREATE PROCEDURE PROD_data_G()
 BEGIN
-    DECLARE pro_id INT;
-    DECLARE subtotal_mp DECIMAL(10, 2) DEFAULT 0;
-    DECLARE subtotal_ins DECIMAL(10, 2) DEFAULT 0;
-    DECLARE subtotal_mo DECIMAL(10, 2) DEFAULT 0;
-    DECLARE i INT DEFAULT 0;
-    DECLARE lote_id INT;
-    DECLARE cantidad DECIMAL(10, 2);
-    DECLARE precio DECIMAL(10, 2);
-    DECLARE stock_actual DECIMAL(10, 2);
-    DECLARE cat_id INT;
-    DECLARE costo_total DECIMAL(10, 2);
-    DECLARE mensaje_error VARCHAR(255);
-    DECLARE prev_safe_updates INT;
-
-    -- Guardar estado original de SQL_SAFE_UPDATES
-    SET prev_safe_updates = @@SQL_SAFE_UPDATES;
-    SET SQL_SAFE_UPDATES = 0;
-
-    -- Insertar en producción
-    INSERT INTO produccion (pro_cant_producida)
-    VALUES (cant_producida);
-    SET pro_id = LAST_INSERT_ID();
-
-    -- Procesar lotes de materia prima
-    IF JSON_LENGTH(lotes_mp) > 0 THEN
-        WHILE i < JSON_LENGTH(lotes_mp) DO
-            SET lote_id = JSON_UNQUOTE(JSON_EXTRACT(lotes_mp, CONCAT('$[', i, '].id_inv')));
-            SET cantidad = JSON_UNQUOTE(JSON_EXTRACT(lotes_mp, CONCAT('$[', i, '].cantidad')));
-
-            -- Validar stock disponible
-            SELECT cant_restante INTO stock_actual
-            FROM inventario
-            WHERE id_inv = lote_id;
-
-            IF stock_actual < cantidad THEN
-                SET mensaje_error = CONCAT('Error: Stock insuficiente en lote ', lote_id);
-                SIGNAL SQLSTATE '45000'
-                SET MESSAGE_TEXT = mensaje_error;
-            END IF;
-
-            -- Obtener precio unitario
-            SELECT p_u INTO precio FROM inventario WHERE id_inv = lote_id;
-
-            -- Insertar detalle
-            INSERT INTO prod_detalle (pro_id, id_inv, pdet_cantidad_usada)
-            VALUES (pro_id, lote_id, cantidad);
-
-            -- Actualizar inventario
-            UPDATE inventario
-            SET cant_restante = cant_restante - cantidad
-            WHERE id_inv = lote_id;
-
-            -- Calcular subtotal
-            SET subtotal_mp = subtotal_mp + (cantidad * precio);
-            SET i = i + 1;
-        END WHILE;
-    END IF;
-
-    -- Procesar lotes de insumos (similar al bloque anterior)
-
-    -- Procesar mano de obra
-    SET i = 0;
-    IF JSON_LENGTH(mano_obra) > 0 THEN
-        WHILE i < JSON_LENGTH(mano_obra) DO
-            SET cat_id = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].cat_id')));
-            SET costo_total = JSON_UNQUOTE(JSON_EXTRACT(mano_obra, CONCAT('$[', i, '].mo_costo_total')));
-
-            -- Insertar detalle de mano de obra
-            INSERT INTO mano_obra (pro_id, cat_id, mo_costo_total)
-            VALUES (pro_id, cat_id, costo_total);
-
-            -- Acumular subtotal
-            SET subtotal_mo = subtotal_mo + costo_total;
-            SET i = i + 1;
-        END WHILE;
-    END IF;
-
-    -- Restaurar configuración original
-    SET SQL_SAFE_UPDATES = prev_safe_updates;
-END $$
+    SELECT 
+        pro_fecha,
+        pro_cant_producida,
+        pro_subtotal_mtpm,
+        pro_subtotal_ins,
+        pro_subtotal_mo,
+        pro_subtotal_ci,
+        pro_total
+    FROM produccion;
+END$$
 
 DELIMITER ;
 
-CALL PROD_sp(
-    100.00, -- Cantidad producida
-    '[{"id_inv": 19, "cantidad": 3.00}, {"id_inv": 20, "cantidad": 2.00}]', -- Lotes de materia prima (JSON)
-    '[{"id_inv": 21, "cantidad": 4.00}, {"id_inv": 22, "cantidad": 2.50}]', -- Lotes de insumos (JSON)
-    '[{"cat_id": 1, "mo_costo_total": 500.00, "mo_cant_personas": 2},
-  {"cat_id": 2, "mo_costo_total": 300.00, "mo_cant_personas": 3}]' -- Mano de obra (JSON)
-);
+CALL PROD_data_G();
 
 
 

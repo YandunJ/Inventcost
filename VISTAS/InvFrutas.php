@@ -10,8 +10,8 @@
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <?php include 'MODULOS/ModuloNavbar.php'; ?>
-        <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+        <?php include 'MODULOS/BarraHorizontal.php'; ?>
+        <?php include 'MODULOS/PanelAdmin.php'; ?>
         <!--  -->
         <div class="content-wrapper">
             <section class="content">
@@ -156,7 +156,7 @@
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="JS/invFrutas.js"></script>
-    <script src="JS/validaciones.js"></script>
+    <script src="JS/DTesp.js"></script>
     
     <script src="JS/cerrarsesion.js"></script>
 

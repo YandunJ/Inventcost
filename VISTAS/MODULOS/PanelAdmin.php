@@ -109,12 +109,12 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                             </ul>
                         </li> -->
 
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a href="producto.php" class="nav-link">
                                 <i class="nav-icon fas fa-box-open"></i>
                                 <p>Productos</p>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="nav-item">
                             <a href="insumos.php" class="nav-link">
                                 <i class="nav-icon fas fa-boxes"></i>
@@ -139,12 +139,12 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                         <p>Usuario</p>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                <!-- <li class="nav-item">
                                     <a href="empleados.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Empleados</p>
                                     </a>
-                                </li>
+                                </li> -->
                                 <li class="nav-item">
                                     <a href="roles.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>

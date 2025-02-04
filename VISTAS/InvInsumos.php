@@ -11,9 +11,9 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
          <!-- Navbar -->
-         <?php include 'MODULOS/ModuloNavbar.php';?>
+         <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/MDAdminSidebar.php';?>
+        <?php include 'MODULOS/PanelAdmin.php';?>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->
@@ -145,7 +145,7 @@
 
     <!-- Custom JS  -->
     <script src="JS/invInsumos.js"></script>
-    <script src="JS/validaciones.js"></script>
+    <script src="JS/DTesp.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 
     

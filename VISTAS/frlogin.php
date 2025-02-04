@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="login-form">   
+        <div class="login-form">   
             <div class="logo">
                 <img src="../FILES/fran2.png" alt="Logo">
             </div>
@@ -27,11 +27,11 @@
                 </div>
                 <button type="submit">
                     <span class="box">Acceder</span>
-                </button>   
+                </button>   
             </form>
+           
         </div>
         <div class="image-container"></div>
     </div>
-    
 </body>
 </html>

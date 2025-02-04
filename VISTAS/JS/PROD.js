@@ -243,9 +243,9 @@ $('#registrarProduccion').click(function() {
  
 // REGISTRAR PRODUCCIÓN
 // ===========================
- // Función para registrar la producción
- $('#btnRegistrarProduccionModal').on('click', function () {
-    const cant_producida = $('#cant_producida').val() || 0;
+  // Función para registrar la producción
+  $('#btnRegistrarProduccionModal').on('click', function () {
+    const cant_producida = $('#totalPresentaciones').val() || 0; // Usar el total de presentaciones como cantidad producida
     const lotes_mp = JSON.stringify(getLotesMP());
     const lotes_ins = JSON.stringify(getLotesINS());
     const mano_obra = JSON.stringify(getDatosManoObra());

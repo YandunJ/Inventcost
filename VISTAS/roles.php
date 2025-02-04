@@ -19,9 +19,9 @@
 <body>
 <div class="wrapper">
     <!-- Navbar -->
-    <?php include 'MODULOS/ModuloNavbar.php'; ?>
+    <?php include 'MODULOS/BarraHorizontal.php'; ?>
     <!-- Sidebar -->
-    <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+    <?php include 'MODULOS/PanelAdmin.php'; ?>
     <!-- Content Wrapper -->
     <div class="content-wrapper">
         <section class="content">
@@ -93,6 +93,6 @@
 <script src="../Public/dist/js/adminlte.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script src="JS/roles.js"></script>
-<script src="JS/validaciones.js"></script>
+<script src="JS/DTesp.js"></script>
 </body>
 </html>

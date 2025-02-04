@@ -11,9 +11,9 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include 'MODULOS/ModuloNavbar.php'; ?>
+        <?php include 'MODULOS/BarraHorizontal.php'; ?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+        <?php include 'MODULOS/PanelAdmin.php'; ?>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->
@@ -113,7 +113,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="../Public/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
     <script src="JS/cost.js"></script>
-    <script src="JS/validaciones.js"></script>
+    <script src="JS/DTesp.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 </body>
 </html>

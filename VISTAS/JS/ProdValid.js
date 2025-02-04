@@ -1,4 +1,4 @@
-// Validaciones específicas para Materia Prima
+// DTesp específicas para Materia Prima
 function validarCantidadMateriaPrima(input) {
     let valor = parseFloat(input.val()) || 0;
     const max = parseFloat(input.attr('max')) || Infinity;
@@ -33,7 +33,7 @@ $('#LotesMP').on('click', '.incrementar, .decrementar', function () {
     input.val(nuevoValor.toFixed(2)).trigger('input');
 });
 
-// Validaciones específicas para Insumos
+// DTesp específicas para Insumos
 function validarCantidadInsumos(input) {
     let valor = parseFloat(input.val()) || 0;
     const max = parseFloat(input.attr('max')) || Infinity;
@@ -69,7 +69,7 @@ $('#LotesINS').on('click', '.incrementar, .decrementar', function () {
 });
 
 
-// Validaciones específicas para Mano de Obra
+// DTesp específicas para Mano de Obra
 function validarCantidadPersonas(input) {
     let valor = parseInt(input.val()) || 0;
     const max = parseInt(input.attr('max')) || Infinity;
@@ -121,7 +121,7 @@ $('#tablaManoObra').on('click', '.incrementar, .decrementar', function () {
 });
 
 
-// Validaciones específicas para Costos Indirectos
+// DTesp específicas para Costos Indirectos
 function validarCantidadCostos(input) {
     let valor = parseInt(input.val()) || 0;
     const max = parseInt(input.attr('max')) || Infinity;

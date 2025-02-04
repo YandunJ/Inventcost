@@ -13,8 +13,8 @@
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <?php include 'MODULOS/ModuloNavbar.php';?>
-        <?php include 'MODULOS/MDAdminSidebar.php';?>
+        <?php include 'MODULOS/BarraHorizontal.php';?>
+        <?php include 'MODULOS/PanelAdmin.php';?>
 
         <div class="content-wrapper">
             <section class="content">

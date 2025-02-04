@@ -18,6 +18,9 @@ switch ($action) {
     case 'obtenerPresentacionesPT':
         obtenerPresentacionesPT();
         break;
+        case 'obtenerProducciones': // Agregar este caso
+            obtenerProducciones();
+            break;
 
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
@@ -41,6 +44,22 @@ function registrarProduccion() {
     }
 }
 
+
+function obtenerProducciones() {
+    global $conn;
+    $sql = "CALL PROD_data_G()";
+    $result = $conn->query($sql);
+
+    $data = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+
+    echo json_encode(['status' => 'success', 'data' => $data]);
+    exit;
+}
 function obtenerPresentacionesPT() {
     $produccion = new Produccion();
     $data = $produccion->obtenerPresentacionesPT();

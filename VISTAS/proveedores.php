@@ -19,9 +19,9 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include 'MODULOS/ModuloNavbar.php'; ?>
+        <?php include 'MODULOS/BarraHorizontal.php'; ?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+        <?php include 'MODULOS/PanelAdmin.php'; ?>
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
@@ -109,7 +109,7 @@
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <!-- Custom JS -->
     <script src="JS/prov.js"></script> <!-- Ruta al archivo JS -->
-    <script src="JS/validaciones.js"></script>
+    <script src="JS/DTesp.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 
 </body>

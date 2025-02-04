@@ -10,9 +10,17 @@
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <?php include 'MODULOS/ModuloNavbar.php'; ?>
-        <?php include 'MODULOS/MDAdminSidebar.php'; ?>
-
+    <?php include 'MODULOS/BarraHorizontal.php';?>
+        <!-- Main Sidebar Container -->
+        <?php
+        if ($_SESSION['rol_id'] == 1) {
+            include 'MODULOS/PanelAdmin.php';
+        } elseif ($_SESSION['rol_id'] == 2) {
+            include 'MODULOS/PanelInventario.php';
+        } elseif ($_SESSION['rol_id'] == 3) {
+            include 'MODULOS/PanelProduccion.php';
+        }
+        ?>
         <div class="content-wrapper">
             <section class="content">
                 <div class="container-fluid">
@@ -109,7 +117,7 @@
     <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="JS/kardex.js"></script>
-    <script src="JS/validaciones.js"></script>
+    <script src="JS/DTesp.js"></script>
     <script src="JS/cerrarsesion.js"></script>
 </body>
 </html>

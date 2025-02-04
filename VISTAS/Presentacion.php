@@ -22,9 +22,9 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include 'MODULOS/ModuloNavbar.php'; ?>
+        <?php include 'MODULOS/BarraHorizontal.php'; ?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+        <?php include 'MODULOS/PanelAdmin.php'; ?>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->

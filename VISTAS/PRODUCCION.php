@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producción</title>
     <link rel="stylesheet" href="../FILES/global.css">
-
+    
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <?php include 'MODULOS/ModuloNavbar.php'; ?>
-    <?php include 'MODULOS/MDAdminSidebar.php'; ?>
+    <?php include 'MODULOS/BarraHorizontal.php'; ?>
+    <?php include 'MODULOS/PanelAdmin.php'; ?>
 
     <div class="content-wrapper">
         <section class="content">
             <div class="container-fluid">
-                <h1>Producción</h4>
-              <!-- Botón para abrir el modal -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#produccionModal">
+                <h1>Producción</h1>
+                <!-- Botón para abrir el modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#produccionModal">
                     Agregar Producción
                 </button>
                 <!-- Modal para el formulario de producción -->
@@ -32,9 +32,6 @@
                             </div>
                             <div class="modal-body">
                                 <!-- Aquí se moverá el contenido del formulario -->
-
-                                
-                      <!-- Contenido del formulario de producción -->
                                 <div class="modal-body">
                                     <div class="container-fluid">
                                         <!-- Menú de Pestañas -->
@@ -59,12 +56,6 @@
                                         <div class="tab-content" id="myTabContent">
                                             <!-- Pestaña Materia Prima -->
                                             <div class="tab-pane fade show active" id="materiaPrima" role="tabpanel">
-                                                <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                                    <strong>Estimado usuario:</strong> Seleccione el lote que va a consumir e ingrese la cantidad.
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div> -->
                                                 <table class="table table-bordered table-hover table-compact" id="LotesMP">
                                                     <thead>
                                                         <tr>
@@ -83,12 +74,6 @@
                                             </div>
                                             <!-- Pestaña Insumos -->
                                             <div class="tab-pane fade" id="insumos" role="tabpanel">
-                                                <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                                    <strong>Estimado usuario:</strong> Seleccione los insumos necesarios e ingrese la cantidad.
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div> -->
                                                 <table class="table table-bordered table-hover table-compact" id="LotesINS">
                                                     <thead>
                                                         <tr>
@@ -107,12 +92,6 @@
                                             </div>
                                             <!-- Pestaña Mano de Obra -->
                                             <div class="tab-pane fade" id="manoObra" role="tabpanel">
-                                                <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                                    <strong>Estimado usuario:</strong> Ingrese los detalles de la mano de obra requerida.
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div> -->
                                                 <table class="table table-bordered table-hover table-compact" id="tablaManoObra">
                                                     <thead>
                                                         <tr>
@@ -136,16 +115,10 @@
                                             </div>
                                             <!-- Pestaña Costos Indirectos -->
                                             <div class="tab-pane fade" id="costosAsociados" role="tabpanel">
-                                                <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                                    <strong>Estimado usuario:</strong> Ingrese los costos indirectos asociados a la producción.
-                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div> -->
                                                 <table class="table table-bordered table-hover table-compact" id="tablaCostosIndirectos">
                                                     <thead>
                                                         <tr>
-                                                        <th>ID</th>
+                                                            <th>ID</th>
                                                             <th>Descripción</th>
                                                             <th>Unidad de Medida</th>
                                                             <th>Cantidad</th>
@@ -162,99 +135,94 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-                                                <!-- Pestaña Producto Terminado -->
-                                                <div class="tab-pane fade" id="productoTerminado" role="tabpanel">
-                                                    <!-- <div class="alert alert-info alert-dismissible fade show" role="alert">
-                                                        <strong>Estimado usuario:</strong> Ingrese los detalles del producto terminado.
-                                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div> -->
-                                                    <form id="formProductoTerminado">
+                                            <!-- Pestaña Producto Terminado -->
+                                            <div class="tab-pane fade" id="productoTerminado" role="tabpanel">
+                                                <form id="formProductoTerminado">
+                                                    <div class="form-group row">
+                                                        <label for="loteProductoTerminado" class="col-sm-2 col-form-label">Lote</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div id="presentacionesContainer">
                                                         <div class="form-group row">
-                                                            <label for="loteProductoTerminado" class="col-sm-2 col-form-label">Lote</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
+                                                            <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
+                                                            <div class="col-sm-4">
+                                                                <select class="form-control" id="presentacionProducto">
+                                                                    <option value="">Seleccione una presentación</option>
+                                                                </select>
+                                                            </div>
+                                                            <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
+                                                            <div class="col-sm-4">
+                                                                <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
                                                             </div>
                                                         </div>
-                                                        <div id="presentacionesContainer">
-                                                            <div class="form-group row">
-                                                                <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
-                                                                <div class="col-sm-4">
-                                                                    <select class="form-control" id="presentacionProducto">
-                                                                        <option value="">Seleccione una presentación</option>
-                                                                    </select>
+                                                        <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
+                                                    </div>
+                                                    <div class="mt-4">
+                                                        <table class="table table-bordered" id="tablaPresentaciones">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Presentación</th>
+                                                                    <th>Cantidad</th>
+                                                                    <th>Costo Unitario</th>
+                                                                    <th>Costo Total</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody></tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="form-group row mt-3">
+                                                        <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="number" class="form-control" id="totalPresentaciones" readonly>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- Sección de Subtotales -->
+                                            <div class="row mt-4">
+                                                <div class="col-md-12">
+                                                    <div class="card subtotales-container">
+                                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                                            <h5 class="card-title mb-0">Subtotales de Producción</h5>
+                                                            <button type="button" class="btn btn-light btn-sm ml-auto" id="toggleSubtotales">
+                                                                <i class="fas fa-chevron-down"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="card-body" id="subtotalesContent">
+                                                            <div class="row">
+                                                                <div class="col-md-3">
+                                                                    <label for="subtotalMP">Subtotal Materia Prima:</label>
+                                                                    <input type="text" id="subtotalMP" class="form-control text-right font-weight-bold" value="0.00" readonly>
                                                                 </div>
-                                                                <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
-                                                                <div class="col-sm-4">
-                                                                    <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
+                                                                <div class="col-md-3">
+                                                                    <label for="subtotalINS">Subtotal Insumos:</label>
+                                                                    <input type="text" id="subtotalINS" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="subtotalMO">Subtotal Mano de Obra:</label>
+                                                                    <input type="text" id="subtotalMO" class="form-control text-right font-weight-bold" value="0.00" readonly>
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label for="subtotalCA">Subtotal Costos Indirectos:</label>
+                                                                    <input type="text" id="subtotalCA" class="form-control text-right font-weight-bold" value="0.00" readonly>
                                                                 </div>
                                                             </div>
-                                                            <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
                                                         </div>
-                                                        <div class="mt-4">
-                                                            <table class="table table-bordered" id="tablaPresentaciones">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Presentación</th>
-                                                                        <th>Cantidad</th>
-                                                                        <th>Costo Unitario</th>
-                                                                        <th>Costo Total</th>
-                                                                        <th>Acciones</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody></tbody>
-                                                            </table>
-                                                        </div>
-                                                        <div class="form-group row mt-3">
-                                                            <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
-                                                            <div class="col-sm-10">
-                                                                <input type="number" class="form-control" id="totalPresentaciones" readonly>
+                                                        <div class="card-footer">
+                                                            <div class="row">
+                                                                <div class="col-md-3 offset-md-9">
+                                                                    <label for="totalProduccion">COSTO TOTAL DE PRODUCCIÓN:</label>
+                                                                    <input type="text" id="totalProduccion" class="form-control text-right font-weight-bold text-success" value="0.00" readonly>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </form>
+                                                    </div>
                                                 </div>
-<!-- Agregar un botón para contraer/expandir la sección de subtotales -->
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card subtotales-container">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="card-title mb-0">Subtotales de Producción</h5>
-                <button type="button" class="btn btn-light btn-sm ml-auto" id="toggleSubtotales">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            <div class="card-body" id="subtotalesContent">
-                <div class="row">
-                    <div class="col-md-3">
-                        <label for="subtotalMP">Subtotal Materia Prima:</label>
-                        <input type="text" id="subtotalMP" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="subtotalINS">Subtotal Insumos:</label>
-                        <input type="text" id="subtotalINS" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="subtotalMO">Subtotal Mano de Obra:</label>
-                        <input type="text" id="subtotalMO" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="subtotalCA">Subtotal Costos Indirectos:</label>
-                        <input type="text" id="subtotalCA" class="form-control text-right font-weight-bold" value="0.00" readonly>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col-md-3 offset-md-9">
-                        <label for="totalProduccion">COSTO TOTAL DE PRODUCCIÓN:</label>
-                        <input type="text" id="totalProduccion" class="form-control text-right font-weight-bold text-success" value="0.00" readonly>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -266,128 +234,86 @@
                     </div>
                 </div>
 
+                <!-- Tabla para mostrar las producciones registradas -->
+                
+                    <table id="tablaProducciones" class="table table-bordered table-hover table-compact">
+                        <thead>
+                            <tr>
+                                <th>Fecha de Producción</th>
+                                <th>Cantidad Producida (gramos)</th>
+                                <th>Subt. Materia Prima</th>
+                                <th>Subt. Insumos</th>
+                                <th>Subt. Mano de Obra</th>
+                                <th>Subt. Costos Indirectos</th>
+                                <th>TOTAL</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                
+            </div>
+        </section>
+    </div>
+</div>
 
-<!-- MODAL DETALLES -->
-<div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
+<!-- Modal para ver los detalles de una producción -->
+<div class="modal fade modal-entradas" id="verProduccionModal" tabindex="-1" role="dialog" aria-labelledby="verProduccionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="detalleModalLabel">Detalles del Lote</h5>
+                <h3>Detalles de Producción</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Columna 1 -->
-                        <div class="col-md-4">
-                            <h6 class="section-title">Información General</h6>
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Fecha de Ingreso</strong></td>
-                                        <td id="detalleFecha"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Hora de Ingreso</strong></td>
-                                        <td id="detalleHora"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Número de Lote</strong></td>
-                                        <td id="detalleLote"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Proveedor</strong></td>
-                                        <td id="detalleProveedor"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Columna 2 -->
-                        <div class="col-md-4">
-                            <h6 class="section-title">Detalles de Artículo</h6>
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Artículo</strong></td>
-                                        <td id="detalleArticulo"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Cantidad Ingresada</strong></td>
-                                        <td id="detalleCantidadIngresada"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Cantidad Disponible</strong></td>
-                                        <td id="detalleCantidadRestante"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Unidad de Medida</strong></td>
-                                        <td id="detalleUnidadMedida"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Presentación</strong></td>
-                                        <td id="detallePresentacion"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Columna 3 -->
-                        <div class="col-md-4">
-                            <h6 class="section-title">Precios</h6>
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Costo U.</strong></td>
-                                        <td id="detallePrecioUnitario"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Costo Total</strong></td>
-                                        <td id="detallePrecioTotal"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <h6 class="section-title">Información Adicional</h6>
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Estado</strong></td>
-                                        <td id="detalleEstado"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Brix</strong></td>
-                                        <td id="detalleBrix"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Peso Unitario</strong></td>
-                                        <td id="detallePesoUnitario"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Bultos o Canastas</strong></td>
-                                        <td id="detalleBultos"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <form id="formVerProduccion">
+                    <!-- Campos para mostrar los detalles de la producción -->
+                    <div class="form-group row">
+                        <label for="verFecha" class="col-sm-2 col-form-label">Fecha</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verFecha" readonly>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <h6 class="section-title">Observaciones y Aprobación</h6>
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <td><strong>Observación</strong></td>
-                                        <td id="detalleObservacion"></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Aprobación del Lote</strong></td>
-                                        <td id="detalleAprobacion"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="form-group row">
+                        <label for="verCantidadProducida" class="col-sm-2 col-form-label">Cantidad Producida</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verCantidadProducida" readonly>
                         </div>
                     </div>
-                </div>
+                    <div class="form-group row">
+                        <label for="verSubtotalMP" class="col-sm-2 col-form-label">Subtotal Materia Prima</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verSubtotalMP" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="verSubtotalINS" class="col-sm-2 col-form-label">Subtotal Insumos</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verSubtotalINS" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="verSubtotalMO" class="col-sm-2 col-form-label">Subtotal Mano de Obra</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verSubtotalMO" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="verSubtotalCI" class="col-sm-2 col-form-label">Subtotal Costos Indirectos</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verSubtotalCI" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="verTotal" class="col-sm-2 col-form-label">Total</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="verTotal" readonly>
+                        </div>
+                    </div>
+                    <!-- Aquí puedes agregar más campos según sea necesario -->
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -395,6 +321,7 @@
         </div>
     </div>
 </div>
+
 <!-- Scripts -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
 <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -404,8 +331,9 @@
 <script src="JS/PROD.js"></script>
 <script src="JS/ProdPT.js"></script>
 <script src="JS/ProdValid.js"></script>
-<script src="JS/ProdCostos.js"></script>
+<script src="JS/ProdCalculos.js"></script>
+<script src="JS/ProdTable.js"></script>
 <!-- <script src="JS/ProdMano.js"></script> -->
-<script src="JS/validaciones.js"></script>
+<script src="JS/DTesp.js"></script>
 </body>
 </html>

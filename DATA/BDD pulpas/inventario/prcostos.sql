@@ -27,7 +27,7 @@ CREATE PROCEDURE PROD_sp(
 )
 BEGIN
     DECLARE pro_id INT;
-    DECLARE i INT DEFAULT 0;
+    DECLARE i INT DEFAULT 0;		
     DECLARE inv_id INT;
     DECLARE cant DECIMAL(10, 2);
     DECLARE horas_persona DECIMAL(10, 2);
@@ -346,8 +346,8 @@ DELIMITER ;
 
 CALL PR_consumo(
     50.00, -- Cantidad producida
-    '[{"id_inv": 20, "cantidad": 1.00}]', -- Lotes de materia prima
-    '[{"id_inv": 21, "cantidad": 1.00}]', -- Lotes de insumos
+    '[{"id_inv": 5, "cantidad": 1.00}]', -- Lotes de materia prima
+    '[{"id_inv": 6, "cantidad": 1.00}]', -- Lotes de insumos
     '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 8, "mo_precio_hora": 50}]', -- Mano de obra
     '[{"cat_id": 2, "cst_cant": 5, "cst_presentacion": "LITROS", "cst_precio_ht": 30}]' -- Costos indirectos
 );
