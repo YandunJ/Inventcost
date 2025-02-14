@@ -22,10 +22,17 @@
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
         <!-- Navbar -->
-        <?php include 'MODULOS/BarraHorizontal.php'; ?>
+        <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/PanelAdmin.php'; ?>
-        <!-- Content Wrapper. Contains page content -->
+        <?php
+        if ($_SESSION['rol_id'] == 1) {
+            include 'MODULOS/PanelAdmin.php';
+        } elseif ($_SESSION['rol_id'] == 2) {
+            include 'MODULOS/PanelInventario.php';
+        } elseif ($_SESSION['rol_id'] == 3) {
+            include 'MODULOS/PanelProduccion.php';
+        }
+        ?>
         <div class="content-wrapper">
             <!-- Main content -->
             <section class="content">

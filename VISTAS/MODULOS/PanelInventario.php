@@ -68,12 +68,7 @@
                         <p>Kardex</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="Insumos.php" class="nav-link">
-                        <i class="nav-icon fas fa-cogs"></i>
-                        <p>Insumos</p>
-                    </a>
-                </li>
+             
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

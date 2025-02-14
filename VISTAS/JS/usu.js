@@ -205,31 +205,42 @@ $('#modalRegistroUsuario').on('show.bs.modal', function(event) {
 
 
 
-    // function validarCedulaEcuatoriana(cedula) {
-    //     if (cedula.length !== 10) return false;
-    //     const digitoRegion = cedula.substring(0, 2);
-    //     if (digitoRegion < 1 || digitoRegion > 24) return false;
+    function validarCedulaEcuatoriana(cedula) {
+        if (cedula.length !== 10) return false;
+        const digitoRegion = cedula.substring(0, 2);
+        if (digitoRegion < 1 || digitoRegion > 24) return false;
 
-    //     const coef = [2, 1, 2, 1, 2, 1, 2, 1, 2];
-    //     const verificador = parseInt(cedula.charAt(9), 10);
-    //     const suma = cedula.substring(0, 9).split('').reduce((acc, digit, index) => {
-    //         let valor = parseInt(digit, 10) * coef[index];
-    //         if (valor > 9) valor -= 9;
-    //         return acc + valor;
-    //     }, 0);
+        const coef = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        const verificador = parseInt(cedula.charAt(9), 10);
+        const suma = cedula.substring(0, 9).split('').reduce((acc, digit, index) => {
+            let valor = parseInt(digit, 10) * coef[index];
+            if (valor > 9) valor -= 9;
+            return acc + valor;
+        }, 0);
 
-    //     const resultado = (suma % 10 === 0) ? 0 : 10 - (suma % 10);
-    //     return resultado === verificador;
-    // }
+        const resultado = (suma % 10 === 0) ? 0 : 10 - (suma % 10);
+        return resultado === verificador;
+    }
 
-    // $('#cedula').on('blur', function() {
-    //     const cedula = $(this).val();
-    //     if (!validarCedulaEcuatoriana(cedula)) {
-    //         alert('Cédula inválida');
-    //         $(this).val('');
-    //     }
-    // });
+    $('#cedula').on('blur', function() {
+        const cedula = $(this).val();
+        if (!validarCedulaEcuatoriana(cedula)) {
+            alert('Cédula inválida');
+            $(this).val('');
+        }
+    });
 
+     // Validación de correo electrónico
+     $('#correo').on('blur', function() {
+        const correo = $(this).val();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(correo)) {
+            alert('Correo inválido');
+            $(this).val('');
+        }
+    });
+
+  
 // Evento para el botón de eliminar
 // $('#tablaUsuarios').on('click', '.btn-eliminar', function() {
 //     var usu_id = $(this).data('id');

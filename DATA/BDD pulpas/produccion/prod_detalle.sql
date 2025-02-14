@@ -10,6 +10,8 @@ CREATE TABLE prod_detalle (
     FOREIGN KEY (id_inv) REFERENCES inventario(id_inv) ON DELETE CASCADE
 );
 
+DROP TRIGGER IF EXISTS k2;
+
 -- pdet_cantidad_producida DECIMAL(10,2) DEFAULT 0,
 -- pdet_cantidad_desperdiciada DECIMAL(10,2) DEFAULT 0,
 -- Producción con 50 kg de manzanas usadas, 5 fundas de pulpa producidas, y 2 kg de desperdicio
@@ -355,4 +357,50 @@ DELIMITER ;
 CALL PROD_data_G();
 
 
+DELIMITER //
 
+CREATE PROCEDURE PROD_detalle(IN pro_id INT)
+BEGIN
+    -- Seleccionar los detalles de la producción
+    SELECT 
+        p.pro_fecha,
+        p.pro_cant_producida,
+        p.pro_estado,
+        p.pro_subtotal_mtpm,
+        p.pro_subtotal_ins,
+        p.pro_subtotal_mo,
+        p.pro_subtotal_ci,
+        p.pro_total
+    FROM 
+        produccion p
+    WHERE 
+        p.pro_id = pro_id;
+
+    -- Seleccionar los lotes consumidos en la producción
+    SELECT 
+        pd.id_inv,
+        pd.pdet_cantidad_usada
+    FROM 
+        prod_detalle pd
+    WHERE 
+        pd.pro_id = pro_id;
+
+    -- Seleccionar los costos asociados a la producción
+    SELECT 
+        c.cst_id,
+        c.cat_id,
+        c.cst_cant,
+        c.cst_presentacion,
+        c.cst_horas_persona,
+        c.cst_precio_ht,
+        c.cst_total_horas_actividad,
+        c.cst_costo_total
+    FROM 
+        prcostos c
+    WHERE 
+        c.pro_id = pro_id;
+END //
+
+DELIMITER ;
+
+	call fpulpas.PROD_detalle(8);

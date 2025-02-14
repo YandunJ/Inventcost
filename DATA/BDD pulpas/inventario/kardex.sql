@@ -1,4 +1,4 @@
-SELECT * FROM fpulpas.kardex;
+
 
 CREATE TABLE kardex (
     id_kardex INT AUTO_INCREMENT PRIMARY KEY, -- ID del registro en kardex
@@ -11,6 +11,96 @@ CREATE TABLE kardex (
     stock_actual DECIMAL(10, 2),              -- Stock disponible después del movimiento
     tipo_movimiento ENUM('entrada', 'salida', 'ajuste') NOT NULL -- Tipo de movimiento
 ) ENGINE=InnoDB;
+
+
+CREATE TABLE kardex (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE,
+    cat_id INT,
+    cantidad DECIMAL(10, 2),
+    tipo_movimiento ENUM('Entrada', 'Salida'),
+    saldo DECIMAL(10, 2),
+    FOREIGN KEY (cat_id) REFERENCES catalogo(cat_id)
+);
+
+DELIMITER $$
+
+CREATE TRIGGER k1
+AFTER INSERT ON inventario
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+
+    -- Obtener el saldo anterior
+    SELECT saldo INTO saldo_anterior
+    FROM kardex
+    WHERE cat_id = NEW.cat_id
+    ORDER BY fecha DESC
+    LIMIT 1;
+
+    -- Insertar registro en kardex
+    INSERT INTO kardex (fecha, cat_id, cantidad, tipo_movimiento, saldo)
+    VALUES (
+        NEW.fecha_hora,
+        NEW.cat_id,
+        NEW.cant_ingresada,
+        'Entrada',
+        COALESCE(saldo_anterior, 0) + NEW.cant_ingresada
+    );
+END $$
+
+DELIMITER ;
+
+
+DELIMITER $$
+
+CREATE TRIGGER k2
+AFTER INSERT ON prod_detalle
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+
+    -- Obtener el saldo anterior
+    SELECT saldo INTO saldo_anterior
+    FROM kardex
+    WHERE cat_id = (SELECT cat_id FROM inventario WHERE id_inv = NEW.id_inv)
+    ORDER BY fecha DESC
+    LIMIT 1;
+
+    -- Insertar registro en kardex
+    INSERT INTO kardex (fecha, cat_id, cantidad, tipo_movimiento, saldo)
+    VALUES (
+        (SELECT fecha_hora FROM inventario WHERE id_inv = NEW.id_inv),
+        (SELECT cat_id FROM inventario WHERE id_inv = NEW.id_inv),
+        NEW.pdet_cantidad_usada,
+        'Salida',
+        COALESCE(saldo_anterior, 0) - NEW.pdet_cantidad_usada
+    );
+END $$
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 DELIMITER $$
@@ -58,7 +148,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-DROP TRIGGER IF EXISTS TR_entradas;
+DROP TRIGGER IF EXISTS after_insert_inventario;
 
 DELIMITER $$
 CREATE TRIGGER TR_salidas
@@ -197,8 +287,6 @@ END //
 DELIMITER ;
 
 CALL kardex_det('2025-01-01', '2025-01-27', 1, 1);
-
-
 
 
 CALL kardex_G(1, 2025, 1);

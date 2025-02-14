@@ -33,5 +33,29 @@ class Produccion {
         }
         return $data;
     }
+
+    public function obtenerDetallesProduccion($pro_id) {
+        // Obtener costos asociados a la producción
+        $sqlCostosAsociados = "SELECT 
+                                c.cst_id,
+                                c.cat_id,
+                                c.cst_cant,
+                                c.cst_presentacion,
+                                c.cst_horas_persona,
+                                c.cst_precio_ht,
+                                c.cst_total_horas_actividad,
+                                c.cst_costo_total
+                               FROM prcostos c
+                               WHERE c.pro_id = ?";
+        $stmtCostosAsociados = $this->conn->prepare($sqlCostosAsociados);
+        $stmtCostosAsociados->bind_param("i", $pro_id);
+        $stmtCostosAsociados->execute();
+        $resultCostosAsociados = $stmtCostosAsociados->get_result();
+        $costosAsociados = $resultCostosAsociados->fetch_all(MYSQLI_ASSOC);
+
+        return [
+            'costosAsociados' => $costosAsociados
+        ];
+    }
 }
 ?>

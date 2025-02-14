@@ -13,7 +13,15 @@
          <!-- Navbar -->
          <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/PanelAdmin.php';?>
+        <?php
+        if ($_SESSION['rol_id'] == 1) {
+            include 'MODULOS/PanelAdmin.php';
+        } elseif ($_SESSION['rol_id'] == 2) {
+            include 'MODULOS/PanelInventario.php';
+        } elseif ($_SESSION['rol_id'] == 3) {
+            include 'MODULOS/PanelProduccion.php';
+        }
+        ?>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->

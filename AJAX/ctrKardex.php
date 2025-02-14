@@ -5,75 +5,25 @@ ini_set('display_errors', 1);
 require_once "../CONFIG/conexion.php";
 require_once "../MODELO/modKardex.php";
 
-$conn = (new Cls_DataConnection())->FN_getConnect();
+$kardex = new Kardex();
 
-$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
+$action = $_POST['action'] ?? '';
 
 switch ($action) {
-    case 'cargarKardex':
-        cargarKardex();
-        break;
-    case 'cargarDetalleKardex':
-        cargarDetalleKardex();
-        break;
-    case 'obtenerCategorias':
-        obtenerCategorias();
+    case 'getKardex':
+        getKardex($kardex);
         break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
 
-function cargarKardex() {
-    global $conn;
-    $kardexModel = new KardexModel($conn);
-    try {
-        $fecha = $_POST['fecha'] ?? null;
-        $categoria = $_POST['categoria'] ?? null;
+function getKardex($kardex) {
+    $categoria_id = $_POST['categoria_id'];
+    $fecha_inicio = $_POST['fecha_inicio'];
+    $fecha_fin = $_POST['fecha_fin'];
 
-        if (!$fecha || !$categoria) {
-            throw new Exception("Faltan parámetros obligatorios.");
-        }
-
-        list($mes, $anio) = explode('/', $fecha);
-
-        $datos = $kardexModel->obtenerKardex((int)$mes, (int)$anio, (int)$categoria);
-        echo json_encode(['status' => 'success', 'data' => $datos]);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
-
-function cargarDetalleKardex() {
-    global $conn;
-    $kardexModel = new KardexModel($conn);
-
-    try {
-        $fechaInicio = $_POST['fechaInicio'] ?? null;
-        $fechaFin = $_POST['fechaFin'] ?? null;
-        $categoria = $_POST['categoria'] ?? null;
-        $articulo = $_POST['articulo'] ?? null;
-
-        if (!$fechaInicio || !$fechaFin || !$categoria || !$articulo) {
-            throw new Exception("Faltan parámetros obligatorios.");
-        }
-
-        $datos = $kardexModel->obtenerDetalleKardex($fechaInicio, $fechaFin, (int)$categoria, (int)$articulo);
-        echo json_encode(['status' => 'success', 'data' => $datos]);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
-
-function obtenerCategorias() {
-    global $conn;
-    $kardexModel = new KardexModel($conn);
-
-    try {
-        $categorias = $kardexModel->obtenerCategorias();
-        echo json_encode(['status' => 'success', 'data' => $categorias]);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
+    $data = $kardex->obtenerKardex($categoria_id, $fecha_inicio, $fecha_fin);
+    echo json_encode(['status' => 'success', 'data' => $data]);
 }
 ?>

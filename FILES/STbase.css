@@ -1,3 +1,17 @@
+.help-message {
+    position: absolute;
+    top: -60px; /* Posición encima del título */
+    right: 10%;
+    background-color: rgba(0, 123, 255, 0.9);
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 1000;
+    display: none;
+    font-size: 0.9rem;
+}
+
+
 /* Tipografía y colores globales */
 body {
     font-family: 'Arial', sans-serif;

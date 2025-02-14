@@ -5,24 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrar Proveedores</title>
-    <!-- AdminLTE CSS -->
-    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <!-- <link rel="stylesheet" href="../FILES/centrForm.css"> -->
-    <!-- <link rel="stylesheet" href="../FILES/InvMPModal.css"> -->
-    <link rel="stylesheet" href="../FILES/global-style.css">
-    <!-- REVISAR LOS ESTILOS QUE SOLO QUEDE LOS NECESARIOS Y EN CASO DE SER UTIL CENTRALIZAR UN ESTILO PARA DEJAR SOLO UNO PARA TODOS -->
-    <link rel="stylesheet" href="../FILES/Table-Compact.css">
+    <link rel="stylesheet" href="../FILES/global.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-        <!-- Navbar -->
-        <?php include 'MODULOS/BarraHorizontal.php'; ?>
+    <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
-        <?php include 'MODULOS/PanelAdmin.php'; ?>
-
+        <?php
+        if ($_SESSION['rol_id'] == 1) {
+            include 'MODULOS/PanelAdmin.php';
+        } elseif ($_SESSION['rol_id'] == 2) {
+            include 'MODULOS/PanelInventario.php';
+        } elseif ($_SESSION['rol_id'] == 3) {
+            include 'MODULOS/PanelProduccion.php';
+        }
+        ?>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Main content -->

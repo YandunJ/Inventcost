@@ -1,4 +1,11 @@
 $(document).ready(function () {
+
+
+    $(document).ready(function(){
+        $('#helpButton').click(function(){
+            $('#customHelp').fadeToggle();
+        });
+    });
     // Cargar categorías al iniciar
     $.ajax({
         url: "../AJAX/ctrInvCatalogo.php",
@@ -87,7 +94,7 @@ $(document).ready(function () {
             { "data": "presentacion" },         // Alias para unidad_medida definido en el SP
             { "data": "cat_estado" },         // Asegúrate de que "cat_estado" existe en el SP
             { "data": "cat_fecha_creacion" }, // Asegúrate de que "cat_fecha_creacion" existe en el SP
-            { "data": "cat_stock" },          // Asegúrate de que "cat_stock" existe en el SP
+            
             {
                 "data": null,
                 "render": function(data, type, row) {

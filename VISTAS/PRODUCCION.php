@@ -9,8 +9,17 @@
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-    <?php include 'MODULOS/BarraHorizontal.php'; ?>
-    <?php include 'MODULOS/PanelAdmin.php'; ?>
+<?php include 'MODULOS/BarraHorizontal.php';?>
+        <!-- Main Sidebar Container -->
+        <?php
+        if ($_SESSION['rol_id'] == 1) {
+            include 'MODULOS/PanelAdmin.php';
+        } elseif ($_SESSION['rol_id'] == 2) {
+            include 'MODULOS/PanelInventario.php';
+        } elseif ($_SESSION['rol_id'] == 3) {
+            include 'MODULOS/PanelProduccion.php';
+        }
+        ?>
 
     <div class="content-wrapper">
         <section class="content">
@@ -239,6 +248,7 @@
                     <table id="tablaProducciones" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
+                            <th>ID</th>
                                 <th>Fecha de Producción</th>
                                 <th>Cantidad Producida (gramos)</th>
                                 <th>Subt. Materia Prima</th>
@@ -256,7 +266,6 @@
         </section>
     </div>
 </div>
-
 <!-- Modal para ver los detalles de una producción -->
 <div class="modal fade modal-entradas" id="verProduccionModal" tabindex="-1" role="dialog" aria-labelledby="verProduccionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -268,52 +277,47 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formVerProduccion">
-                    <!-- Campos para mostrar los detalles de la producción -->
-                    <div class="form-group row">
-                        <label for="verFecha" class="col-sm-2 col-form-label">Fecha</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verFecha" readonly>
-                        </div>
+                <!-- Menú de Pestañas -->
+                <ul class="nav nav-tabs mb-3" id="detalleProduccionTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="costosAsociados-tab" data-toggle="tab" href="#costosAsociados" role="tab">Costos Asociados</a>
+                    </li>
+                </ul>
+                <!-- Contenido de las Pestañas -->
+                <div class="tab-content" id="detalleProduccionTabContent">
+                    <!-- Pestaña Costos Asociados -->
+                    <div class="tab-pane fade show active" id="costosAsociados" role="tabpanel">
+                        <table class="table table-bordered table-hover table-compact" id="tablaCostosAsociados">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Descripción</th>
+                                    <th>Unidad de Medida</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario ($)</th>
+                                    <th>Costo Total ($)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Datos ficticios para ilustrar -->
+                                <tr>
+                                    <td>12</td>
+                                    <td>UNIDADES</td>
+                                    <td>1.00</td>
+                                    <td>2.00</td>
+                                    <td>2.00</td>
+                                </tr>
+                                <tr>
+                                    <td>13</td>
+                                    <td>UNIDADES</td>
+                                    <td>2.00</td>
+                                    <td>1.00</td>
+                                    <td>2.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="form-group row">
-                        <label for="verCantidadProducida" class="col-sm-2 col-form-label">Cantidad Producida</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verCantidadProducida" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="verSubtotalMP" class="col-sm-2 col-form-label">Subtotal Materia Prima</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verSubtotalMP" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="verSubtotalINS" class="col-sm-2 col-form-label">Subtotal Insumos</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verSubtotalINS" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="verSubtotalMO" class="col-sm-2 col-form-label">Subtotal Mano de Obra</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verSubtotalMO" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="verSubtotalCI" class="col-sm-2 col-form-label">Subtotal Costos Indirectos</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verSubtotalCI" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="verTotal" class="col-sm-2 col-form-label">Total</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="verTotal" readonly>
-                        </div>
-                    </div>
-                    <!-- Aquí puedes agregar más campos según sea necesario -->
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -321,7 +325,6 @@
         </div>
     </div>
 </div>
-
 <!-- Scripts -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
 <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>

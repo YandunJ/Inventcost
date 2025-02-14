@@ -26,12 +26,7 @@
                         <p>Inicio</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="Catalogo.php" class="nav-link">
-                        <i class="nav-icon fas fa-edit"></i>
-                        <p>Catálogo</p>
-                    </a>
-                </li>
+           
                 <li class="nav-item">
                     <a href="Presentacion.php" class="nav-link">
                         <i class="nav-icon fas fa-box"></i>

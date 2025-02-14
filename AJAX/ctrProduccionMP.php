@@ -18,9 +18,14 @@ switch ($action) {
     case 'obtenerPresentacionesPT':
         obtenerPresentacionesPT();
         break;
-        case 'obtenerProducciones': // Agregar este caso
-            obtenerProducciones();
-            break;
+
+    case 'obtenerProducciones':
+        obtenerProducciones();
+        break;
+
+    case 'obtenerDetallesProduccion': // Nuevo caso para obtener detalles de producción
+        obtenerDetallesProduccion();
+        break;
 
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
@@ -44,11 +49,15 @@ function registrarProduccion() {
     }
 }
 
-
 function obtenerProducciones() {
     global $conn;
     $sql = "CALL PROD_data_G()";
     $result = $conn->query($sql);
+
+    if (!$result) {
+        echo json_encode(['status' => 'error', 'message' => $conn->error]);
+        return;
+    }
 
     $data = [];
     if ($result->num_rows > 0) {
@@ -60,13 +69,25 @@ function obtenerProducciones() {
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }
-function obtenerPresentacionesPT() {
+
+function obtenerDetallesProduccion() {
     $produccion = new Produccion();
-    $data = $produccion->obtenerPresentacionesPT();
-    if (!empty($data)) {
-        echo json_encode(['status' => 'success', 'data' => $data]);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'No se encontraron presentaciones']);
+    $pro_id = isset($_POST['pro_id']) ? $_POST['pro_id'] : null;
+
+    if (!$pro_id) {
+        echo json_encode(['status' => 'error', 'message' => 'ID de producción no proporcionado']);
+        return;
+    }
+
+    try {
+        $result = $produccion->obtenerDetallesProduccion($pro_id);
+        if ($result) {
+            echo json_encode(['status' => 'success', 'data' => $result]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'No se encontraron datos para la producción especificada']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 ?>

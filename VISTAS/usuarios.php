@@ -69,7 +69,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-4">
                                     <label for="cedula">Cédula</label>
-                                    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ej. 0947368237" maxlength="13" required>
+                                    <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ej. 1050478237" maxlength="13" required>
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="nombre">Nombre</label>

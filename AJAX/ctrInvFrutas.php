@@ -111,7 +111,8 @@ function guardarMateriaPrima() {
         $observacion = $_POST['observacion'] ?? null;
 
         // Verifica que todos los campos obligatorios estén presentes
-        if (is_null($cat_id) || is_null($proveedor_id) || is_null($numero_lote) || is_null($cantidad_ingresada) || is_null($precio_unitario) || is_null($precio_total) || is_null($brix)) {
+        if (is_null($cat_id) || is_null($proveedor_id) || is_null($numero_lote) || is_null($cantidad_ingresada) 
+        || is_null($precio_unitario) || is_null($precio_total) || is_null($brix)) {
             throw new Exception("Todos los campos son obligatorios.");
         }
 

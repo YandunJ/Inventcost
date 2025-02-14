@@ -13,6 +13,7 @@ $(document).ready(function () {
             }
         },
         columns: [
+            { data: 'pro_id' }, // Asegúrate de que el pro_id se muestre en el DataTable
             { data: 'pro_fecha' },
             { data: 'pro_cant_producida' },
             { data: 'pro_subtotal_mtpm' },
@@ -48,27 +49,51 @@ $(document).ready(function () {
     $('#tablaProducciones').on('click', '.ver-btn', function () {
         const pro_id = $(this).data('id');
 
-        // Datos ficticios para probar el modal
-        const datosFicticios = {
-            pro_fecha: '2025-01-31 15:21:59',
-            pro_cant_producida: '1000.00',
-            pro_subtotal_mtpm: '500.00',
-            pro_subtotal_ins: '200.00',
-            pro_subtotal_mo: '300.00',
-            pro_subtotal_ci: '100.00',
-            pro_total: '1100.00'
-        };
+        // Llamar al procedimiento almacenado para obtener los detalles de la producción
+        $.ajax({
+            url: '../AJAX/ctrProduccionMP.php',
+            type: 'POST',
+            data: { action: 'obtenerDetallesProduccion', pro_id: pro_id },
+            success: function(response) {
+                console.log("Response: ", response); // Imprimir la respuesta en la consola
+                try {
+                    const datos = JSON.parse(response);
 
-        // Cargar los datos ficticios en el modal
-        $('#verFecha').val(datosFicticios.pro_fecha);
-        $('#verCantidadProducida').val(datosFicticios.pro_cant_producida);
-        $('#verSubtotalMP').val(datosFicticios.pro_subtotal_mtpm);
-        $('#verSubtotalINS').val(datosFicticios.pro_subtotal_ins);
-        $('#verSubtotalMO').val(datosFicticios.pro_subtotal_mo);
-        $('#verSubtotalCI').val(datosFicticios.pro_subtotal_ci);
-        $('#verTotal').val(datosFicticios.pro_total);
+                    if (datos.status === 'success') {
+                        const costosAsociados = datos.data.costosAsociados;
 
-        // Mostrar el modal
-        $('#verProduccionModal').modal('show');
+                        // Cargar los costos asociados en la tabla
+                        const costosAsociadosTable = $('#tablaCostosAsociados tbody');
+                        costosAsociadosTable.empty();
+                        costosAsociados.forEach(costo => {
+                            costosAsociadosTable.append(`
+                                <tr>
+                                    <td>${costo.cst_id}</td>
+                                    <td>${costo.cat_id}</td>
+                                    <td>${costo.cst_cant}</td>
+                                    <td>${costo.cst_presentacion}</td>
+                                    <td>${costo.cst_horas_persona}</td>
+                                    <td>${costo.cst_precio_ht}</td>
+                                    <td>${costo.cst_total_horas_actividad}</td>
+                                    <td>${costo.cst_costo_total}</td>
+                                </tr>
+                            `);
+                        });
+
+                        // Mostrar el modal
+                        $('#verProduccionModal').modal('show');
+                    } else {
+                        console.error("Error: ", datos.message);
+                    }
+                } catch (e) {
+                    console.error("Error parsing JSON: ", e);
+                    console.error("Response: ", response);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
     });
 });
