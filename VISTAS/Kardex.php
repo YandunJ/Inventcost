@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kardex de Inventario</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    <link rel="stylesheet" href="../Public/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    
+    
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -58,6 +59,7 @@
                                 <th>Entradas</th>
                                 <th>Salidas</th>
                                 <th>Saldo Final</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -67,15 +69,35 @@
                 </div>
             </section>
         </div>
-  
+
+        <!-- Modal para mostrar los detalles -->
+        <div class="modal fade" id="detalleModal" tabindex="-1" role="dialog" aria-labelledby="detalleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detalleModalLabel">Detalles del Kardex</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Se llenará por JS -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <footer class="main-footer">
-            <div class="float-right d-none d-sm-inline">
-                FRAN FRUIT
-            </div>
-            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
-        </footer>
-    </div>
+        <div class="float-right d-none d-sm-inline">
+            FRAN FRUIT
+        </div>
+        <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
+    </footer>
+
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>

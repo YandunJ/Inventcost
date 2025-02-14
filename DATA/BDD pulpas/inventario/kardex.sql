@@ -1,29 +1,89 @@
-
+SELECT * FROM fpulpas.kardex;
 
 CREATE TABLE kardex (
     id_kardex INT AUTO_INCREMENT PRIMARY KEY, -- ID del registro en kardex
     fecha_hora DATETIME NOT NULL,             -- Fecha y hora del movimiento
     cat_id INT NOT NULL,                      -- ID del catálogo
     lote VARCHAR(50),                         -- Lote relacionado al producto
-    descripcion TEXT,                         -- Descripción del movimiento
     cantidad DECIMAL(10, 2) NOT NULL,         -- Cantidad movida (positivo para ingreso, negativo para salida)
     stock_anterior DECIMAL(10, 2),            -- Stock disponible antes del movimiento
     stock_actual DECIMAL(10, 2),              -- Stock disponible después del movimiento
-    tipo_movimiento ENUM('entrada', 'salida', 'ajuste') NOT NULL -- Tipo de movimiento
+    tipo_movimiento ENUM('entrada', 'salida', 'ajuste') NOT NULL, -- Tipo de movimiento
+    FOREIGN KEY (cat_id) REFERENCES catalogo(cat_id)
 ) ENGINE=InnoDB;
 
 
-CREATE TABLE kardex (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE,
-    cat_id INT,
-    cantidad DECIMAL(10, 2),
-    tipo_movimiento ENUM('Entrada', 'Salida'),
-    saldo DECIMAL(10, 2),
-    FOREIGN KEY (cat_id) REFERENCES catalogo(cat_id)
-);
+DROP TRIGGER IF EXISTS kar2;
+
 
 DELIMITER $$
+
+CREATE TRIGGER kar1
+AFTER INSERT ON inventario
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+
+    -- Obtener el saldo anterior
+    SELECT stock_actual INTO saldo_anterior
+    FROM kardex
+    WHERE cat_id = NEW.cat_id
+    ORDER BY fecha_hora DESC
+    LIMIT 1;
+
+    -- Insertar registro en kardex
+    INSERT INTO kardex (fecha_hora, cat_id, lote, cantidad, stock_anterior, stock_actual, tipo_movimiento)
+    VALUES (
+        NEW.fecha_hora,
+        NEW.cat_id,
+        NEW.lote,
+        NEW.cant_ingresada,
+        COALESCE(saldo_anterior, 0),
+        COALESCE(saldo_anterior, 0) + NEW.cant_ingresada,
+        'entrada'
+    );
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER kar2
+AFTER INSERT ON prod_detalle
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+
+    -- Obtener el saldo anterior
+    SELECT stock_actual INTO saldo_anterior
+    FROM kardex
+    WHERE cat_id = (SELECT cat_id FROM inventario WHERE id_inv = NEW.id_inv)
+    ORDER BY fecha_hora DESC
+    LIMIT 1;
+
+    -- Insertar registro en kardex
+    INSERT INTO kardex (fecha_hora, cat_id, lote, cantidad, stock_anterior, stock_actual, tipo_movimiento)
+    VALUES (
+        (SELECT fecha_hora FROM inventario WHERE id_inv = NEW.id_inv),
+        (SELECT cat_id FROM inventario WHERE id_inv = NEW.id_inv),
+        (SELECT lote FROM inventario WHERE id_inv = NEW.id_inv),
+        NEW.pdet_cantidad_usada,  -- Registrar la salida como un valor positivo
+        COALESCE(saldo_anterior, 0),
+        COALESCE(saldo_anterior, 0) - NEW.pdet_cantidad_usada,  -- Ajustar el stock restando la cantidad usada
+        'salida'
+    );
+END $$
+
+DELIMITER ;
+
+
+
+
+
+
+
+
+
 
 CREATE TRIGGER k1
 AFTER INSERT ON inventario

@@ -18,5 +18,17 @@ class Kardex {
 
         return $data;
     }
+
+    // Obtener datos detallados del Kardex
+    public function obtenerDetalleKardex($cat_id, $fecha_inicio, $fecha_fin) {
+        $stmt = $this->conn->prepare("CALL DetalleKardex(?, ?, ?)");
+        $stmt->bind_param('iss', $cat_id, $fecha_inicio, $fecha_fin);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $data = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        return $data;
+    }
 }
 ?>
