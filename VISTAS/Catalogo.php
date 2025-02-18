@@ -113,8 +113,7 @@
     </div>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 

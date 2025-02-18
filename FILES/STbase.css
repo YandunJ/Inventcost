@@ -1,3 +1,13 @@
+/* global.css */
+#filtroFechas .form-control {
+    width: auto;
+    display: inline-block;
+}
+
+#filtroFechas .btn {
+    display: inline-block;
+}
+
 .help-message {
     position: absolute;
     top: -60px; /* Posición encima del título */

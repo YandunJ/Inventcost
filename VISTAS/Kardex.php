@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kardex de Inventario</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    
-    
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -38,14 +36,16 @@
                                 <option value="1">Materia Prima</option>
                                 <option value="2">Insumos</option>
                                 <option value="3">Producto Terminado</option>
-                                <option value="4">Mano de Obra</option>
-                                <option value="5">Costos Indirectos</option>
+ 
                             </select>
                         </div>
                         <!-- Botón para consultar -->
                         <div class="col-md-4 text-right">
                             <button class="btn btn-primary mt-4" id="btnFiltrar">
                                 <i class="fas fa-search"></i> Consultar
+                            </button>
+                            <button class="btn btn-secondary mt-4" id="btnGenerarPDF">
+                                <i class="fas fa-file-pdf"></i> Generar PDF
                             </button>
                         </div>
                     </div>
@@ -89,24 +89,37 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <footer class="main-footer">
-        <div class="float-right d-none d-sm-inline">
-            FRAN FRUIT
-        </div>
-        <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
-    </footer>
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                FRAN FRUIT
+            </div>
+            <strong>&copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>. Derechos Reservados.
+        </footer>
+    </div>
 
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../Public/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="../Public/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
     <!-- Script simplificado para cargar datos de ejemplo -->
     <script src="JS/DTesp.js"></script>
     <script src="JS/kardex.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#btnGenerarPDF').on('click', function () {
+                const categoria_id = $('#selectCategoria').val();
+                const mes = $('#monthPicker').val();
+                const fecha_inicio = mes + '-01';
+                const fecha_fin = new Date(mes.split('-')[0], mes.split('-')[1], 0).toISOString().split('T')[0];
+
+                const url = `../AJAX/PDF.php?categoria_id=${categoria_id}&fecha_inicio=${fecha_inicio}&fecha_fin=${fecha_fin}`;
+                window.open(url, '_blank');
+            });
+        });
+    </script>
 </body>
 </html>

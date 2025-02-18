@@ -1,0 +1,18 @@
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-body {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+.modal-footer .btn {
+    margin-right: 10px;
+}

@@ -28,6 +28,10 @@ switch ($action) {
         obtenerCantidadCostosInd($estadisticas);
         break;
 
+    case 'obtenerEntradasPorCategoria':
+        obtenerEntradasPorCategoria($estadisticas);
+        break;
+
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -59,6 +63,14 @@ function obtenerCantidadManoObra($estadisticas) {
 
 function obtenerCantidadCostosInd($estadisticas) {
     $data = $estadisticas->obtenerCantidadCostosInd();
+    echo json_encode(['status' => 'success', 'data' => $data]);
+    exit;
+}
+
+function obtenerEntradasPorCategoria($estadisticas) {
+    $mes = $_POST['mes'];
+    $anio = $_POST['anio'];
+    $data = $estadisticas->obtenerEntradasPorCategoria($mes, $anio);
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }

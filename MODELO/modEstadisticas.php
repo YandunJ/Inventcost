@@ -57,5 +57,20 @@ class Estadisticas {
 
         return $data;
     }
+
+    public function obtenerEntradasPorCategoria($mes, $anio) {
+        $sql = "CALL Zentradas_cat(?, ?)";
+        $params = [$mes, $anio];
+        $result = $this->conn->ejecutarSP($sql, $params);
+
+        $data = [];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
 }
 ?>

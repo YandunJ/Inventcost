@@ -1,4 +1,3 @@
-<?php include '../CONFIG/validar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -91,6 +91,52 @@
                             </div>
                         </div>
                         <!-- Aquí puedes agregar más cuadros de estadísticas -->
+                    </div>
+                    <!-- Gráficos -->
+                    <div class="row">
+                        <div class="col-lg-8 col-12">
+                            <canvas id="myBarChart"></canvas>
+                        </div>
+                        <div class="col-lg-4 col-12">
+                            <!-- Filtro de fechas para el gráfico de pastel -->
+                            <form id="filtroFechas" class="mb-3">
+                                <div class="form-row align-items-center">
+                                    <div class="col-auto">
+                                        <label for="mes" class="sr-only">Mes</label>
+                                        <select class="form-control mb-2" id="mes">
+                                            <option value="1">Enero</option>
+                                            <option value="2">Febrero</option>
+                                            <option value="3">Marzo</option>
+                                            <option value="4">Abril</option>
+                                            <option value="5">Mayo</option>
+                                            <option value="6">Junio</option>
+                                            <option value="7">Julio</option>
+                                            <option value="8">Agosto</option>
+                                            <option value="9">Septiembre</option>
+                                            <option value="10">Octubre</option>
+                                            <option value="11">Noviembre</option>
+                                            <option value="12">Diciembre</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="anio" class="sr-only">Año</label>
+                                        <select class="form-control mb-2" id="anio">
+                                            <?php
+                                            $currentYear = date('Y');
+                                            for ($year = 2000; $year <= 2100; $year++) {
+                                                $selected = ($year == $currentYear) ? 'selected' : '';
+                                                echo "<option value=\"$year\" $selected>$year</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="btn btn-primary mb-2" id="filtrar">Filtrar</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <canvas id="myPieChart"></canvas>
+                        </div>
                     </div>
                 </div><!-- /.container-fluid -->
             </section>

@@ -1,5 +1,4 @@
-SELECT * FROM fpulpas.kardex;
-
+ 
 CREATE TABLE kardex (
     id_kardex INT AUTO_INCREMENT PRIMARY KEY, -- ID del registro en kardex
     fecha_hora DATETIME NOT NULL,             -- Fecha y hora del movimiento
@@ -351,3 +350,17 @@ CALL kardex_det('2025-01-01', '2025-01-27', 1, 1);
 
 CALL kardex_G(1, 2025, 1);
 
+
+DELIMITER //
+
+CREATE PROCEDURE Zentradas_cat(IN mes INT, IN anio INT)
+BEGIN
+    SELECT c.ctg_nombre, SUM(i.cant_ingresada) AS cantidad
+    FROM inventario i
+    JOIN catalogo cat ON i.cat_id = cat.cat_id
+    JOIN categorias c ON cat.ctg_id = c.ctg_id
+    WHERE MONTH(i.fecha_hora) = mes AND YEAR(i.fecha_hora) = anio
+    GROUP BY c.ctg_id;
+END //
+
+DELIMITER ;

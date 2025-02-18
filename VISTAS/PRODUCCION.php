@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Producción</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -26,11 +25,11 @@
             <div class="container-fluid">
                 <h1>Producción</h1>
                 <!-- Botón para abrir el modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#produccionModal">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRegistrarProduccion">
                     Agregar Producción
                 </button>
                 <!-- Modal para el formulario de producción -->
-                <div class="modal fade" id="produccionModal" tabindex="-1" role="dialog" aria-labelledby="produccionModalLabel" aria-hidden="true">
+                <div class="modal fade" id="modalRegistrarProduccion" tabindex="-1" role="dialog" aria-labelledby="produccionModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl" role="document">
                         <div class="modal-content">
                             <div class="modal-header">

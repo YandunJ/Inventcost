@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../FILES/global.css">
 </head>
 <body class="hold-transition sidebar-mini">
-    <div class="wrapper">
+    <div class="wrapper"> 
     <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
         <?php

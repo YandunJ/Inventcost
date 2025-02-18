@@ -21,7 +21,7 @@ $(document).ready(function () {
             {
                 data: null,
                 render: function (data) {
-                    return `<button class="btn btn-info btn-detalle" data-id="${data.cat_id}">Ver Detalle</button>`;
+                    return `<button class="btn btn-info btn-detalle" data-id="${data.cat_id}" data-ctg-id="${data.ctg_id}">Ver Detalle</button>`;
                 },
             },
         ],
@@ -34,6 +34,7 @@ $(document).ready(function () {
 
     $('#tablaKardex tbody').on('click', '.btn-detalle', function () {
         const cat_id = $(this).data('id');
+        const ctg_id = $(this).data('ctg-id');
         const mes = $('#monthPicker').val();
         const fecha_inicio = mes + '-01';
         const fecha_fin = new Date(mes.split('-')[0], mes.split('-')[1], 0).toISOString().split('T')[0];
@@ -51,7 +52,7 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.status === 'success') {
                     // Mostrar los detalles en un modal o en una nueva tabla
-                    mostrarDetalles(response.data);
+                    mostrarDetalles(response.data, ctg_id);
                 } else {
                     alert(response.message);
                 }
@@ -63,22 +64,36 @@ $(document).ready(function () {
         });
     });
 
-    function mostrarDetalles(data) {
-        let detallesHtml = '<table class="table table-bordered table-hover table-compact"><thead><tr><th>ID</th><th>Fecha</th><th>Lote</th><th>Cantidad</th><th>Stock Anterior</th><th>Stock Actual</th><th>Tipo Movimiento</th></tr></thead><tbody>';
+    function mostrarDetalles(data, ctg_id) {
+        let detallesHtml = '<table class="table table-bordered table-hover table-compact"><thead><tr><th>ID</th><th>Fecha</th><th>Lote</th><th>Cantidad</th><th>Precio Unitario</th><th>Precio Total</th>';
+        if (ctg_id == 1) {
+            detallesHtml += '<th>Proveedor</th><th>Brix</th><th>Observación</th>';
+        } else if (ctg_id == 2) {
+            detallesHtml += '<th>Proveedor</th><th>Fecha Elaboración</th><th>Fecha Caducidad</th>';
+        }
+        detallesHtml += '<th>Tipo Movimiento</th></tr></thead><tbody>';
         data.forEach(function (detalle) {
             detallesHtml += `<tr>
                 <td>${detalle.id_kardex}</td>
                 <td>${detalle.fecha_hora}</td>
                 <td>${detalle.lote}</td>
                 <td>${detalle.cantidad}</td>
-                <td>${detalle.stock_anterior}</td>
-                <td>${detalle.stock_actual}</td>
-                <td>${detalle.tipo_movimiento}</td>
-            </tr>`;
+                <td>${detalle.precio_unitario}</td>
+                <td>${detalle.precio_total}</td>`;
+            if (ctg_id == 1) {
+                detallesHtml += `<td>${detalle.proveedor}</td>
+                                 <td>${detalle.brix}</td>
+                                 <td>${detalle.observacion}</td>`;
+            } else if (ctg_id == 2) {
+                detallesHtml += `<td>${detalle.proveedor}</td>
+                                 <td>${detalle.fecha_elaboracion}</td>
+                                 <td>${detalle.fecha_caducidad}</td>`;
+            }
+            detallesHtml += `<td>${detalle.tipo_movimiento}</td></tr>`;
         });
         detallesHtml += '</tbody></table>';
 
-        // Mostrar los detalles en un modal
+        // Mostrar los detalles en el modal
         $('#detalleModal .modal-body').html(detallesHtml);
         $('#detalleModal').modal('show');
     }

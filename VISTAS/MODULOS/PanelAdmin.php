@@ -19,47 +19,40 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <a href="#" class="d-block"><?php echo $nombreCompleto; ?></a>
                             </div>
                         </div>
-
-
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+       <!-- Sidebar Menu -->
+       <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Gestión de Inventario -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-boxes"></i>
+                        <p>
+                            Almacen
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="index.php" class="nav-link">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Inicio</p>
+                            <a href="proveedores.php" class="nav-link">
+                                <i class="nav-icon fas fa-truck"></i>
+                                <p>Proveedores</p>
                             </a>
                         </li>
-                               
-                        <!-- Other menu items -->
-                        <li class="nav-item">
-                                    <a href="proveedores.php" class="nav-link">
-                                        <i class="nav-icon fas fa-truck"></i>
-                                        <p>Proveedores</p>
-                                    </a>
-                                </li>
                         <li class="nav-item">
                             <a href="Catalogo.php" class="nav-link">
-                                <i class="nav-icon fas fa-edit fas"></i>
-                                <p>Catalogo </p>
+                                <i class="nav-icon fas fa-edit"></i>
+                                <p>Catálogo</p>
                             </a>
                         </li>
-
-                           <!-- Nueva sección para Presentaciones -->
-                <li class="nav-item">
-                    <a href="Presentacion.php" class="nav-link">
-                        <i class="nav-icon fas fa-box"></i>
-                        <p>Presentaciones</p>
-                    </a>
-                </li>
-                        
                         <li class="nav-item">
-                    <a href="Costos.php" class="nav-link">
-                        <i class="nav-icon fas fa-dollar-sign"></i>
-                        <p>Costos</p>
-                    </a>
+                            <a href="Presentacion.php" class="nav-link">
+                                <i class="nav-icon fas fa-box"></i>
+                                <p>Presentaciones</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                    
+                
                          
 
                         <li class="nav-item">
@@ -76,13 +69,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         </li>
 
                         </li>
-                                <li class="nav-item">
-                                    <a href="Kardex.php" class="nav-link">
-                                        <i class="nav-icon fas fa-clipboard-list"></i>
-                                        <p>Kardex</p>
-                                    </a>
-                                </li>
-                     
+                             
                         <li class="nav-item">
                                     <a href="PRODUCCION.php" class="nav-link">
                                         <i class="nav-icon fas fa-industry"></i>
@@ -90,39 +77,21 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                     </a>
                                 </li>
 
-                        <!-- New dropdown for production modules 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-industry"></i>
-                                <p>
-                                     Producción
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="ProduccionMP.php" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Prod. Materia Prima</p>
+                    <a href="Costos.php" class="nav-link">
+                        <i class="nav-icon fas fa-dollar-sign"></i>
+                        <p>Costos</p>
+                    </a>
+                </li>
+                    
+                <li class="nav-item">
+                                    <a href="Kardex.php" class="nav-link">
+                                        <i class="nav-icon fas fa-clipboard-list"></i>
+                                        <p>Kardex</p>
                                     </a>
-                              
-                            </ul>
-                        </li> -->
-
-                        <!-- <li class="nav-item">
-                            <a href="producto.php" class="nav-link">
-                                <i class="nav-icon fas fa-box-open"></i>
-                                <p>Productos</p>
-                            </a>
-                        </li> -->
-                        <li class="nav-item">
-                            <a href="insumos.php" class="nav-link">
-                                <i class="nav-icon fas fa-boxes"></i>
-                                <p> Insumos</p>
-                            </a>
-                        </li>
-
-                       
+                                </li>
+                     
+    
                         <!-- Gestión de Personal -->
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -136,7 +105,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <li class="nav-item">
                                     <a href="usuarios.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Usuario</p>
+                                        <p>Mis Usuarios</p>
                                     </a>
                                 </li>
                                 <!-- <li class="nav-item">
@@ -148,7 +117,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <li class="nav-item">
                                     <a href="roles.php" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Roles de usuario</p>
+                                        <p>Roles de usuario</p> 
                                     </a>
                                 </li>
                                

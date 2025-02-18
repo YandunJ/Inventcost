@@ -243,8 +243,10 @@ $('#registrarProduccion').click(function() {
  
 // REGISTRAR PRODUCCIÓN
 // ===========================
-  // Función para registrar la producción
-  $('#btnRegistrarProduccionModal').on('click', function () {
+// REGISTRAR PRODUCCIÓN
+// ===========================
+// Función para registrar la producción
+$('#btnRegistrarProduccionModal').on('click', function () {
     const cant_producida = $('#totalPresentaciones').val() || 0; // Usar el total de presentaciones como cantidad producida
     const lotes_mp = JSON.stringify(getLotesMP());
     const lotes_ins = JSON.stringify(getLotesINS());
@@ -272,6 +274,10 @@ $('#registrarProduccion').click(function() {
                 const result = JSON.parse(response);
                 if (result.status === 'success') {
                     alert('Producción registrada correctamente');
+                    // Cerrar el modal
+                    $('#modalRegistrarProduccion').modal('hide');
+                    // Actualizar el DataTable
+                    $('#tablaProducciones').DataTable().ajax.reload();
                 } else {
                     alert('Error: ' + result.message);
                 }

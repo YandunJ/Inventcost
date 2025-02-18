@@ -3,7 +3,51 @@
 //VISTAS/ModuloAdminNavbar.php
 session_start();
 $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] : 'User Name';
+$rolNombre = ''; // Inicializar variable para el nombre del rol
+$rolDescripcion = ''; // Inicializar variable para la descripción del rol
+$estado = isset($_SESSION['estado']) ? $_SESSION['estado'] : 'desconocido';
+
+// Obtener el nombre y la descripción del rol
+if (isset($_SESSION['rol_id'])) {
+    $rolId = $_SESSION['rol_id'];
+    // Aquí deberías hacer una consulta a la base de datos para obtener el nombre y la descripción del rol
+    // Por simplicidad, vamos a usar un array estático
+    $roles = [
+        1 => ['nombre' => 'Administrador', 'descripcion' => 'Tiene acceso completo al sistema'],
+        2 => ['nombre' => 'Bodeguero Materia Prima', 'descripcion' => 'Gestiona la materia prima en el inventario'],
+        3 => ['nombre' => 'Encargado De Producción', 'descripcion' => 'Encargado de la producción de productos']
+    ];
+    $rolNombre = isset($roles[$rolId]) ? $roles[$rolId]['nombre'] : 'Desconocido';
+    $rolDescripcion = isset($roles[$rolId]) ? $roles[$rolId]['descripcion'] : 'Sin descripción';
+}
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Otros meta tags y enlaces -->
+    
+    <style>
+        .modal-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-body {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .modal-footer .btn {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -18,14 +62,55 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
     <ul class="navbar-nav ml-auto">
         <!-- User dropdown menu -->
         <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
+            <a class="nav-link" data-toggle="dropdown" href="#" data-toggle="modal" data-target="#userModal">
                 <i class="far fa-user"></i> <span id="userName"><?php echo $nombreCompleto; ?></span>
             </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <a href="#" class="dropdown-item logout-link">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-                </a>
-            </div>
         </li>
     </ul>
 </nav>
+
+<!-- Modal de información del usuario -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Información del Usuario</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Nombre:</strong> <?php echo $nombreCompleto; ?></p>
+                <p><strong>Rol:</strong> <?php echo $rolNombre; ?></p>
+                <p><strong>Descripción del Rol:</strong> <?php echo $rolDescripcion; ?></p>
+                <p><strong>Estado:</strong> <?php echo $estado; ?></p>
+            </div>
+            <div class="modal-footer">
+                <a href="logout.php" class="btn btn-danger logout-link">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                </a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="../Public/plugins/jquery/jquery.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    // Manejar el evento de clic en el nombre del usuario
+    $('#userName').on('click', function() {
+        $('#userModal').modal('show');
+    });
+
+    // Manejar el evento de clic en el botón de cerrar sesión
+    $('.logout-link').on('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'logout.php';
+    });
+});
+</script>
+</body>
+</html>
