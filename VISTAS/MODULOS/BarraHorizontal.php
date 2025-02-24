@@ -1,17 +1,12 @@
 <?php
-
-//VISTAS/ModuloAdminNavbar.php
 session_start();
 $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] : 'User Name';
-$rolNombre = ''; // Inicializar variable para el nombre del rol
-$rolDescripcion = ''; // Inicializar variable para la descripción del rol
+$rolNombre = '';
+$rolDescripcion = '';
 $estado = isset($_SESSION['estado']) ? $_SESSION['estado'] : 'desconocido';
 
-// Obtener el nombre y la descripción del rol
 if (isset($_SESSION['rol_id'])) {
     $rolId = $_SESSION['rol_id'];
-    // Aquí deberías hacer una consulta a la base de datos para obtener el nombre y la descripción del rol
-    // Por simplicidad, vamos a usar un array estático
     $roles = [
         1 => ['nombre' => 'Administrador', 'descripcion' => 'Tiene acceso completo al sistema'],
         2 => ['nombre' => 'Bodeguero Materia Prima', 'descripcion' => 'Gestiona la materia prima en el inventario'],
@@ -25,7 +20,7 @@ if (isset($_SESSION['rol_id'])) {
 <html lang="en">
 <head>
     <!-- Otros meta tags y enlaces -->
-    
+<!--     
     <style>
         .modal-header {
             background-color: #f8f9fa;
@@ -45,7 +40,14 @@ if (isset($_SESSION['rol_id'])) {
         .modal-footer .btn {
             margin-right: 10px;
         }
-    </style>
+
+        /* Ajustar la posición del modal */
+        .modal-dialog {
+            position: absolute;
+            right: 10px;
+            top: 50px;
+        }
+    </style> -->
 </head>
 <body>
 <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -102,13 +104,13 @@ if (isset($_SESSION['rol_id'])) {
 $(document).ready(function() {
     // Manejar el evento de clic en el nombre del usuario
     $('#userName').on('click', function() {
-        $('#userModal').modal('show');
+        $('#userModal').modal('toggle');
     });
 
     // Manejar el evento de clic en el botón de cerrar sesión
     $('.logout-link').on('click', function(e) {
         e.preventDefault();
-        window.location.href = 'logout.php';
+        window.location.href = 'frlogin.php';
     });
 });
 </script>
