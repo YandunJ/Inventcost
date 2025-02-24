@@ -1,4 +1,10 @@
 $(document).ready(function () {
+    // Establecer el valor del selector de mes al mes actual
+    const fechaActual = new Date();
+    const mesActual = fechaActual.toISOString().slice(0, 7); // Formato YYYY-MM
+    $('#monthPicker').val(mesActual);
+
+    // Inicializar DataTable
     const tablaKardex = $('#tablaKardex').DataTable({
         ajax: {
             url: '../AJAX/ctrKardex.php',
@@ -28,10 +34,15 @@ $(document).ready(function () {
         language: dataTableLanguage
     });
 
+    // Realizar la consulta inicial al cargar la página
+    tablaKardex.ajax.reload();
+
+    // Evento para filtrar los datos
     $('#btnFiltrar').on('click', function () {
         tablaKardex.ajax.reload();
     });
 
+    // Evento para mostrar los detalles
     $('#tablaKardex tbody').on('click', '.btn-detalle', function () {
         const cat_id = $(this).data('id');
         const ctg_id = $(this).data('ctg-id');

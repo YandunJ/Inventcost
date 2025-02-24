@@ -236,17 +236,66 @@ const LotesMP = inicializarDataTable(
     "language": dataTableLanguage
 });
 
-// Registrar Producción
-$('#registrarProduccion').click(function() {
-    alert("Producción registrada correctamente.");
-});
- 
-// REGISTRAR PRODUCCIÓN
-// ===========================
-// REGISTRAR PRODUCCIÓN
-// ===========================
+
+  // Función para validar los datos de cada pestaña
+  function validarDatosProduccion() {
+    // Validar Materia Prima
+    let validMP = false;
+    $('#LotesMP tbody tr').each(function () {
+        if ($(this).find('.select-mp').is(':checked')) {
+            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            if (cantidad > 0) {
+                validMP = true;
+                return false; // Salir del bucle
+            }
+        }
+    });
+
+    // Validar Insumos
+    let validINS = false;
+    $('#LotesINS tbody tr').each(function () {
+        if ($(this).find('.seleccionar-checkbox').is(':checked')) {
+            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            if (cantidad > 0) {
+                validINS = true;
+                return false; // Salir del bucle
+            }
+        }
+    });
+
+    // Validar Mano de Obra
+    let validMO = false;
+    $('#tablaManoObra tbody tr').each(function () {
+        const cantidadPersonas = parseFloat($(this).find('.cantidad-personas').val()) || 0;
+        const horasTrabajadas = parseFloat($(this).find('.horas-por-dia').val()) || 0;
+        const precioHora = parseFloat($(this).find('.precio-ht').val()) || 0;
+        if (cantidadPersonas > 0 && horasTrabajadas > 0 && precioHora > 0) {
+            validMO = true;
+            return false; // Salir del bucle
+        }
+    });
+
+    // Validar Costos Indirectos
+    let validCI = false;
+    $('#tablaCostosIndirectos tbody tr').each(function () {
+        const cantidadUnidades = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
+        const precioUnitario = parseFloat($(this).find('.precio-unitario').val()) || 0;
+        if (cantidadUnidades > 0 && precioUnitario > 0) {
+            validCI = true;
+            return false; // Salir del bucle
+        }
+    });
+
+    return validMP && validINS && validMO && validCI;
+}
+
 // Función para registrar la producción
 $('#btnRegistrarProduccionModal').on('click', function () {
+    if (!validarDatosProduccion()) {
+        alert('Por favor, complete todos los datos necesarios en cada pestaña antes de registrar la producción.');
+        return;
+    }
+
     const cant_producida = $('#totalPresentaciones').val() || 0; // Usar el total de presentaciones como cantidad producida
     const lotes_mp = JSON.stringify(getLotesMP());
     const lotes_ins = JSON.stringify(getLotesINS());
@@ -290,79 +339,75 @@ $('#btnRegistrarProduccionModal').on('click', function () {
         }
     });
 });
-// OBTENER DATOS DE LAS PESTAÑAS       
-// ===========================
-    // Función para obtener los lotes de materia prima seleccionados
-    function getLotesMP() {
-        let lotes = [];
-        $('#LotesMP tbody tr').each(function () {
-            if ($(this).find('.select-mp').is(':checked')) {
-                const id_inv = $(this).find('.select-mp').val();
-                const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
-                lotes.push({ id_inv: id_inv, cantidad: cantidad });
-            }
+
+// Funciones para obtener los datos de las pestañas
+function getLotesMP() {
+    let lotes = [];
+    $('#LotesMP tbody tr').each(function () {
+        if ($(this).find('.select-mp').is(':checked')) {
+            const id_inv = $(this).find('.select-mp').val();
+            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            lotes.push({ id_inv: id_inv, cantidad: cantidad });
+        }
+    });
+    return lotes;
+}
+
+function getLotesINS() {
+    let lotes = [];
+    $('#LotesINS tbody tr').each(function () {
+        if ($(this).find('.seleccionar-checkbox').is(':checked')) {
+            const id_inv = $(this).find('.seleccionar-checkbox').val();
+            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+            lotes.push({ id_inv: id_inv, cantidad: cantidad });
+        }
+    });
+    return lotes;
+}
+
+function getDatosManoObra() {
+    let manoObra = [];
+    $('#tablaManoObra tbody tr').each(function () {
+        const cat_id = $(this).find('td:eq(0)').text(); // Obtener el ID de la actividad
+        const mo_cant_personas = parseFloat($(this).find('.cantidad-personas').val()) || 0;
+        const mo_horas_trabajadas = parseFloat($(this).find('.horas-por-dia').val()) || 0;
+        const mo_precio_hora = parseFloat($(this).find('.precio-ht').val()) || 0;
+        manoObra.push({
+            cat_id: cat_id,
+            mo_cant_personas: mo_cant_personas,
+            mo_horas_trabajadas: mo_horas_trabajadas,
+            mo_precio_hora: mo_precio_hora
         });
-        return lotes;
-    }
+    });
+    return manoObra;
+}
 
-    // Función para obtener los lotes de insumos seleccionados
-    function getLotesINS() {
-        let lotes = [];
-        $('#LotesINS tbody tr').each(function () {
-            if ($(this).find('.seleccionar-checkbox').is(':checked')) {
-                const id_inv = $(this).find('.seleccionar-checkbox').val();
-                const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
-                lotes.push({ id_inv: id_inv, cantidad: cantidad });
-            }
+function getCostosIndirectos() {
+    let costosIndirectos = [];
+    $('#tablaCostosIndirectos tbody tr').each(function () {
+        const cat_id = $(this).find('td:eq(0)').text(); // Obtener el ID del costo indirecto
+        const cst_cant = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
+        const cst_presentacion = $(this).find('td:eq(2)').text(); // Obtener la presentación
+        const cst_precio_ht = parseFloat($(this).find('.precio-unitario').val()) || 0;
+        const cst_costo_total = cst_cant * cst_precio_ht;
+        costosIndirectos.push({
+            cat_id: cat_id,
+            cst_cant: cst_cant,
+            cst_presentacion: cst_presentacion,
+            cst_precio_ht: cst_precio_ht,
+            cst_costo_total: cst_costo_total
         });
-        return lotes;
-    }
+    });
+    return costosIndirectos;
+}
 
-    // Función para obtener los datos de mano de obra
-    function getDatosManoObra() {
-        let manoObra = [];
-        $('#tablaManoObra tbody tr').each(function () {
-            const cat_id = $(this).find('td:eq(0)').text(); // Obtener el ID de la actividad
-            const mo_cant_personas = parseFloat($(this).find('.cantidad-personas').val()) || 0;
-            const mo_horas_trabajadas = parseFloat($(this).find('.horas-por-dia').val()) || 0;
-            const mo_precio_hora = parseFloat($(this).find('.precio-ht').val()) || 0;
-            manoObra.push({
-                cat_id: cat_id,
-                mo_cant_personas: mo_cant_personas,
-                mo_horas_trabajadas: mo_horas_trabajadas,
-                mo_precio_hora: mo_precio_hora
-            });
-        });
-        return manoObra;
-    }
+// Exponer las funciones globalmente
+window.getLotesMP = getLotesMP;
+window.getLotesINS = getLotesINS;
+window.getDatosManoObra = getDatosManoObra;
+window.getCostosIndirectos = getCostosIndirectos;
 
-    // Función para obtener los datos de costos indirectos
-    function getCostosIndirectos() {
-        let costosIndirectos = [];
-        $('#tablaCostosIndirectos tbody tr').each(function () {
-            const cat_id = $(this).find('td:eq(0)').text(); // Obtener el ID del costo indirecto
-            const cst_cant = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
-            const cst_presentacion = $(this).find('td:eq(2)').text(); // Obtener la presentación
-            const cst_precio_ht = parseFloat($(this).find('.precio-unitario').val()) || 0;
-            const cst_costo_total = cst_cant * cst_precio_ht;
-            costosIndirectos.push({
-                cat_id: cat_id,
-                cst_cant: cst_cant,
-                cst_presentacion: cst_presentacion,
-                cst_precio_ht: cst_precio_ht,
-                cst_costo_total: cst_costo_total
-            });
-        });
-        return costosIndirectos;
-    }
-
-    // Exponer las funciones globalmente
-    window.getLotesMP = getLotesMP;
-    window.getLotesINS = getLotesINS;
-    window.getDatosManoObra = getDatosManoObra;
-    window.getCostosIndirectos = getCostosIndirectos;
-
-   // Evento para habilitar/deshabilitar campo y botones (Materia Prima)
+// Evento para habilitar/deshabilitar campo y botones (Materia Prima)
 $('#LotesMP tbody').on('change', '.select-mp', function () {
     const row = $(this).closest('tr');
     const cantidadInput = row.find('.cantidad-consumir');
@@ -378,9 +423,9 @@ $('#LotesMP tbody').on('change', '.select-mp', function () {
     // Reinicia el valor si el checkbox se desmarca
     if (!isChecked) cantidadInput.val('0');
 });
-    
- // Evento para habilitar/deshabilitar campo y botones (Insumos)
- $('#LotesINS tbody').on('change', '.seleccionar-checkbox', function () {
+
+// Evento para habilitar/deshabilitar campo y botones (Insumos)
+$('#LotesINS tbody').on('change', '.seleccionar-checkbox', function () {
     const row = $(this).closest('tr');
     const cantidadInput = row.find('.cantidad-consumir');
     const incrementarBtn = row.find('.incrementar');
@@ -393,5 +438,4 @@ $('#LotesMP tbody').on('change', '.select-mp', function () {
 
     if (!isChecked) cantidadInput.val('0');
 });
-
 });
