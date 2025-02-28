@@ -13,17 +13,36 @@ $(document).ready(function () {
         if (!validarAccesoProductoTerminado()) {
             e.preventDefault();
             alert('Debe completar todas las pestañas anteriores antes de acceder a Producto Terminado.');
+        } else {
+            generarLotePT(); // Generar el lote cuando se accede a la pestaña de Producto Terminado
         }
     });
 
     // ============================
     // PESTAÑA PRODUCTO TERMINADO
-    // ===========================
+    // ============================
+  // ============================
+    // PESTAÑA PRODUCTO TERMINADO
+    // ============================
     // Generar lote automáticamente (puedes ajustar esta lógica según tus necesidades)
-    function generarLote() {
-        const fecha = new Date();
-        const lote = 'L' + fecha.getFullYear() + (fecha.getMonth() + 1).toString().padStart(2, '0') + fecha.getDate().toString().padStart(2, '0') + fecha.getHours().toString().padStart(2, '0') + fecha.getMinutes().toString().padStart(2, '0') + fecha.getSeconds().toString().padStart(2, '0');
-        $('#loteProductoTerminado').val(lote);
+    function generarLotePT() {
+        $.ajax({
+            url: '../AJAX/ctrProduccionMP.php',
+            type: 'POST',
+            data: { action: 'generarNumeroLotePT' },
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    $('#loteProductoTerminado').val(response.numero_lote);
+                } else {
+                    console.error("Error al generar el número de lote: ", response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
     }
 
     // Cargar presentaciones de Producto Terminado en el select box
@@ -114,7 +133,7 @@ $(document).ready(function () {
     }
 
     // Inicializar el formulario con valores predeterminados
-    generarLote();
+    generarLotePT();
     cargarPresentacionesPT();
     $('#cantidadProducida').val(10); // Ejemplo de cantidad producida, puedes ajustar este valor según tus necesidades
 });

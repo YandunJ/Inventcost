@@ -26,9 +26,25 @@ switch ($action) {
         obtenerDetallesProduccion();
         break;
 
+    case 'generarNumeroLotePT':
+        generarNumeroLotePT();
+        break;
+    
+
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
+}
+
+function generarNumeroLotePT() {
+    try {
+        $produccion = new Produccion();
+        $numeroLote = $produccion->generarNumeroLotePT();
+
+        echo json_encode(['status' => 'success', 'numero_lote' => $numeroLote]);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
 }
 
 function obtenerPresentacionesPT() {
@@ -52,6 +68,7 @@ function obtenerPresentacionesPT() {
     exit;
 }
 
+
 function registrarProduccion() {
     $produccion = new Produccion();
     
@@ -60,15 +77,15 @@ function registrarProduccion() {
     $lotes_ins = isset($_POST['lotes_ins']) ? $_POST['lotes_ins'] : '[]';
     $mano_obra = isset($_POST['mano_obra']) ? $_POST['mano_obra'] : '[]';
     $costos_indirectos = isset($_POST['costos_indirectos']) ? $_POST['costos_indirectos'] : '[]';
+    $presentaciones_pt = isset($_POST['presentaciones_pt']) ? $_POST['presentaciones_pt'] : '[]';
 
     try {
-        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos);
+        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt);
         echo json_encode($result);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
 function obtenerProducciones() {
     global $conn;
     $sql = "CALL PROD_data_G()";

@@ -73,7 +73,7 @@ const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
         { data: 'Lote'},
         { data: 'Proveedor'},
         { data: 'Articulo'},
-        { data: 'UnidadMedida'},
+        
         { data: 'CantidadIngresada'},
         { data: 'CantidadDisponible' },
         { data: 'PrecioUnitario'},

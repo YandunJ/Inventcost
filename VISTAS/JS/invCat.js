@@ -75,8 +75,7 @@ $(document).ready(function () {
         $("#unidad_medida").html(options);
     });
 
-
-    var table = $('#inventoryTable').DataTable({
+var table = $('#inventoryTable').DataTable({
         "ajax": {
             "url": "../AJAX/ctrInvCatalogo.php",
             "type": "POST",
@@ -87,14 +86,11 @@ $(document).ready(function () {
             }
         },
         "columns": [
-                     // Asegúrate de que "cat_id" existe en el SP
             { "data": "cat_nombre" },         // Asegúrate de que "cat_nombre" existe en el SP
-               // Asegúrate de que "cat_descripcion" existe en el SP
             { "data": "categoria" },          // Alias definido en el SP
-            { "data": "presentacion" },         // Alias para unidad_medida definido en el SP
+            { "data": "presentacion" },       // Alias para unidad_medida definido en el SP
             { "data": "cat_estado" },         // Asegúrate de que "cat_estado" existe en el SP
             { "data": "cat_fecha_creacion" }, // Asegúrate de que "cat_fecha_creacion" existe en el SP
-            
             {
                 "data": null,
                 "render": function(data, type, row) {
@@ -104,10 +100,9 @@ $(document).ready(function () {
                                 <i class="fas fa-cog"></i>
                             </button>
                             <div class="dropdown-menu">
-                          <a class="dropdown-item edit-btn" href="#" data-id="${row.cat_id}" data-toggle="modal" data-target="#modalFormulario" data-action="edit">
-    <i class="fas fa-edit"></i> Editar
-</a>
-
+                                <a class="dropdown-item edit-btn" href="#" data-id="${row.cat_id}" data-toggle="modal" data-target="#modalFormulario" data-action="edit">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
                             </div>
                         </div>
                     `;
@@ -116,10 +111,10 @@ $(document).ready(function () {
         ],
         "language": dataTableLanguage
     });
-    
 
-  // Manejar la acción de agregar 
-  $('#inventoryForm').on('submit', function (e) {
+
+ // Manejar la acción de agregar 
+ $('#inventoryForm').on('submit', function (e) {
     e.preventDefault();
 
     let id_articulo = $('#id_articulo').val();
@@ -179,16 +174,16 @@ $('#inventoryTable').on('click', '.edit-btn', function () {
         success: function (response) {
             if (response.status === 'success') {
                 let data = response.data;
-        
+
                 // Verificar que todos los datos estén presentes
                 console.log(data); // Debug para ver el objeto devuelto
-        
+
                 // Llenar los campos del formulario
                 $('#id_articulo').val(data.cat_id || ''); // Evitar valores nulos
                 $('#nombre').val(data.cat_nombre || '');
                 $('#categoria_select').val(data.ctg_id || '').trigger('change');
                 $('#unidad_medida').val(data.prs_id || '').trigger('change');
-        
+
                 $('#modalFormulario').modal('show');
             } else {
                 Swal.fire('Error', response.message, 'error');

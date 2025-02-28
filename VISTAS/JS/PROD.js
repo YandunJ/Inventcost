@@ -7,39 +7,42 @@ $(document).ready(function () {
 
 $(document).ready(function () {
 // ============================
-// Inicialización de DataTables
-// ===========================
-function inicializarDataTable(selector, ajaxUrl, data, columnas, filtro = null) {
-    return $(selector).DataTable({
-        autoWidth: false,
-        responsive: true,
-        paging: true,
-        searching: true,
-        ajax: {
-            url: ajaxUrl,
-            type: 'POST',
-            data: data,
-            dataSrc: function (json) {
-                if (json.status === 'success') {
-                    // Aplica el filtro si existe
-                    if (filtro) {
-                        return json.data.filter(filtro);
+    // Inicialización de DataTables
+    // ============================
+    function inicializarDataTable(selector, ajaxUrl, data, columnas, filtro = null) {
+        return $(selector).DataTable({
+            autoWidth: false,
+            responsive: true,
+            paging: true,
+            searching: true,
+            ajax: {
+                url: ajaxUrl,
+                type: 'POST',
+                data: data,
+                dataSrc: function (json) {
+                    if (json.status === 'success') {
+                        // Aplica el filtro si existe
+                        if (filtro) {
+                            return json.data.filter(filtro);
+                        }
+                        return json.data;
                     }
-                    return json.data;
+                    return [];
                 }
-                return [];
-            }
-        },
-        columns: columnas,
-        language: dataTableLanguage
-    });
-}
+            },
+            columns: columnas,
+            language: dataTableLanguage
+        });
+    }
+
     // MP
-const columnasMP = [
+    const columnasMP = [
+        { data: 'FechaHora' }, // Nuevo campo de fecha
         { data: 'Lote' },
         { data: 'Proveedor' },
         { data: 'Articulo' },
         { data: 'UnidadMedida' },
+        { data: 'Brix' }, // Nuevo campo de Brix
         { data: 'CantidadDisponible' },
         { data: 'PrecioUnitario' },
         {
@@ -64,26 +67,28 @@ const columnasMP = [
                 return `<input type="checkbox" class="form-check-input select-mp" value="${data}">`;
             }
         }
-];
-    
-const LotesMP = inicializarDataTable(
-    '#LotesMP',
-    '../AJAX/ctrInvFrutas.php',
-    { action: 'cargarMateriaPrima' },
-    columnasMP,
-    function (row) {
-        return row.CantidadDisponible > 0; // Filtro: solo mostrar registros con cantidad disponible
-    }
-);
+    ];
 
+    const LotesMP = inicializarDataTable(
+        '#LotesMP',
+        '../AJAX/ctrInvFrutas.php',
+        { action: 'cargarMateriaPrima' },
+        columnasMP,
+        function (row) {
+            return row.CantidadDisponible > 0; // Filtro: solo mostrar registros con cantidad disponible
+        }
+    );
+
+ 
     // INSUMOS
     const columnasINS = [
+        { data: 'FechaHora' }, // Nuevo campo de fecha
         { data: 'Lote' },
         { data: 'Proveedor' },
         { data: 'Insumo' },
-        { data: 'Unidad_Medida' },
-        { data: 'Cantidad_Restante' },
-        { data: 'Precio_Unitario' },
+        { data: 'UnidadMedida' },
+        { data: 'CantidadRestante' },
+        { data: 'PrecioUnitario' },
         {
             data: null,
             render: function (data, type, row) {
@@ -93,7 +98,7 @@ const LotesMP = inicializarDataTable(
                         <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
                     </div>
                     <input type="number" class="form-control cantidad-consumir text-center" 
-                           value="0" min="0" max="${row.Cantidad_Restante}" step="0.5" disabled>
+                           value="0" min="0" max="${row.CantidadRestante}" step="0.5" disabled>
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
                     </div>
@@ -101,9 +106,9 @@ const LotesMP = inicializarDataTable(
             }
         },
         {
-            data: null,
-            render: function (data, type, row) {
-                return `<input type="checkbox" class="form-check-input seleccionar-checkbox" value="${row.ID}">`;
+            data: 'ID',
+            render: function (data) {
+                return `<input type="checkbox" class="form-check-input seleccionar-checkbox" value="${data}">`;
             }
         }
     ];
@@ -114,10 +119,9 @@ const LotesMP = inicializarDataTable(
         { action: 'cargarInsumosTabla' },
         columnasINS,
         function (row) {
-            return row.Cantidad_Restante > 0; // Filtro: solo mostrar registros con cantidad restante
+            return row.CantidadRestante > 0; // Filtro: solo mostrar registros con cantidad restante
         }
     );
-
     // MANO DE OBRA
     const columnasMO = [
         { data: 'cat_id'}, // ID oculto
@@ -301,11 +305,13 @@ $('#btnRegistrarProduccionModal').on('click', function () {
     const lotes_ins = JSON.stringify(getLotesINS());
     const mano_obra = JSON.stringify(getDatosManoObra());
     const costos_indirectos = JSON.stringify(getCostosIndirectos());
+    const presentaciones_pt = JSON.stringify(getPresentacionesPT());
 
     console.log("Datos de Materia Prima:", JSON.parse(lotes_mp));
     console.log("Datos de Insumos:", JSON.parse(lotes_ins));
     console.log("Datos de Mano de Obra:", JSON.parse(mano_obra));
     console.log("Datos de Costos Indirectos:", JSON.parse(costos_indirectos));
+    console.log("Datos de Producto Terminado:", JSON.parse(presentaciones_pt));
 
     $.ajax({
         url: '../AJAX/ctrProduccionMP.php',
@@ -316,7 +322,8 @@ $('#btnRegistrarProduccionModal').on('click', function () {
             lotes_mp: lotes_mp,
             lotes_ins: lotes_ins,
             mano_obra: mano_obra,
-            costos_indirectos: costos_indirectos
+            costos_indirectos: costos_indirectos,
+            presentaciones_pt: presentaciones_pt
         },
         success: function (response) {
             try {
@@ -340,6 +347,24 @@ $('#btnRegistrarProduccionModal').on('click', function () {
     });
 });
 
+
+// Función para obtener los datos de Producto Terminado
+function getPresentacionesPT() {
+    let presentaciones = [];
+    $('#tablaPresentaciones tbody tr').each(function () {
+        const presentacion = $(this).find('td:eq(0)').text();
+        const cant_disponible = parseFloat($(this).find('td:eq(1)').text()) || 0;
+        const p_u = parseFloat($(this).find('.costo-unitario').text().replace('$', '')) || 0;
+        const p_t = parseFloat($(this).find('.costo-total').text().replace('$', '')) || 0;
+        presentaciones.push({
+            presentacion: presentacion,
+            cant_disponible: cant_disponible,
+            p_u: p_u,
+            p_t: p_t
+        });
+    });
+    return presentaciones;
+}
 // Funciones para obtener los datos de las pestañas
 function getLotesMP() {
     let lotes = [];

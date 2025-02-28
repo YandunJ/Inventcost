@@ -109,10 +109,10 @@ function addArticulo() {
             $_POST['unidad_medida']
         );
 
-        if ($result) {
+        if ($result === true) {
             echo json_encode(['status' => 'success', 'message' => 'Artículo registrado correctamente.']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Error al registrar el artículo.']);
+            echo json_encode(['status' => 'error', 'message' => $result['error']]);
         }
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
@@ -139,10 +139,10 @@ function updateArticulo() {
             $_POST['unidad_medida']
         );
 
-        if ($result) {
+        if ($result === true) {
             echo json_encode(['status' => 'success', 'message' => 'Artículo actualizado correctamente.']);
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'No se pudo actualizar el artículo.']);
+            echo json_encode(['status' => 'error', 'message' => $result['error']]);
         }
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);

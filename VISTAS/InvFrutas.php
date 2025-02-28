@@ -126,8 +126,8 @@
             <th>Fecha</th>
             <th>Lote</th>
             <th>Proveedor</th>
-            <th>Artículo</th>
-            <th>Present.</th>
+            <th>Fruta</th>
+            
             <th>Cant. Inicial</th>
             <th>Cant. Disp.</th>
             <th>Precio Unit.</th>
@@ -145,9 +145,6 @@
                 </div>
             </section>
         </div>
-
-
-
 
 
            <!-- Main Footer -->

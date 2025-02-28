@@ -117,16 +117,17 @@
                     <table id="inventarioInsumosdt" class="table table-bordered table-hover table-compact">
     <thead>
         <tr>
+        <th>Fecha</th>
             <th>Lote</th>
             <th>Proveedor</th>
             <th>Insumo</th>
-            <th>Ud Medida</th>
-            <th>Cantidad</th>
-            <th>Stock</th>
-            <th>Precio Unitario</th>
-            <th>Precio Total</th>
             <th>Presentación</th>
-            <th>Estado</th>
+            <th>Cant. Inicial</th>
+            <th>Cant. Disp.</th>
+            <th>Precio Unit.</th>
+            <th>Precio Total</th>
+            <th>Fecha Elaboración</th>
+            <th>Fecha Caducidad</th>
             <th>Acciones</th>
         </tr>
     </thead>
@@ -140,17 +141,20 @@
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- jQuery -->
+     
+           <!-- Main Footer -->
+           <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                FRAN FRUIT
+            </div>
+            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
+        </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
-<!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
-
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <!-- Custom JS  -->
     <script src="JS/invInsumos.js"></script>
     <script src="JS/DTesp.js"></script>

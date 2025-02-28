@@ -37,10 +37,6 @@ switch ($action) {
         case 'cargarInsumosTabla':
             cargarInsumosTabla();
             break;
-            
-        case 'eliminarInsumo':
-            eliminarInsumo();
-            break;
       
         case 'obtenerUnidadMedida':
             obtenerUnidadMedida();
@@ -111,64 +107,38 @@ switch ($action) {
         }
     }
 
-
     function guardarInsumo() {
         global $conn;
         $insumosModel = new InventarioInsumos();
     
         // Capturar datos del formulario y ajustar nombres según el SP y la tabla
         $proveedor_id = $_POST['proveedor_id'];
-        $cat_id = $_POST['id_articulo'];
+        $cat_id = $_POST['id_articulo']; // Asegúrate de que el nombre del campo coincida con el formulario
         $fecha_elaboracion = $_POST['fecha_elaboracion'];
         $fecha_caducidad = $_POST['fecha_caducidad'];
         $numero_lote = $_POST['numero_lote'];
-        $presentacion = $_POST['unidad_medida'];
         $cantidad_ingresada = $_POST['cantidad_ingresada'];
         $precio_unitario = $_POST['precio_unitario'];
         $precio_total = $_POST['precio_total'];
     
         try {
             // Llamada al método de inserción con los parámetros necesarios
-            $insumosModel->insertarInsumo($proveedor_id, $cat_id, $fecha_elaboracion, $fecha_caducidad, $numero_lote, $presentacion, $cantidad_ingresada, $precio_unitario, $precio_total);
+            $insumosModel->insertarInsumo($proveedor_id, $cat_id, $fecha_elaboracion, $fecha_caducidad, $numero_lote, $cantidad_ingresada, $precio_unitario, $precio_total);
             echo json_encode(['status' => 'success', 'message' => 'Insumo agregado exitosamente']);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
-
     function cargarInsumosTabla() {
-        global $conn;
-        header('Content-Type: application/json');
-        $insumosModel = new InventarioInsumos($conn);
+        $insumosModel = new InventarioInsumos();  // La conexión se establece en el constructor
     
         try {
-            $data = $insumosModel->obtenerInvenInsumos();
-    
-            // Mapeo para las columnas requeridas por el DataTable
-            $mappedData = array_map(function ($row) {
-                return [
-                    'Lote' => $row['lote'],
-                    'Proveedor' => $row['proveedor'], // Reemplazar con nombre de proveedor si es necesario
-                    'Insumo' => $row['insumo'], // Reemplazar con nombre de insumo si es necesario
-                    'Unidad_Medida' => 'Unidad', // Ajusta según sea necesario
-                    'Cantidad' => $row['cant_ingresada'],
-                    'Cantidad_Restante' => $row['cant_restante'],
-                    'Precio_Unitario' => $row['p_u'],
-                    'Precio_Total' => $row['p_t'],
-                    'Presentacion' => $row['presentacion'],
-                    'Estado' => 'Activo', // Agregar lógica si se maneja el estado
-                    'ID' => $row['id_inv']
-                ];
-            }, $data);
-    
-            echo json_encode(['status' => 'success', 'data' => $mappedData]);
+            $data = $insumosModel->obtenerInventarioINS();
+            echo json_encode(['status' => 'success', 'data' => $data]);
         } catch (Exception $e) {
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
-    
-
-
 function cargarInsumoId() {
     global $conn;
     $inventins_id = $_POST['inventins_id'];
@@ -208,17 +178,5 @@ function actualizarInsumo() {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
-
-function eliminarInsumo() {
-    $id_inv = $_POST['id_inv'];  // Recibe el ID de inventario desde la solicitud
-    $insumosModel = new  InventarioInsumos();
-    try {
-        $insumosModel->eliminar($id_inv);
-        echo json_encode(['status' => 'success']);
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-    }
-}
-
 
 ?>

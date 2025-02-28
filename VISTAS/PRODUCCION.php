@@ -67,13 +67,16 @@
                                                 <table class="table table-bordered table-hover table-compact" id="LotesMP">
                                                     <thead>
                                                         <tr>
+                                                        <th>Fecha</th> <!-- Nuevo campo de fecha -->
                                                             <th>Lote</th>
                                                             <th>Proveedor</th>
-                                                            <th>Fruta</th>
-                                                            <th>Unid. Medida</th>
-                                                            <th>Disponible</th>
-                                                            <th>Precio U.</th>
-                                                            <th>Cantidad a Consumir</th>
+                                                            <th>Artículo</th>
+                                                            <th>Unidad de Medida</th>
+                                                            <th>Brix</th> <!-- Nuevo campo de Brix -->
+                                                            <th>Cantidad Disponible</th>
+                                                            <th>Precio</th>
+                                                            
+                                                            <th>Acciones</th>
                                                             <th>Seleccionar</th>
                                                         </tr>
                                                     </thead>
@@ -84,16 +87,17 @@
                                             <div class="tab-pane fade" id="insumos" role="tabpanel">
                                                 <table class="table table-bordered table-hover table-compact" id="LotesINS">
                                                     <thead>
-                                                        <tr>
-                                                            <th>Lote</th>
-                                                            <th>Proveedor</th>
-                                                            <th>Insumo</th>
-                                                            <th>Ud Medida</th>
-                                                            <th>Disponible</th>
-                                                            <th>Precio U.</th>
-                                                            <th>Cantidad a Consumir</th>
-                                                            <th>Seleccionar</th>
-                                                        </tr>
+                                                    <tr>
+                                                        <th>Fecha</th> <!-- Nuevo campo de fecha -->
+                                                        <th>Lote</th>
+                                                        <th>Proveedor</th>
+                                                        <th>Insumo</th>
+                                                        <th>Unidad de Medida</th>
+                                                        <th>Cantidad Restante</th>
+                                                        <th>Precio Unitario</th>
+                                                        <th>Acciones</th>
+                                                        <th>Seleccionar</th>
+                                                    </tr>
                                                     </thead>
                                                     <tbody></tbody>
                                                 </table>
@@ -143,52 +147,44 @@
                                                     </tfoot>
                                                 </table>
                                             </div>
-                                            <!-- Pestaña Producto Terminado -->
-                                            <div class="tab-pane fade" id="productoTerminado" role="tabpanel">
-                                                <form id="formProductoTerminado">
-                                                    <div class="form-group row">
-                                                        <label for="loteProductoTerminado" class="col-sm-2 col-form-label">Lote</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
-                                                        </div>
-                                                    </div>
-                                                    <div id="presentacionesContainer">
-                                                        <div class="form-group row">
-                                                            <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
-                                                            <div class="col-sm-4">
-                                                                <select class="form-control" id="presentacionProducto">
-                                                                    <option value="">Seleccione una presentación</option>
-                                                                </select>
-                                                            </div>
-                                                            <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
-                                                            <div class="col-sm-4">
-                                                                <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
-                                                            </div>
-                                                        </div>
-                                                        <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
-                                                    </div>
-                                                    <div class="mt-4">
-                                                        <table class="table table-bordered" id="tablaPresentaciones">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Presentación</th>
-                                                                    <th>Cantidad</th>
-                                                                    <th>Costo Unitario</th>
-                                                                    <th>Costo Total</th>
-                                                                    <th>Acciones</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody></tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="form-group row mt-3">
-                                                        <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
-                                                        <div class="col-sm-10">
-                                                            <input type="number" class="form-control" id="totalPresentaciones" readonly>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                       <!-- Pestaña Producto Terminado -->
+<div class="tab-pane fade" id="productoTerminado" role="tabpanel">
+    <form id="formProductoTerminado">
+        <div class="form-group row">
+            <label for="loteProductoTerminado" class="col-sm-2 col-form-label">Lote</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="loteProductoTerminado" placeholder="Lote" readonly>
+            </div>
+        </div>
+        <div id="presentacionesContainer">
+            <div class="form-group row">
+                <label for="presentacionProducto" class="col-sm-2 col-form-label">Presentación</label>
+                <div class="col-sm-4">
+                    <select class="form-control" id="presentacionProducto">
+                    </select>
+                </div>
+                <label for="cantidadPresentacion" class="col-sm-2 col-form-label">Cantidad</label>
+                <div class="col-sm-4">
+                    <input type="number" class="form-control" id="cantidadPresentacion" placeholder="Cantidad">
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary" id="btnAgregarPresentacion">Agregar Producto</button>
+        </div>
+        <div class="mt-4">
+            <table class="table table-bordered" id="tablaPresentaciones">
+                <thead>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="form-group row mt-3">
+            <label for="totalPresentaciones" class="col-sm-2 col-form-label">Total Pulpa Producida (gr)</label>
+            <div class="col-sm-10">
+                <input type="number" class="form-control" id="totalPresentaciones" readonly>
+            </div>
+        </div>
+    </form>
+</div>
                                             <!-- Sección de Subtotales -->
                                             <div class="row mt-4">
                                                 <div class="col-md-12">

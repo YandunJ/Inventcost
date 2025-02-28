@@ -9,12 +9,49 @@ class Produccion {
         $this->conn = $conexion->FN_getConnect();
     }
 
-    public function registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos) {
-        $sql = "CALL PR_consumo(?, ?, ?, ?, ?)";
+    public function generarNumeroLotePT() {
+        $prefijo = 'PT_';
+        $fecha = date('dmy');
+
+        // Obtener el último número de lote para la fecha actual
+        $stmt = $this->conn->prepare("
+            SELECT lote_PT 
+            FROM produccion 
+            WHERE lote_PT LIKE CONCAT(?, ?, '%')
+            ORDER BY CAST(SUBSTRING(lote_PT, LENGTH(?) + LENGTH(?) + 1) AS UNSIGNED) DESC 
+            LIMIT 1
+        ");
+        $stmt->bind_param('ssss', $prefijo, $fecha, $prefijo, $fecha);
+        $stmt->execute();
+        $stmt->bind_result($ultimoLote);
+        $stmt->fetch();
+        $stmt->close();
+
+        $nuevoConsecutivo = $ultimoLote 
+            ? intval(substr($ultimoLote, strlen($prefijo . $fecha))) + 1 
+            : 1;
+
+        return $prefijo . $fecha . $nuevoConsecutivo;
+    }
+
+    public function registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt) {
+        $sql = "CALL PR_consumo(?, ?, ?, ?, ?, @pro_id)";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("dssss", $cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos);
     
         if ($stmt->execute()) {
+            // Obtener el ID de la producción generada
+            $result = $this->conn->query("SELECT @pro_id AS pro_id");
+            $row = $result->fetch_assoc();
+            $pro_id = $row['pro_id'];
+
+            // Llamar al procedimiento almacenado TP_reg para registrar las presentaciones de PT
+            $sql_pt = "CALL TP_reg(?, ?)";
+            $stmt_pt = $this->conn->prepare($sql_pt);
+            $stmt_pt->bind_param("is", $pro_id, $presentaciones_pt);
+            $stmt_pt->execute();
+            $stmt_pt->close();
+
             return ['status' => 'success', 'message' => 'Producción registrada correctamente'];
         } else {
             return ['status' => 'error', 'message' => $stmt->error];
