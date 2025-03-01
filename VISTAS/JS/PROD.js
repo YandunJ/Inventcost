@@ -292,8 +292,6 @@ $(document).ready(function () {
 
     return validMP && validINS && validMO && validCI;
 }
-
-// Función para registrar la producción
 $('#btnRegistrarProduccionModal').on('click', function () {
     if (!validarDatosProduccion()) {
         alert('Por favor, complete todos los datos necesarios en cada pestaña antes de registrar la producción.');
@@ -306,12 +304,14 @@ $('#btnRegistrarProduccionModal').on('click', function () {
     const mano_obra = JSON.stringify(getDatosManoObra());
     const costos_indirectos = JSON.stringify(getCostosIndirectos());
     const presentaciones_pt = JSON.stringify(getPresentacionesPT());
+    const lote_pt = $('#loteProductoTerminado').val(); // Obtener el lote de Producto Terminado
 
     console.log("Datos de Materia Prima:", JSON.parse(lotes_mp));
     console.log("Datos de Insumos:", JSON.parse(lotes_ins));
     console.log("Datos de Mano de Obra:", JSON.parse(mano_obra));
     console.log("Datos de Costos Indirectos:", JSON.parse(costos_indirectos));
     console.log("Datos de Producto Terminado:", JSON.parse(presentaciones_pt));
+    console.log("Lote de Producto Terminado:", lote_pt);
 
     $.ajax({
         url: '../AJAX/ctrProduccionMP.php',
@@ -323,7 +323,8 @@ $('#btnRegistrarProduccionModal').on('click', function () {
             lotes_ins: lotes_ins,
             mano_obra: mano_obra,
             costos_indirectos: costos_indirectos,
-            presentaciones_pt: presentaciones_pt
+            presentaciones_pt: presentaciones_pt,
+            lote_pt: lote_pt
         },
         success: function (response) {
             try {
@@ -332,6 +333,8 @@ $('#btnRegistrarProduccionModal').on('click', function () {
                     alert('Producción registrada correctamente');
                     // Cerrar el modal
                     $('#modalRegistrarProduccion').modal('hide');
+                    // Limpiar el formulario
+                    limpiarFormularioProduccion();
                     // Actualizar el DataTable
                     $('#tablaProducciones').DataTable().ajax.reload();
                 } else {
@@ -346,8 +349,6 @@ $('#btnRegistrarProduccionModal').on('click', function () {
         }
     });
 });
-
-
 // Función para obtener los datos de Producto Terminado
 function getPresentacionesPT() {
     let presentaciones = [];
@@ -463,4 +464,56 @@ $('#LotesINS tbody').on('change', '.seleccionar-checkbox', function () {
 
     if (!isChecked) cantidadInput.val('0');
 });
+
+function limpiarFormularioProduccion() {
+    // Limpiar campos de Materia Prima
+    $('#LotesMP tbody tr').each(function () {
+        $(this).find('.select-mp').prop('checked', false);
+        $(this).find('.cantidad-consumir').val('0').prop('disabled', true);
+        $(this).find('.incrementar').prop('disabled', true);
+        $(this).find('.decrementar').prop('disabled', true);
+    });
+
+    // Limpiar campos de Insumos
+    $('#LotesINS tbody tr').each(function () {
+        $(this).find('.seleccionar-checkbox').prop('checked', false);
+        $(this).find('.cantidad-consumir').val('0').prop('disabled', true);
+        $(this).find('.incrementar').prop('disabled', true);
+        $(this).find('.decrementar').prop('disabled', true);
+    });
+
+    // Limpiar campos de Mano de Obra
+    $('#tablaManoObra tbody tr').each(function () {
+        $(this).find('.cantidad-personas').val('0');
+        $(this).find('.precio-ht').val('0');
+        $(this).find('.horas-por-dia').val('0');
+        $(this).find('.horas-trabajador').text('0');
+        $(this).find('.costo-dia').text('$0.00');
+    });
+
+    // Limpiar campos de Costos Indirectos
+    $('#tablaCostosIndirectos tbody tr').each(function () {
+        $(this).find('.cantidad-unidades').val('0');
+        $(this).find('.precio-unitario').val('0');
+        $(this).find('.costo-total').text('$0.00');
+    });
+
+    // Limpiar campos de Producto Terminado
+    $('#loteProductoTerminado').val('');
+    $('#presentacionProducto').val('');
+    $('#cantidadPresentacion').val('');
+    $('#tablaPresentaciones tbody').empty();
+    $('#totalPresentaciones').val('0');
+
+    // Limpiar subtotales
+    $('#subtotalMP').val('0.00');
+    $('#subtotalINS').val('0.00');
+    $('#subtotalMO').val('0.00');
+    $('#subtotalCA').val('0.00');
+    $('#totalProduccion').val('0.00');
+}
+
+
+
+
 });

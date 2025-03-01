@@ -71,12 +71,12 @@
                                                             <th>Lote</th>
                                                             <th>Proveedor</th>
                                                             <th>Artículo</th>
-                                                            <th>Unidad de Medida</th>
+                                                            <th>Presentacion</th>
                                                             <th>Brix</th> <!-- Nuevo campo de Brix -->
-                                                            <th>Cantidad Disponible</th>
+                                                            <th>Disponible</th>
                                                             <th>Precio</th>
                                                             
-                                                            <th>Acciones</th>
+                                                            <th>Cantidad Consumo</th>
                                                             <th>Seleccionar</th>
                                                         </tr>
                                                     </thead>
@@ -92,10 +92,10 @@
                                                         <th>Lote</th>
                                                         <th>Proveedor</th>
                                                         <th>Insumo</th>
-                                                        <th>Unidad de Medida</th>
-                                                        <th>Cantidad Restante</th>
+                                                        <th>Presentacion</th>
+                                                        <th>Disponible</th>
                                                         <th>Precio Unitario</th>
-                                                        <th>Acciones</th>
+                                                        <th>Cantidad Consumo</th>
                                                         <th>Seleccionar</th>
                                                     </tr>
                                                     </thead>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Producto Terminado</title>
+    <title>Lotes de Producto Terminado</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
     <link rel="stylesheet" href="../Public/css/ColorPanel.css">
@@ -14,8 +14,8 @@
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-            <!-- Navbar -->
-            <?php include 'MODULOS/BarraHorizontal.php';?>
+        <!-- Navbar -->
+        <?php include 'MODULOS/BarraHorizontal.php';?>
         <!-- Main Sidebar Container -->
         <?php
         if ($_SESSION['rol_id'] == 1) {
@@ -31,31 +31,23 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <!-- Form content goes here -->
-                    <h1>Registrar Producto Terminado</h1>
-                    <form>
-                        <div class="form-group">
-                            <label for="nombre_producto">Nombre del Producto</label>
-                            <input type="text" class="form-control" id="nombre_producto" placeholder="Nombre del Producto">
-                        </div>
-                        <div class="form-group">
-                            <label for="cantidad_producida">Cantidad Producida</label>
-                            <input type="number" class="form-control" id="cantidad_producida" placeholder="Cantidad Producida">
-                        </div>
-                        <div class="form-group">
-                            <label for="unidad_medida">Unidad de Medida</label>
-                            <input type="text" class="form-control" id="unidad_medida" placeholder="Unidad de Medida">
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha_produccion">Fecha de Producción</label>
-                            <input type="date" class="form-control" id="fecha_produccion">
-                        </div>
-                        <div class="form-group">
-                            <label for="fecha_caducidad">Fecha de Caducidad</label>
-                            <input type="date" class="form-control" id="fecha_caducidad">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Registrar</button>
-                    </form>
+                    <h1>Lotes de Producto Terminado</h1>
+                    <table id="tablaLotesPT" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID Lote</th>
+                                <th>Nombre del Producto</th>
+                                <th>Cantidad Disponible</th>
+                                <th>Precio Unitario</th>
+                                <th>Precio Total</th>
+                                <th>Fecha de Producción</th>
+                                <th>Fecha de Caducidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Datos de los lotes de PT se cargarán aquí -->
+                        </tbody>
+                    </table>
                 </div><!-- /.container-fluid -->
             </section>
             <!-- /.content -->
@@ -79,8 +71,6 @@
     <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
     <!-- Custom JS -->
-    <script src="assets/js/custom.js"></script>
-
-    <script src="JS/cerrarsesion.js"></script>
+    <script src="JS/LotesPT.js"></script>
 </body>
 </html>

@@ -34,28 +34,40 @@ class Produccion {
         return $prefijo . $fecha . $nuevoConsecutivo;
     }
 
-    public function registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt) {
-        $sql = "CALL PR_consumo(?, ?, ?, ?, ?, @pro_id)";
+    public function registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt, $lote_pt) {
+        $sql = "CALL PR_consumo(?, ?, ?, ?, ?, ?, @pro_id)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("dssss", $cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos);
+        $stmt->bind_param("dsssss", $cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $lote_pt);
     
         if ($stmt->execute()) {
             // Obtener el ID de la producción generada
             $result = $this->conn->query("SELECT @pro_id AS pro_id");
             $row = $result->fetch_assoc();
             $pro_id = $row['pro_id'];
-
+    
             // Llamar al procedimiento almacenado TP_reg para registrar las presentaciones de PT
             $sql_pt = "CALL TP_reg(?, ?)";
             $stmt_pt = $this->conn->prepare($sql_pt);
             $stmt_pt->bind_param("is", $pro_id, $presentaciones_pt);
             $stmt_pt->execute();
             $stmt_pt->close();
-
+    
             return ['status' => 'success', 'message' => 'Producción registrada correctamente'];
         } else {
             return ['status' => 'error', 'message' => $stmt->error];
         } 
+    }
+
+    public function cancelarProduccion($pro_id) {
+        $sql = "CALL PR_cancelar_prod(?)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $pro_id);
+
+        if ($stmt->execute()) {
+            return ['status' => 'success', 'message' => 'Producción cancelada correctamente'];
+        } else {
+            return ['status' => 'error', 'message' => $stmt->error];
+        }
     }
 
     public function obtenerPresentacionesPT() {

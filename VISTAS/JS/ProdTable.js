@@ -36,6 +36,9 @@ $(document).ready(function () {
                                 <a class="dropdown-item edit-btn" href="#" data-id="${row.pro_id}">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
+                                <a class="dropdown-item cancel-btn" href="#" data-id="${row.pro_id}">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
                             </div>
                         </div>
                     `;
@@ -95,5 +98,39 @@ $(document).ready(function () {
                 console.error("Response: ", xhr.responseText);
             }
         });
+    });
+
+    // Función para cancelar una producción
+    $('#tablaProducciones').on('click', '.cancel-btn', function () {
+        const pro_id = $(this).data('id');
+        const confirmCancel = confirm('¿Está seguro de que desea cancelar esta producción? Esta acción no se puede deshacer.');
+
+        if (confirmCancel) {
+            // Llamar al procedimiento almacenado para cancelar la producción
+            $.ajax({
+                url: '../AJAX/ctrProduccionMP.php',
+                type: 'POST',
+                data: { action: 'cancelarProduccion', pro_id: pro_id },
+                success: function(response) {
+                    console.log("Response: ", response); // Imprimir la respuesta en la consola
+                    try {
+                        const result = JSON.parse(response);
+
+                        if (result.status === 'success') {
+                            alert('Producción cancelada correctamente');
+                            // Actualizar el DataTable
+                            tablaProducciones.ajax.reload();
+                        } else {
+                            alert('Error: ' + result.message);
+                        }
+                    } catch (e) {
+                        alert('Error en la respuesta del servidor: ' + response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error en la solicitud AJAX: ' + error);
+                }
+            });
+        }
     });
 });

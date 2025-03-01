@@ -1,15 +1,21 @@
 SELECT * FROM fpulpas.inventario_pt;
 CREATE TABLE `inventario_pt` (
   `id_pt` int NOT NULL AUTO_INCREMENT,
-  `pro_id` int NOT NULL, -- Relación con la producción
-  `presentacion` varchar(20) NOT NULL, -- Presentación del PT
-  `cant_disponible` decimal(10,2) NOT NULL, -- Cantidad disponible
-  `p_u` decimal(10,2) NOT NULL, -- Precio unitario
-  `p_t` decimal(10,2) NOT NULL, -- Precio total
+  `pro_id` int NOT NULL,
+  `presentacion` varchar(20) NOT NULL,
+  `cant_disponible` decimal(10,2) NOT NULL,
+  `p_u` decimal(10,2) NOT NULL,
+  `p_t` decimal(10,2) NOT NULL,
+  `p_v_s` decimal(10,2) DEFAULT NULL,
+  `fecha_caducidad` date DEFAULT NULL,
+  `composicion` text,
+  `estado` enum('disponible','stock bajo','agotado') DEFAULT 'disponible',
+  `observacion` text,
   PRIMARY KEY (`id_pt`),
   KEY `pro_id` (`pro_id`),
   CONSTRAINT `inventario_pt_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `produccion` (`pro_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 DELIMITER $$
 
@@ -227,13 +233,13 @@ SET @pro_id = 0;
 -- Llamar al SP PR_consumo
 CALL PR_consumo(
     50.00, -- Cantidad producida
-    '[{"id_inv": 1, "cantidad": 1.00}]', -- Lotes de materia prima
-    '[{"id_inv": 3, "cantidad": 1.00}]', -- Lotes de insumos
+    '[{"id_inv": 3, "cantidad": 1.00}]', -- Lotes de materia prima
+    '[{"id_inv": 4, "cantidad": 1.00}]', -- Lotes de insumos
     '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 8, "mo_precio_hora": 50}]', -- Mano de obra
     '[{"cat_id": 2, "cst_cant": 5, "cst_presentacion": "LITROS", "cst_precio_ht": 30}]', -- Costos indirectos
+    'PT_2802253', -- Lote de Producto Terminado
     @pro_id -- Parámetro de salida para el ID de la producción
 );
-
 -- Verificar el ID de la producción generada
 SELECT @pro_id;
 
@@ -246,3 +252,66 @@ CALL TP_reg(
 
 -- Verificar los registros en la tabla inventario_pt
 SELECT * FROM inventario_pt WHERE pro_id = @pro_id;
+
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `PR_cancelar_prod`(
+    IN p_pro_id INT -- ID de la producción a cancelar
+)
+BEGIN
+    DECLARE v_lote_id INT;
+    DECLARE v_cantidad DECIMAL(10,2);
+    DECLARE done INT DEFAULT FALSE;
+
+    -- Cursor para recorrer los consumos de la producción
+    DECLARE cur CURSOR FOR
+        SELECT id_inv, pdet_cantidad_usada
+        FROM prod_detalle
+        WHERE pro_id = p_pro_id;
+
+    -- Manejador para cuando no haya más registros en el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Iniciar la reversión de los consumos
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_lote_id, v_cantidad;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Revertir el consumo: aumentar la cantidad disponible en el lote
+        UPDATE inventario
+        SET cant_restante = cant_restante + v_cantidad
+        WHERE id_inv = v_lote_id;
+    END LOOP;
+    CLOSE cur;
+
+    -- Eliminar los lotes de PT asociados a la producción
+    DELETE FROM inventario_pt WHERE pro_id = p_pro_id;
+
+    -- Eliminar los costos asociados a la producción
+    DELETE FROM prcostos WHERE pro_id = p_pro_id;
+
+    -- Eliminar los consumos de la producción
+    DELETE FROM prod_detalle WHERE pro_id = p_pro_id;
+
+    -- Eliminar la producción
+    DELETE FROM produccion WHERE pro_id = p_pro_id;
+END$$
+
+DELIMITER ;
+
+
+-- Llamar al SP para cancelar la producción
+CALL PR_cancelar_prod(13);
+
+-- Verificar que la producción y sus registros relacionados se hayan eliminado
+SELECT * FROM produccion WHERE pro_id = 18;
+SELECT * FROM prod_detalle WHERE pro_id = 18;
+SELECT * FROM inventario_pt WHERE pro_id = 18;
+SELECT * FROM prcostos WHERE pro_id = 18;
+
+-- Verificar que los consumos se hayan revertido
+SELECT * FROM inventario WHERE id_inv IN (3, 4);

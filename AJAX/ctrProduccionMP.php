@@ -1,6 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// filepath: /c:/inetpub/wwwroot/adfrutas/AJAX/ctrProduccionMP.php
 
 require_once "../CONFIG/conexion.php";
 require_once "../MODELO/modProduccionMP.php";
@@ -29,11 +28,31 @@ switch ($action) {
     case 'generarNumeroLotePT':
         generarNumeroLotePT();
         break;
-    
+
+    case 'cancelarProduccion':
+        cancelarProduccion();
+        break;
 
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
+}
+
+function cancelarProduccion() {
+    $produccion = new Produccion();
+    $pro_id = isset($_POST['pro_id']) ? $_POST['pro_id'] : null;
+
+    if (!$pro_id) {
+        echo json_encode(['status' => 'error', 'message' => 'ID de producción no proporcionado']);
+        return;
+    }
+
+    try {
+        $result = $produccion->cancelarProduccion($pro_id);
+        echo json_encode($result);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
 }
 
 function generarNumeroLotePT() {
@@ -68,7 +87,6 @@ function obtenerPresentacionesPT() {
     exit;
 }
 
-
 function registrarProduccion() {
     $produccion = new Produccion();
     
@@ -78,14 +96,16 @@ function registrarProduccion() {
     $mano_obra = isset($_POST['mano_obra']) ? $_POST['mano_obra'] : '[]';
     $costos_indirectos = isset($_POST['costos_indirectos']) ? $_POST['costos_indirectos'] : '[]';
     $presentaciones_pt = isset($_POST['presentaciones_pt']) ? $_POST['presentaciones_pt'] : '[]';
+    $lote_pt = isset($_POST['lote_pt']) ? $_POST['lote_pt'] : '';
 
     try {
-        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt);
+        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt, $lote_pt);
         echo json_encode($result);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
+
 function obtenerProducciones() {
     global $conn;
     $sql = "CALL PROD_data_G()";

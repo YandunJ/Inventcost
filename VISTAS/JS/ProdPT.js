@@ -1,5 +1,10 @@
 $(document).ready(function () {
     // Validación para acceder a la pestaña de Producto Terminado
+
+    $('#modalRegistrarProduccion').on('show.bs.modal', function () {
+        // Activar la primera pestaña (Materia Prima)
+        $('#myTab a[href="#materiaPrima"]').tab('show');
+    });
     function validarAccesoProductoTerminado() {
         const lotesMP = getLotesMP();
         const lotesINS = getLotesINS();

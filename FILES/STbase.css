@@ -40,7 +40,8 @@ h1, h3 {
 
 h1 {
     font-size: 1.8rem;
-    color: #007bff;
+    /* color: #007bff; */
+    color: #035cba;
     border-bottom: 2px solid #1c497a;
     padding-bottom: 0.5rem;
 }
