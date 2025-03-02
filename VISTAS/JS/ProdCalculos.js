@@ -1,10 +1,10 @@
 // ============================
 // CALCULOS DE SUBTOTALES PESTAÑAS
 // ===========================
-function recalcularSubtotal(selectorTabla, campoSubtotal, precioColumna) {
+function recalcularSubtotal(selectorTabla, campoSubtotal, cantidadColumna, precioColumna) {
     let total = 0;
     $(`${selectorTabla} tbody tr`).each(function () {
-        const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+        const cantidad = parseFloat($(this).find(`td:eq(${cantidadColumna}) .cantidad-consumir`).val()) || 0;
         const precio = parseFloat($(this).find(`td:eq(${precioColumna})`).text()) || 0;
         total += cantidad * precio;
     });
@@ -14,12 +14,12 @@ function recalcularSubtotal(selectorTabla, campoSubtotal, precioColumna) {
 
 // Recalcular subtotal de Materia Prima
 function recalcularSubtotalMateriaPrima() {
-    recalcularSubtotal('#LotesMP', '#subtotalMP', 5);
+    recalcularSubtotal('#LotesMP', '#subtotalMP', 8, 7); // Cantidad Consumo en columna 8, Precio en columna 7
 }
 
 // Recalcular subtotal de Insumos
 function recalcularSubtotalInsumos() {
-    recalcularSubtotal('#LotesINS', '#subtotalINS', 5);
+    recalcularSubtotal('#LotesINS', '#subtotalINS', 7, 6); // Cantidad Consumo en columna 7, Precio en columna 6
 }
 
 // Eventos de cambio en insumos, MP, mano de obra y costos indirectos
@@ -46,7 +46,6 @@ function recalcularTotalCostosIndirectos() {
     $('#subtotalCA').val(total.toFixed(2));
     recalcularCostoTotalProduccion();
 }
-
 
 // CALCULOS DE MANO DE OBRA ------
 $('#tablaManoObra').on('input', '.cantidad-personas, .horas-por-dia, .precio-ht', function () {

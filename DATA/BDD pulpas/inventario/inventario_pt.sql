@@ -1,27 +1,11 @@
 SELECT * FROM fpulpas.inventario_pt;
-CREATE TABLE `inventario_pt` (
-  `id_pt` int NOT NULL AUTO_INCREMENT,
-  `pro_id` int NOT NULL,
-  `presentacion` varchar(20) NOT NULL,
-  `cant_disponible` decimal(10,2) NOT NULL,
-  `p_u` decimal(10,2) NOT NULL,
-  `p_t` decimal(10,2) NOT NULL,
-  `p_v_s` decimal(10,2) DEFAULT NULL,
-  `fecha_caducidad` date DEFAULT NULL,
-  `composicion` text,
-  `estado` enum('disponible','stock bajo','agotado') DEFAULT 'disponible',
-  `observacion` text,
-  PRIMARY KEY (`id_pt`),
-  KEY `pro_id` (`pro_id`),
-  CONSTRAINT `inventario_pt_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `produccion` (`pro_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
+-- ultimo
 DELIMITER $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `TP_reg`(
-   IN p_pro_id INT, -- ID de la producción
-    IN p_presentaciones JSON -- JSON con las presentaciones y cantidades
+    IN p_pro_id INT, -- ID de la producción
+    IN p_fecha_elaboracion DATE, -- Fecha de elaboración (misma que la producción)
+    IN p_presentaciones JSON -- JSON con las presentaciones, cantidades y costos
 )
 BEGIN
     DECLARE i INT DEFAULT 0;
@@ -29,6 +13,11 @@ BEGIN
     DECLARE v_cant_disponible DECIMAL(10,2);
     DECLARE v_p_u DECIMAL(10,2);
     DECLARE v_p_t DECIMAL(10,2);
+    DECLARE v_precio_venta_sugerido DECIMAL(10,2);
+    DECLARE v_fecha_caducidad DATE;
+    DECLARE v_composicion TEXT;
+    DECLARE v_estado ENUM('disponible', 'stock bajo', 'agotado') DEFAULT 'disponible';
+    DECLARE v_observacion TEXT DEFAULT NULL;
 
     -- Recorrer el JSON de presentaciones
     WHILE i < JSON_LENGTH(p_presentaciones) DO
@@ -37,12 +26,21 @@ BEGIN
         SET v_cant_disponible = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].cant_disponible')));
         SET v_p_u = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].p_u')));
         SET v_p_t = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].p_t')));
+        SET v_composicion = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].composicion')));
+
+        -- Calcular el precio de venta sugerido (costo unitario + 20%)
+        SET v_precio_venta_sugerido = v_p_u * 1.20;
+
+        -- Calcular la fecha de caducidad (fecha de elaboración + 30 días)
+        SET v_fecha_caducidad = DATE_ADD(p_fecha_elaboracion, INTERVAL 30 DAY);
 
         -- Insertar el registro en la tabla inventario_pt
         INSERT INTO inventario_pt (
-            pro_id, presentacion, cant_disponible, p_u, p_t
+            pro_id, presentacion, cant_disponible, p_u, p_t,
+            p_v_s, fecha_caducidad, composicion, estado, observacion
         ) VALUES (
-            p_pro_id, v_presentacion, v_cant_disponible, v_p_u, v_p_t
+            p_pro_id, v_presentacion, v_cant_disponible, v_p_u, v_p_t,
+            v_precio_venta_sugerido, v_fecha_caducidad, v_composicion, v_estado, v_observacion
         );
 
         -- Incrementar el contador
@@ -52,6 +50,52 @@ END$$
 
 DELIMITER ;
 
+
+
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `TP_reg`(
+    IN p_pro_id INT, -- ID de la producción
+    IN p_composicion TEXT, -- Composición de las frutas utilizadas
+    IN p_presentaciones JSON -- JSON con las presentaciones y cantidades
+)
+BEGIN
+    DECLARE i INT DEFAULT 0;
+    DECLARE v_presentacion VARCHAR(20);
+    DECLARE v_cant_disponible DECIMAL(10,2);
+    DECLARE v_p_u DECIMAL(10,2);
+    DECLARE v_p_t DECIMAL(10,2);
+    DECLARE v_precio_venta_sugerido DECIMAL(10,2);
+    DECLARE v_fecha_caducidad DATE;
+
+    -- Recorrer el JSON de presentaciones
+    WHILE i < JSON_LENGTH(p_presentaciones) DO
+        -- Obtener los valores de cada presentación
+        SET v_presentacion = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].presentacion')));
+        SET v_cant_disponible = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].cant_disponible')));
+        SET v_p_u = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].p_u')));
+        SET v_p_t = JSON_UNQUOTE(JSON_EXTRACT(p_presentaciones, CONCAT('$[', i, '].p_t')));
+
+        -- Calcular el precio de venta sugerido (costo unitario + 20%)
+        SET v_precio_venta_sugerido = v_p_u * 1.20;
+
+        -- Calcular la fecha de caducidad (fecha de elaboración + 30 días)
+        SET v_fecha_caducidad = DATE_ADD(NOW(), INTERVAL 30 DAY);
+
+        -- Insertar el registro en la tabla inventario_pt
+        INSERT INTO inventario_pt (
+            pro_id, presentacion, cant_disponible, p_u, p_t,
+            p_v_s, fecha_caducidad, composicion
+        ) VALUES (
+            p_pro_id, v_presentacion, v_cant_disponible, v_p_u, v_p_t,
+            v_precio_venta_sugerido, v_fecha_caducidad, p_composicion
+        );
+
+        -- Incrementar el contador
+        SET i = i + 1;
+    END WHILE;
+END$$
+DELIMITER ;
+-- ultimo fucnionando 
 DELIMITER $$
 
 CREATE PROCEDURE PR_consumo(
@@ -216,17 +260,6 @@ END$$
 DELIMITER ;
 
 
-
-CALL PR_consumo(
-    50.00, -- Cantidad producida
-    '[{"id_inv": 1, "cantidad": 1.00}]', -- Lotes de materia prima
-    '[{"id_inv": 3, "cantidad": 1.00}]', -- Lotes de insumos
-    '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 8, "mo_precio_hora": 50}]', -- Mano de obra
-    '[{"cat_id": 2, "cst_cant": 5, "cst_presentacion": "LITROS", "cst_precio_ht": 30}]' -- Costos indirectos
-);
-
-
-
 -- Declarar una variable para almacenar el ID de la producción
 SET @pro_id = 0;
 
@@ -302,16 +335,28 @@ BEGIN
 END$$
 
 DELIMITER ;
-
-
 -- Llamar al SP para cancelar la producción
 CALL PR_cancelar_prod(13);
 
--- Verificar que la producción y sus registros relacionados se hayan eliminado
-SELECT * FROM produccion WHERE pro_id = 18;
-SELECT * FROM prod_detalle WHERE pro_id = 18;
-SELECT * FROM inventario_pt WHERE pro_id = 18;
-SELECT * FROM prcostos WHERE pro_id = 18;
 
--- Verificar que los consumos se hayan revertido
-SELECT * FROM inventario WHERE id_inv IN (3, 4);
+-- ULTIMOS 
+
+-- Declarar variables para almacenar el ID de producción y la composición
+SET @pro_id = 0;
+SET @composicion = '';
+
+-- Llamar al SP PR_consumo
+CALL PR_consumo(
+    50.00, -- Cantidad producida
+    '[{"id_inv": 4, "cantidad": 1.00}]', -- Lotes de materia prima (MP)
+    '[{"id_inv": 6, "cantidad": 1.00}]', -- Lotes de insumos
+    '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 8, "mo_precio_hora": 50}]', -- Mano de obra
+    '[{"cat_id": 2, "cst_cant": 5, "cst_presentacion": "LITROS", "cst_precio_ht": 30}]', -- Costos indirectos
+    'PT_2802255', -- Lote de Producto Terminado
+    @pro_id, -- Parámetro de salida para el ID de la producción
+    @composicion -- Parámetro de salida para la composición de frutas
+);
+
+-- Verificar el ID de la producción y la composición generada
+SELECT @pro_id AS pro_id, @composicion AS composicion;
+

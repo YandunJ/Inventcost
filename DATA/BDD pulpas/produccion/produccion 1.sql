@@ -1,6 +1,5 @@
 SELECT * FROM fpulpas.produccion;
 
--- pro_lote VARCHAR(255) NOT NULL, 
 CREATE TABLE produccion (
     pro_id INT AUTO_INCREMENT PRIMARY KEY,
     pro_fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -12,6 +11,8 @@ CREATE TABLE produccion (
     pro_subtotal_ci DECIMAL(10,2) DEFAULT '0.00',
     pro_total DECIMAL(10,2) DEFAULT '0.00'
 );
+
+ALTER TABLE produccion ADD COLUMN lote_PT VARCHAR(50) UNIQUE;
 
 
 DELIMITER $$

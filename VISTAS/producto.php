@@ -1,16 +1,13 @@
-<?php include '../CONFIG/validar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotes de Producto Terminado</title>
-    <!-- AdminLTE CSS -->
-    <link rel="stylesheet" href="../Public/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="../Public/css/ColorPanel.css">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="../Public/plugins/fontawesome-free/css/all.min.css">
-    <link rel="stylesheet" href="../FILES/centrForm.css">
+    <title>Lotes Producto Terminado</title>
+    <link rel="stylesheet" href="../FILES/global.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -36,16 +33,13 @@
                         <thead>
                             <tr>
                                 <th>ID Lote</th>
-                                <th>Nombre del Producto</th>
-                                <th>Cantidad Disponible</th>
-                                <th>Precio Unitario</th>
-                                <th>Precio Total</th>
                                 <th>Fecha de Producción</th>
-                                <th>Fecha de Caducidad</th>
+                                <th>Presentaciones</th>
+                                <th>Total Disponible</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Datos de los lotes de PT se cargarán aquí -->
+                            <!-- Datos cargados dinámicamente -->
                         </tbody>
                     </table>
                 </div><!-- /.container-fluid -->
@@ -57,20 +51,19 @@
         <!-- Main Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
-                Custom footer text
+                FRAN FRUIT
             </div>
-            <strong>Copyright &copy; 2024 <a href="https://adminlte.io">FranFruit.io</a>.</strong> Derechos Reservados.
+            <strong>&copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>. Derechos Reservados.</strong>
         </footer>
     </div>
-    <!-- ./wrapper -->
-
-    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
     <script src="../Public/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
     <!-- Custom JS -->
-    <script src="JS/LotesPT.js"></script>
+    <script src="JS/invTerminado.js"></script>
 </body>
 </html>

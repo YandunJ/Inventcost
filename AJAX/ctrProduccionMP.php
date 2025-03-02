@@ -97,9 +97,10 @@ function registrarProduccion() {
     $costos_indirectos = isset($_POST['costos_indirectos']) ? $_POST['costos_indirectos'] : '[]';
     $presentaciones_pt = isset($_POST['presentaciones_pt']) ? $_POST['presentaciones_pt'] : '[]';
     $lote_pt = isset($_POST['lote_pt']) ? $_POST['lote_pt'] : '';
+    $fecha_elaboracion = isset($_POST['fecha_elaboracion']) ? $_POST['fecha_elaboracion'] : date('Y-m-d');
 
     try {
-        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt, $lote_pt);
+        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt, $lote_pt, $fecha_elaboracion);
         echo json_encode($result);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
