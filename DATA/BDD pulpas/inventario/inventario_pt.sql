@@ -1,5 +1,24 @@
 SELECT * FROM fpulpas.inventario_pt;
 -- ultimo
+CREATE TABLE `inventario_pt` (
+  `id_pt` int NOT NULL AUTO_INCREMENT,
+  `pro_id` int NOT NULL,
+  `presentacion` varchar(20) NOT NULL,
+  `cant_ingresada` decimal(10,2) NOT NULL,
+  `cant_disponible` decimal(10,2) NOT NULL,
+  `p_u` decimal(10,2) NOT NULL,
+  `p_t` decimal(10,2) NOT NULL,
+  `p_v_s` decimal(10,2) DEFAULT NULL,
+  `fecha_caducidad` date DEFAULT NULL,
+  `composicion` text,
+  `estado` enum('disponible','stock bajo','agotado') DEFAULT 'disponible',
+  `observacion` text,
+  PRIMARY KEY (`id_pt`),
+  KEY `pro_id` (`pro_id`),
+  CONSTRAINT `inventario_pt_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `produccion` (`pro_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 DELIMITER $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `TP_reg`(
@@ -51,12 +70,12 @@ END$$
 DELIMITER ;
 
 
-
 DELIMITER $$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `TP_reg`(
     IN p_pro_id INT, -- ID de la producción
-    IN p_composicion TEXT, -- Composición de las frutas utilizadas
-    IN p_presentaciones JSON -- JSON con las presentaciones y cantidades
+    IN p_fecha_elaboracion DATE, -- Fecha de elaboración
+    IN p_presentaciones JSON -- JSON con las presentaciones, cantidades y costos
 )
 BEGIN
     DECLARE i INT DEFAULT 0;
@@ -79,21 +98,22 @@ BEGIN
         SET v_precio_venta_sugerido = v_p_u * 1.20;
 
         -- Calcular la fecha de caducidad (fecha de elaboración + 30 días)
-        SET v_fecha_caducidad = DATE_ADD(NOW(), INTERVAL 30 DAY);
+        SET v_fecha_caducidad = DATE_ADD(p_fecha_elaboracion, INTERVAL 30 DAY);
 
         -- Insertar el registro en la tabla inventario_pt
         INSERT INTO inventario_pt (
             pro_id, presentacion, cant_disponible, p_u, p_t,
-            p_v_s, fecha_caducidad, composicion
+            p_v_s, fecha_caducidad
         ) VALUES (
             p_pro_id, v_presentacion, v_cant_disponible, v_p_u, v_p_t,
-            v_precio_venta_sugerido, v_fecha_caducidad, p_composicion
+            v_precio_venta_sugerido, v_fecha_caducidad
         );
 
         -- Incrementar el contador
         SET i = i + 1;
     END WHILE;
 END$$
+
 DELIMITER ;
 -- ultimo fucnionando 
 DELIMITER $$
@@ -338,25 +358,71 @@ DELIMITER ;
 -- Llamar al SP para cancelar la producción
 CALL PR_cancelar_prod(13);
 
+DELIMITER $$
 
--- ULTIMOS 
+CREATE TRIGGER data_adicional_inv_pt
+BEFORE INSERT ON inventario_pt
+FOR EACH ROW
+BEGIN
+    DECLARE v_fecha_elaboracion DATE;
+    DECLARE v_composicion TEXT DEFAULT '';
+    DECLARE v_fruta_nombre VARCHAR(100);
+    DECLARE done INT DEFAULT FALSE;
 
--- Declarar variables para almacenar el ID de producción y la composición
-SET @pro_id = 0;
-SET @composicion = '';
+    -- Cursor para obtener las frutas utilizadas en la producción
+    DECLARE cur CURSOR FOR
+        SELECT DISTINCT c.cat_nombre
+        FROM prod_detalle pd
+        JOIN inventario i ON pd.id_inv = i.id_inv
+        JOIN catalogo c ON i.cat_id = c.cat_id
+        JOIN categorias ct ON c.ctg_id = ct.ctg_id
+        WHERE pd.pro_id = NEW.pro_id 
+          AND ct.ctg_nombre = 'Materia Prima';
 
--- Llamar al SP PR_consumo
-CALL PR_consumo(
-    50.00, -- Cantidad producida
-    '[{"id_inv": 4, "cantidad": 1.00}]', -- Lotes de materia prima (MP)
-    '[{"id_inv": 6, "cantidad": 1.00}]', -- Lotes de insumos
-    '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 8, "mo_precio_hora": 50}]', -- Mano de obra
-    '[{"cat_id": 2, "cst_cant": 5, "cst_presentacion": "LITROS", "cst_precio_ht": 30}]', -- Costos indirectos
-    'PT_2802255', -- Lote de Producto Terminado
-    @pro_id, -- Parámetro de salida para el ID de la producción
-    @composicion -- Parámetro de salida para la composición de frutas
-);
+    -- Manejador para el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
--- Verificar el ID de la producción y la composición generada
-SELECT @pro_id AS pro_id, @composicion AS composicion;
+    -- Obtener la fecha de elaboración de la producción
+    SELECT pro_fecha INTO v_fecha_elaboracion
+    FROM produccion
+    WHERE pro_id = NEW.pro_id;
 
+    -- Calcular el precio de venta sugerido (p_u * 1.20)
+    SET NEW.p_v_s = NEW.p_u * 1.20;
+
+    -- Calcular la fecha de caducidad (fecha_elaboracion + 30 días)
+    SET NEW.fecha_caducidad = DATE_ADD(v_fecha_elaboracion, INTERVAL 30 DAY);
+
+    -- Determinar la composición de frutas
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_fruta_nombre;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        -- Concatenar las frutas sin repetir
+        IF v_composicion NOT LIKE CONCAT('%', v_fruta_nombre, '%') THEN
+            SET v_composicion = CONCAT_WS(', ', v_composicion, v_fruta_nombre);
+        END IF;
+    END LOOP;
+    CLOSE cur;
+
+    -- Asignar la composición a NEW.composicion
+    SET NEW.composicion = TRIM(LEADING ', ' FROM v_composicion);
+
+    -- Asignar la cantidad ingresada a cant_disponible
+    SET NEW.cant_disponible = NEW.cant_ingresada;
+END$$
+
+DELIMITER ;
+
+DROP TRIGGER IF EXISTS data_adicional_inv_pt;
+
+-- SELECT PARA INFORMACION LOTES PT
+SELECT 
+    p.lote_PT AS lote,
+    GROUP_CONCAT(CONCAT(i.presentacion, ' (', i.cant_disponible, ' ', i.estado, ')')) AS presentaciones,
+    SUM(i.cant_disponible) AS total_disponible
+FROM produccion p
+JOIN inventario_pt i ON p.pro_id = i.pro_id
+GROUP BY p.lote_PT;

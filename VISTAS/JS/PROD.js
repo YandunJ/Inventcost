@@ -9,6 +9,7 @@ $(document).ready(function () {
 // ============================
     // Inicialización de DataTables
     // ============================
+ 
     function inicializarDataTable(selector, ajaxUrl, data, columnas, filtro = null) {
         return $(selector).DataTable({
             autoWidth: false,
@@ -35,93 +36,103 @@ $(document).ready(function () {
         });
     }
 
-  // MP
-  const columnasMP = [
-    { data: 'FechaHora' }, // Nuevo campo de fecha
-    { data: 'Lote' },
-    { data: 'Proveedor' },
-    { data: 'Articulo' },
-    { data: 'UnidadMedida' },
-    { data: 'Brix' }, // Nuevo campo de Brix
-    { data: 'CantidadDisponible' },
-    { data: 'PrecioUnitario' },
-    {
-        data: null,
-        render: function (data, type, row) {
-            return `
-            <div class="input-group cantidad-group">
-                <div class="input-group-prepend">
-                    <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
-                </div>
-                <input type="number" class="form-control cantidad-consumir text-center" 
-                       value="0" min="0" max="${row.CantidadDisponible}" step="1" disabled>
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
-                </div>
-            </div>`;
+    // MP
+    const columnasMP = [
+        { data: 'FechaHora' },
+        { data: 'Lote' },
+        { data: 'Proveedor' },
+        { data: 'Articulo' },
+        { data: 'UnidadMedida' },
+        { data: 'Brix' },
+        { data: 'CantidadDisponible' },
+        { data: 'PrecioUnitario' },
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                <div class="input-group cantidad-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
+                    </div>
+                    <input type="number" class="form-control cantidad-consumir text-center" 
+                           value="0" min="0" max="${row.CantidadDisponible}" step="1" disabled>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
+                    </div>
+                </div>`;
+            }
+        },
+        {
+            data: 'ID',
+            render: function (data) {
+                return `<input type="checkbox" class="form-check-input select-mp" value="${data}">`;
+            }
         }
-    },
-    {
-        data: 'ID',
-        render: function (data) {
-            return `<input type="checkbox" class="form-check-input select-mp" value="${data}">`;
+    ];
+
+    const LotesMP = inicializarDataTable(
+        '#LotesMP',
+        '../AJAX/ctrInvFrutas.php',
+        { action: 'cargarMateriaPrima' },
+        columnasMP,
+        function (row) {
+            return row.CantidadDisponible > 0; // Filtro: solo mostrar registros con cantidad disponible
         }
-    }
-];
+    );
 
-const LotesMP = inicializarDataTable(
-    '#LotesMP',
-    '../AJAX/ctrInvFrutas.php',
-    { action: 'cargarMateriaPrima' },
-    columnasMP,
-    function (row) {
-        return row.CantidadDisponible > 0; // Filtro: solo mostrar registros con cantidad disponible
-    }
-);
-
-// INSUMOS
-const columnasINS = [
-    { data: 'FechaHora' }, // Nuevo campo de fecha
-    { data: 'Lote' },
-    { data: 'Proveedor' },
-    { data: 'Insumo' },
-    { data: 'UnidadMedida' },
-    { data: 'CantidadRestante' },
-    { data: 'PrecioUnitario' },
-    {
-        data: null,
-        render: function (data, type, row) {
-            return `
-            <div class="input-group cantidad-group">
-                <div class="input-group-prepend">
-                    <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
-                </div>
-                <input type="number" class="form-control cantidad-consumir text-center" 
-                       value="0" min="0" max="${row.CantidadRestante}" step="0.5" disabled>
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
-                </div>
-            </div>`;
+    // INSUMOS
+    const columnasINS = [
+        { data: 'FechaHora' },
+        { data: 'Lote' },
+        { data: 'Proveedor' },
+        { data: 'Insumo' },
+        { data: 'UnidadMedida' },
+        { data: 'CantidadRestante' },
+        { data: 'PrecioUnitario' },
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                <div class="input-group cantidad-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
+                    </div>
+                    <input type="number" class="form-control cantidad-consumir text-center" 
+                           value="0" min="0" max="${row.CantidadRestante}" step="0.5" disabled>
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
+                    </div>
+                </div>`;
+            }
+        },
+        {
+            data: 'ID',
+            render: function (data) {
+                return `<input type="checkbox" class="form-check-input seleccionar-checkbox" value="${data}">`;
+            }
         }
-    },
-    {
-        data: 'ID',
-        render: function (data) {
-            return `<input type="checkbox" class="form-check-input seleccionar-checkbox" value="${data}">`;
+    ];
+
+    const LotesINS = inicializarDataTable(
+        '#LotesINS',
+        '../AJAX/ctrInvInsumos.php',
+        { action: 'cargarInsumosTabla' },
+        columnasINS,
+        function (row) {
+            return row.CantidadRestante > 0; // Filtro: solo mostrar registros con cantidad restante
         }
-    }
-];
+    );
 
-const LotesINS = inicializarDataTable(
-    '#LotesINS',
-    '../AJAX/ctrInvInsumos.php',
-    { action: 'cargarInsumosTabla' },
-    columnasINS,
-    function (row) {
-        return row.CantidadRestante > 0; // Filtro: solo mostrar registros con cantidad restante
+    // Función para recargar los DataTables de Materia Prima e Insumos
+    function recargarTablas() {
+        LotesMP.ajax.reload();
+        LotesINS.ajax.reload();
     }
-);
 
+    // Llamar a la función para recargar los DataTables después de registrar una producción
+    $(document).on('produccionRegistrada', function () {
+        recargarTablas();
+    });
 
     // Eventos de cambio en insumos, MP, mano de obra y costos indirectos
     $('#LotesMP').on('input', '.cantidad-consumir', recalcularSubtotalMateriaPrima);
@@ -340,8 +351,8 @@ $('#btnRegistrarProduccionModal').on('click', function () {
                     $('#modalRegistrarProduccion').modal('hide');
                     // Limpiar el formulario
                     limpiarFormularioProduccion();
-                    // Actualizar el DataTable
-                    $('#tablaProducciones').DataTable().ajax.reload();
+                    // Disparar el evento personalizado para recargar los DataTables
+                    $(document).trigger('produccionRegistrada');
                 } else {
                     alert('Error: ' + result.message);
                 }
@@ -354,6 +365,7 @@ $('#btnRegistrarProduccionModal').on('click', function () {
         }
     });
 });
+
 // Función para obtener los datos de Producto Terminado
 function getPresentacionesPT() {
     let presentaciones = [];

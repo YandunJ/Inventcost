@@ -75,8 +75,10 @@ CREATE TABLE `produccion` (
   `pro_subtotal_mo` decimal(10,2) DEFAULT '0.00',
   `pro_subtotal_ci` decimal(10,2) DEFAULT '0.00',
   `pro_total` decimal(10,2) DEFAULT '0.00',
-  PRIMARY KEY (`pro_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `lote_PT` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`pro_id`),
+  UNIQUE KEY `lote_PT` (`lote_PT`)
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `prod_detalle` (
   `pdet_id` int NOT NULL AUTO_INCREMENT,
@@ -123,21 +125,20 @@ CREATE TABLE `kardex` (
 
 CREATE TABLE `inventario_pt` (
   `id_pt` int NOT NULL AUTO_INCREMENT,
-  `pro_id` int NOT NULL, -- Relación con la producción
-  `lote` varchar(50) NOT NULL, -- Lote único generado
-  `presentacion` varchar(20) NOT NULL, -- Presentación del PT
-  `cant_producida` decimal(10,2) NOT NULL, -- Cantidad producida
-  `cant_disponible` decimal(10,2) NOT NULL, -- Cantidad disponible
-  `p_u` decimal(10,2) NOT NULL, -- Precio unitario
-  `p_t` decimal(10,2) NOT NULL, -- Precio total
+  `pro_id` int NOT NULL,
+  `presentacion` varchar(20) NOT NULL,
+  `cant_disponible` decimal(10,2) NOT NULL,
+  `p_u` decimal(10,2) NOT NULL,
+  `p_t` decimal(10,2) NOT NULL,
+  `p_v_s` decimal(10,2) DEFAULT NULL,
+  `fecha_caducidad` date DEFAULT NULL,
+  `composicion` text,
   `estado` enum('disponible','stock bajo','agotado') DEFAULT 'disponible',
-  `fecha_elaboracion` date DEFAULT NULL, -- Fecha de elaboración
-  `fecha_caducidad` date DEFAULT NULL, -- Fecha de caducidad
-  `observacion` text, -- Observaciones adicionales
+  `observacion` text,
   PRIMARY KEY (`id_pt`),
   KEY `pro_id` (`pro_id`),
   CONSTRAINT `inventario_pt_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `produccion` (`pro_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 CREATE TABLE `usuarios` (

@@ -117,15 +117,15 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-dolly"></i>
                         <p>
-                            Salidas
+                            Ventas
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="RegistrarSalida.php" class="nav-link">
+                            <a href="VentaPT.php" class="nav-link">
                                 <i class="nav-icon fas fa-arrow-right"></i>
-                                <p>Registrar Salida</p>
+                                <p>Registrar Venta</p>
                             </a>
                         </li>
                         <li class="nav-item">
