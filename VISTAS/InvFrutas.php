@@ -44,6 +44,7 @@
             <div class="modal-body">
                 <form id="materiaPrimaForm" class="modal-form-container">
                     <!-- Fila 1 -->
+                    <input type="hidden" id="id_inv" name="id_inv">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="proveedor_id">Proveedor:</label>

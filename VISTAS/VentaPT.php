@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Despacho de Producto Terminado</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -31,25 +30,29 @@
                     <div class="mb-3">
                         <button id="btnBuscarProducto" class="btn btn-primary" data-toggle="modal" data-target="#modalBuscarProducto">Buscar Producto</button>
                         <label class="ml-3">Método de Salida:</label>
-                        <input type="checkbox" id="switchMetodoSalida" data-toggle="toggle" data-on="FIFO" data-off="LIFO" data-onstyle="success" data-offstyle="danger">
+                        <input type="checkbox" id="switchMetodoSalida" data-toggle="toggle" data-on="FIFO" data-off="LIFO" data-onstyle="success" data-offstyle="danger" checked>
                     </div>
                     <h2>Productos a Despachar</h2>
-                    <table id="tablaDespacho" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Presentación</th>
-                                <th>Lote</th>
-                                <th>Cantidad</th>
-                                <th>Precio Unitario</th>
-                                <th>Precio Total</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Productos a despachar -->
-                        </tbody>
-                    </table>
-                    <button id="btnRegistrarDespacho" class="btn btn-primary">Registrar Despacho</button>
+<table id="tablaDespacho" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Presentación</th>
+            <th>Lote</th>
+            <th>Pulpa</th>
+            <th>Cantidad</th>
+            <th>P.V.S.</th>
+            <th>Precio Total</th>   
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Productos a despachar -->
+    </tbody>
+</table>
+<div class="text-right">
+    <strong>Precio Total de la Salida: $<span id="precioTotalSalida">0.00</span></strong>
+</div>
+<button id="btnRegistrarSalida" class="btn btn-primary">Registrar Salida</button>
                 </div><!-- /.container-fluid -->
             </section>
             <!-- /.content -->
@@ -72,9 +75,11 @@
                                 <tr>
                                     <th>Presentación</th>
                                     <th>Lote</th>
-                                    <th>Composición</th>
-                                    <th>Cantidad Disponible</th>
-                                    <th>Precio Unitario</th>
+                                    <th>Pulpa</th>
+                                    <th>Costo Unitario</th>
+                                    <th>Precio de Venta Sugerido</th>
+                                    <th>Disponible</th>
+                                    <th>Cantidad a Consumir</th>
                                     <th>Seleccionar</th>
                                 </tr>
                             </thead>

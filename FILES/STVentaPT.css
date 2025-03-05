@@ -1,0 +1,25 @@
+/* Ajustar el tamaño del modal */
+.modal-lg {
+    max-width: 78% !important;
+}
+
+/* Ajustar el tamaño de las columnas del DataTable */
+#tablaProductos th, #tablaProductos td {
+    white-space: nowrap;
+    text-align: center;
+}
+
+#tablaProductos_wrapper {
+    overflow-x: auto;
+}
+
+/* Estilos adicionales para resaltar los campos de disponible y precios */
+#tablaProductos .cantidad-disponible {
+    background-color: #e0f7fa; /* Color de fondo para resaltar */
+    font-weight: bold; /* Texto en negrita */
+}
+
+#tablaProductos .precio-unitario, #tablaProductos .precio-venta-sugerido {
+    background-color: #fff3e0; /* Color de fondo para resaltar */
+    font-weight: bold; /* Texto en negrita */
+}

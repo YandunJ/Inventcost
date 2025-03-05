@@ -181,7 +181,6 @@ $('button[data-is-new="true"]').on('click', function () {
 });
 
 
-    
 // Cargar datos al hacer clic en el botón Editar
 $('#tablaMateriaPrimas').on('click', '.edit-btn', function () {
     const id_inv = $(this).data('id');
@@ -199,16 +198,20 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function () {
                 $('#materiaPrimaForm').find('#id_inv').val(data.id_inv);
                 $('#materiaPrimaForm').find('#fecha').val(data.fecha);
                 $('#materiaPrimaForm').find('#hora').val(data.hora);
-                $('#materiaPrimaForm').find('#cat_id').val(data.cat_id);
+                $('#materiaPrimaForm').find('#cat_id').val(data.id_articulo);
                 $('#materiaPrimaForm').find('#proveedor_id').val(data.proveedor_id);
                 $('#materiaPrimaForm').find('#numero_lote').val(data.numero_lote).prop('readonly', true); // Lote sin cambios
                 $('#materiaPrimaForm').find('#cantidad_ingresada').val(data.cantidad_ingresada);
-                $('#materiaPrimaForm').find('#precio_unitario').val(data.precio_unitario);
+                $('#materiaPrimaForm').find('#precio_total').val(data.precio_total); // Cambiado a precio_total
                 $('#materiaPrimaForm').find('#brix').val(data.brix);
                 $('#materiaPrimaForm').find('#presentacion').val(data.presentacion);
-                $('#materiaPrimaForm').find('#bultos_o_canastas').val(data.bultos_o_canastas);
-                $('#materiaPrimaForm').find('#peso_unitario').val(data.peso_unitario);
                 $('#materiaPrimaForm').find('#observacion').val(data.observacion);
+
+                // Calcular el precio unitario
+                const cantidad = parseFloat(data.cantidad_ingresada) || 1; // Evitar división por 0
+                const precioTotal = parseFloat(data.precio_total) || 0;
+                const precioUnitario = precioTotal / cantidad;
+                $('#materiaPrimaForm').find('#precio_unitario').val(precioUnitario.toFixed(2));
 
                 // Cambiar texto del botón para editar
                 $('.form-actions .btn-primary').text('Guardar cambios').data('isEditing', true);
@@ -226,12 +229,17 @@ $('#tablaMateriaPrimas').on('click', '.edit-btn', function () {
     });
 });
 
+// Calcular Precio Unitario dinámicamente
+$('#cantidad_ingresada, #precio_total').on('input', function () {
+    const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0
+    const precioTotal = parseFloat($('#precio_total').val()) || 0;
+    const precioUnitario = precioTotal / cantidad;
+    $('#precio_unitario').val(precioUnitario.toFixed(2));
+});
 // Enviar el formulario para agregar o actualizar la materia prima
 $('.form-actions .btn-primary').on('click', function (event) {
     event.preventDefault();
 
-    const formData = $('#materiaPrimaForm').serialize();
-    console.log(formData);  
     const isEditing = $('#Form_MP').data('isEditing');
     const action = isEditing ? 'actualizarMateriaPrima' : 'guardarMateriaPrima';
 
@@ -240,10 +248,13 @@ $('.form-actions .btn-primary').on('click', function (event) {
         $('#numero_lote').prop('readonly', false); // Permite enviarlo al backend
     }
 
+    const formData = $('#materiaPrimaForm').serialize() + `&action=${action}`;
+    console.log(formData);  // Verifica los datos que se están enviando
+
     $.ajax({
         url: '../AJAX/ctrInvFrutas.php',
         type: 'POST',
-        data: $('#materiaPrimaForm').serialize() + `&action=${action}`,
+        data: formData,
         dataType: 'json',
         success: function(response) {
             console.log(response);
@@ -259,17 +270,14 @@ $('.form-actions .btn-primary').on('click', function (event) {
             } else {
                 Swal.fire('Error', response.message || 'Ocurrió un error inesperado.', 'error');
             }
-            
         },
         error: function(xhr, status, error) {
             Swal.fire('Error', 'Error de comunicación con el servidor', 'error');
             console.error("Error: ", error);
             console.error("Response: ", xhr.responseText);
         }
-        
     });
 });
-
 // Al hacer clic en el botón Eliminar
 $('#tablaMateriaPrimas').on('click', '.delete-btn', function() {
     const id_inv = $(this).data('id'); // Cambiado a id_inv

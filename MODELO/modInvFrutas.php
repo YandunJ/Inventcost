@@ -60,60 +60,50 @@
         return $result;
     }
             
+    public function obtenerMateriaPrimaPorId($id_inv) {
+        $stmt = $this->conn->prepare("CALL mp_data_id(?)");
+        
+        if (!$stmt) {
+            throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+        }
+
+        $stmt->bind_param("i", $id_inv);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if (!$result) {
+            throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
+        }
+
+        $data = $result->fetch_assoc();
+        $stmt->close();
+        return $data;
+    }
+    public function actualizarMateriaPrima(
+        $id_inv, $id_articulo, $proveedor_id, $cantidad_ingresada, 
+        $precio_total, $precio_unitario, $brix, $observacion
+    ) {
+        // Preparación y ejecución de la actualización
+        $stmt = $this->conn->prepare("CALL mp_act(?, ?, ?, ?, ?, ?, ?, ?)");
+        if (!$stmt) {
+            throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
+        }
     
-            
-            public function obtenerMateriaPrimaPorId($id_inv) {
-                $stmt = $this->conn->prepare("CALL Obt_MP_por_id(?)");
-                
-                if (!$stmt) {
-                    throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
-                }
-        
-                $stmt->bind_param("i", $id_inv);
-                $stmt->execute();
-                $result = $stmt->get_result();
-        
-                if (!$result) {
-                    throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
-                }
-        
-                $data = $result->fetch_assoc();
-                $stmt->close();
-                return $data;
-            }
-        
-            // Método para actualizar un registro (usando el procedimiento ActualizarMP actualizado)
-            public function actualizarMateriaPrima(
-                $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote, $cantidad_ingresada, 
-                $precio_unitario, $presentacion, $brix, $bultos_o_canastas, $peso_unitario, $observacion
-            ) {
-                // Verificación de unicidad del lote, excluyendo el registro actual
-                if (!$this->verificarLoteUnicoParaActualizacion($numero_lote, $id_inv)) {
-                    throw new Exception("El número de lote ya existe en otro registro.");
-                }
-            
-                // Preparación y ejecución de la actualización si el lote es único
-                $stmt = $this->conn->prepare("CALL ActualizarMP(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                if (!$stmt) {
-                    throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
-                }
-            
-                $stmt->bind_param(
-                    'issisdsdsidds', 
-                    $id_inv, $fecha, $hora, $id_articulo, $proveedor_id, $numero_lote,
-                    $cantidad_ingresada, $precio_unitario, $presentacion, $brix,
-                    $bultos_o_canastas, $peso_unitario, $observacion
-                );
-            
-                $result = $stmt->execute();
-                if (!$result) {
-                    throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
-                }
-            
-                $stmt->close();
-                return $result;
-            }
-            
+        $stmt->bind_param(
+            'iisddsds', 
+            $id_inv, $id_articulo, $proveedor_id, $cantidad_ingresada,
+            $precio_total, $precio_unitario, $brix,
+            $observacion
+        );
+    
+        $result = $stmt->execute();
+        if (!$result) {
+            throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
+        }
+    
+        $stmt->close();
+        return $result;
+    }
             public function obtenerInventarioMP() {
                 // Llamada al procedimiento almacenado que proporciona los datos para el DataTable
                 $sql = "CALL mp_data()";

@@ -1,48 +1,118 @@
 $(document).ready(function() {
-    // Datos de ejemplo
-    const datosPresentaciones = [
-        { presentacion: '100 gr', lote: 'Lote1', composicion: 'Manzana', cantidad_disponible: 50, precio_unitario: 0.60 },
-        { presentacion: '100 gr', lote: 'Lote2', composicion: 'Manzana', cantidad_disponible: 30, precio_unitario: 0.60 },
-        { presentacion: '200 gr', lote: 'Lote1', composicion: 'Manzana', cantidad_disponible: 20, precio_unitario: 1.20 },
-        { presentacion: '200 gr', lote: 'Lote2', composicion: 'Manzana', cantidad_disponible: 10, precio_unitario: 1.20 }
-    ];
-
     // Inicializar DataTable para buscar productos
     const tablaProductos = $('#tablaProductos').DataTable({
-        data: datosPresentaciones,
+        ajax: {
+            url: '../AJAX/ctrVentaPT.php',
+            type: 'POST',
+            data: { action: 'obtenerInventarioPT' },
+            dataSrc: 'data'
+        },
         columns: [
             { data: 'presentacion' },
             { data: 'lote' },
-            { data: 'composicion' },
+            { data: 'pulpa' },
+            { data: 'costo_unitario' },
+            { data: 'precio_venta_sugerido' },
             { data: 'cantidad_disponible' },
-            { data: 'precio_unitario' },
             {
                 data: null,
                 render: function(data, type, row) {
-                    return `<input type="checkbox" class="select-producto" data-presentacion="${row.presentacion}" data-lote="${row.lote}" data-composicion="${row.composicion}" data-cantidad="${row.cantidad_disponible}" data-precio="${row.precio_unitario}">`;
+                    return `
+                        <div class="input-group cantidad-group">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
+                            </div>
+                            <input type="number" class="form-control cantidad-consumir text-center" value="0" min="0" max="${row.cantidad_disponible}" step="1" disabled>
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
+                            </div>
+                        </div>`;
+                }
+            },
+            {
+                data: null,
+                render: function(data, type, row) {
+                    return `<input type="checkbox" class="form-check-input select-producto" data-id-pt="${row.id_pt}" data-lote="${row.lote}" data-cantidad-disponible="${row.cantidad_disponible}" data-pulpa="${row.pulpa}" data-precio-venta-sugerido="${row.precio_venta_sugerido}">`;
                 }
             }
         ],
         language: dataTableLanguage // Usar la configuración de idioma desde DTesp.js
     });
 
+    // Habilitar/deshabilitar campo y botones al seleccionar producto
+    $('#tablaProductos tbody').on('change', '.select-producto', function() {
+        const row = $(this).closest('tr');
+        const cantidadInput = row.find('.cantidad-consumir');
+        const incrementarBtn = row.find('.incrementar');
+        const decrementarBtn = row.find('.decrementar');
+
+        const isChecked = this.checked;
+        cantidadInput.prop('disabled', !isChecked);
+        incrementarBtn.prop('disabled', !isChecked);
+        decrementarBtn.prop('disabled', !isChecked);
+
+        if (!isChecked) {
+            cantidadInput.val('0');
+        }
+    });
+
+    // Incrementar/decrementar cantidad a consumir
+    $('#tablaProductos tbody').on('click', '.incrementar, .decrementar', function() {
+        const input = $(this).closest('.input-group').find('input');
+        let valorActual = parseInt(input.val()) || 0;
+        const max = parseInt(input.attr('max')) || Infinity;
+        const incremento = $(this).hasClass('incrementar') ? 1 : -1;
+
+        let nuevoValor = valorActual + incremento;
+        if (nuevoValor < 0) nuevoValor = 0;
+        if (nuevoValor > max) nuevoValor = max;
+
+        input.val(nuevoValor).trigger('input');
+    });
+
+    // Validar que solo se ingresen enteros en el campo de cantidad a consumir
+    $('#tablaProductos tbody').on('input', '.cantidad-consumir', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
     // Función para agregar productos seleccionados a la tabla de despacho
     $('#btnAgregarSeleccionados').on('click', function() {
         $('.select-producto:checked').each(function() {
-            const presentacion = $(this).data('presentacion');
+            const id_pt = $(this).data('id-pt');
             const lote = $(this).data('lote');
-            const composicion = $(this).data('composicion');
-            const cantidadDisponible = $(this).data('cantidad');
-            const precioUnitario = $(this).data('precio');
+            const cantidadDisponible = $(this).data('cantidad-disponible');
+            const pulpa = $(this).data('pulpa');
+            const precioVentaSugerido = $(this).data('precio-venta-sugerido');
+            const cantidadConsumir = parseInt($(this).closest('tr').find('.cantidad-consumir').val());
+
+            // Validar que la cantidad a consumir sea mayor a cero y no exceda la cantidad disponible
+            if (cantidadConsumir <= 0 || cantidadConsumir > cantidadDisponible) {
+                Swal.fire('Error', 'La cantidad a consumir debe ser mayor a cero y no exceder la cantidad disponible.', 'error');
+                return;
+            }
+
+            // Validar que la cantidad total a consumir no exceda la cantidad disponible
+            let cantidadTotalConsumir = cantidadConsumir;
+            $('#tablaDespacho tbody tr').each(function() {
+                const filaLote = $(this).find('td').eq(1).text();
+                if (filaLote === lote) {
+                    cantidadTotalConsumir += parseInt($(this).find('.cantidad-despacho').val());
+                }
+            });
+
+            if (cantidadTotalConsumir > cantidadDisponible) {
+                Swal.fire('Error', `La cantidad total a consumir del lote ${lote} no puede exceder ${cantidadDisponible}.`, 'error');
+                return;
+            }
 
             const fila = `
                 <tr>
-                    <td>${presentacion}</td>
+                    <td>${id_pt}</td>
                     <td>${lote}</td>
-                    <td>${composicion}</td>
-                    <td><input type="number" class="form-control cantidad-despacho" data-cantidad-disponible="${cantidadDisponible}" value="1" min="1" max="${cantidadDisponible}"></td>
-                    <td><input type="number" class="form-control precio-unitario" value="${(precioUnitario * 1.20).toFixed(2)}" step="0.01" data-precio-unitario="${precioUnitario}"></td>
-                    <td class="precio-total">${(precioUnitario * 1.20).toFixed(2)}</td>
+                    <td>${pulpa}</td>
+                    <td><input type="number" class="form-control cantidad-despacho" value="${cantidadConsumir}" min="1" max="${cantidadDisponible}" readonly></td>
+                    <td>${precioVentaSugerido}</td>
+                    <td class="precio-total">${(cantidadConsumir * precioVentaSugerido).toFixed(2)}</td>
                     <td><button class="btn btn-danger btnEliminar">Eliminar</button></td>
                 </tr>
             `;
@@ -55,57 +125,23 @@ $(document).ready(function() {
 
     // Función para actualizar los precios totales
     function actualizarPrecios() {
+        let precioTotalSalida = 0;
         $('#tablaDespacho tbody tr').each(function() {
-            const cantidad = $(this).find('.cantidad-despacho').val();
-            const precioUnitario = $(this).find('.precio-unitario').val();
-            const precioTotal = cantidad * precioUnitario;
-            $(this).find('.precio-total').text(precioTotal.toFixed(2));
+            const precioTotal = parseFloat($(this).find('.precio-total').text());
+            precioTotalSalida += precioTotal;
         });
+        $('#precioTotalSalida').text(precioTotalSalida.toFixed(2));
     }
-
-    // Validar precio de venta
-    function validarPrecio(precioUnitario, precioVenta) {
-        const precioMinimo = precioUnitario * 1.20; // Margen de ganancia mínimo del 20%
-        const precioMaximo = precioUnitario * 2.00; // Margen de ganancia máximo del 100%
-        if (precioVenta < precioMinimo) {
-            return `El precio de venta no puede ser inferior a ${precioMinimo.toFixed(2)}`;
-        }
-        if (precioVenta > precioMaximo) {
-            return `El precio de venta no puede ser superior a ${precioMaximo.toFixed(2)}`;
-        }
-        return null;
-    }
-
-    // Actualizar precios al cambiar cantidad o precio unitario
-    $('#tablaDespacho').on('input', '.cantidad-despacho, .precio-unitario', function() {
-        const precioUnitario = $(this).data('precio-unitario');
-        const precioVenta = parseFloat($(this).val());
-        const mensajeValidacion = validarPrecio(precioUnitario, precioVenta);
-        if (mensajeValidacion) {
-            Swal.fire('Error', mensajeValidacion, 'error');
-            $(this).val((precioUnitario * 1.20).toFixed(2)); // Revertir al precio mínimo permitido
-        } else {
-            actualizarPrecios();
-        }
-    });
-
-    // Eliminar fila de la tabla de despacho
-    $('#tablaDespacho').on('click', '.btnEliminar', function() {
-        $(this).closest('tr').remove();
-        actualizarPrecios();
-    });
 
     // Procesar Despacho
-    $('#btnRegistrarDespacho').on('click', function() {
+    $('#btnRegistrarSalida').on('click', function() {
         const despacho = [];
         $('#tablaDespacho tbody tr').each(function() {
-            const presentacion = $(this).find('td').eq(0).text();
+            const id_pt = $(this).find('td').eq(0).text();
             const lote = $(this).find('td').eq(1).text();
-            const composicion = $(this).find('td').eq(2).text();
             const cantidad = $(this).find('.cantidad-despacho').val();
-            const precioUnitario = $(this).find('.precio-unitario').val();
-            const precioTotal = $(this).find('.precio-total').text();
-            despacho.push({ presentacion, lote, composicion, cantidad, precioUnitario, precioTotal });
+            const precioUnitario = $(this).find('td').eq(4).text();
+            despacho.push({ id_pt, lote, cantidad_despachada: parseFloat(cantidad), precio_unitario: parseFloat(precioUnitario) });
         });
 
         if (despacho.length === 0) {
@@ -113,9 +149,56 @@ $(document).ready(function() {
             return;
         }
 
-        // Aquí puedes enviar los datos del despacho al servidor para procesarlos
-        console.log('Despacho:', despacho);
+        const precioTotalSalida = parseFloat($('#precioTotalSalida').text());
 
-        Swal.fire('Éxito', 'Despacho registrado correctamente', 'success');
+        // Imprimir los datos en la consola
+        console.log('Datos a enviar al SP:', {
+            despacho: JSON.stringify(despacho),
+            precio_total: precioTotalSalida
+        });
+
+        // Enviar los datos del despacho al servidor para procesarlos
+        $.ajax({
+            url: '../AJAX/ctrVentaPT.php',
+            type: 'POST',
+            data: {
+                action: 'registrarDespacho',
+                despacho: JSON.stringify(despacho),
+                precio_total: precioTotalSalida
+            },
+            success: function(response) {
+                try {
+                    const result = JSON.parse(response);
+                    if (result.status === 'success') {
+                        Swal.fire('Éxito', result.message, 'success').then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({
+                                    title: '¿Desea imprimir el comprobante?',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Sí',
+                                    cancelButtonText: 'No'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        // Generar el comprobante de salida en PDF
+                                        const url = `../AJAX/PDFsalida.php?despacho=${encodeURIComponent(JSON.stringify(despacho))}&precio_total=${precioTotalSalida}`;
+                                        window.open(url, '_blank');
+                                    }
+                                });
+                            }
+                        });
+                        // Limpiar la tabla de despacho
+                        $('#tablaDespacho tbody').empty();
+                        $('#precioTotalSalida').text('0.00');
+                    } else {
+                        Swal.fire('Error', result.message, 'error');
+                    }
+                } catch (e) {
+                    Swal.fire('Error', 'Respuesta del servidor no válida', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire('Error', 'Ocurrió un error al registrar el despacho', 'error');
+            }
+        });
     });
 });

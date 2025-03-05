@@ -1,58 +1,57 @@
 <?php
-// MODELO/modRoles.php
 
-class Roles {
+class VentaPT {
     private $conn;
-    private $table_name = "roles";
 
-    public function __construct($db) {
-        $this->conn = $db;
+    public function __construct() {
+        $conexion = new Cls_DataConnection();
+        $this->conn = $conexion->FN_getConnect();
     }
 
-    public function addRole($rol_nombre, $rol_descripcion, $permiso_id) {
-        $query = "CALL acciones_rol(NULL, ?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param('ssi', $rol_nombre, $rol_descripcion, $permiso_id);
-        return $stmt->execute();
-    }
+    // Método para obtener el inventario de PT
+    public function obtenerInventarioPT() {
+        $query = "CALL TP_data()";
 
-    public function updateRole($rol_id, $rol_nombre, $rol_descripcion, $permiso_id) {
-        $query = "CALL acciones_rol(?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param('issi', $rol_id, $rol_nombre, $rol_descripcion, $permiso_id);
-        return $stmt->execute();
-    }
-
-    public function deleteRole($rol_id) {
-        $query = "CALL pa_eliminar_rol(?)";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bind_param('i', $rol_id);
-        return $stmt->execute();
-    }
-
-    public function getRoles() {
-        $query = "CALL pa_obtener_roles()"; // Tu procedimiento
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        $roles = [];
-        while ($row = $result->fetch_assoc()) {
-            $roles[] = $row;
+        if (!$stmt) {
+            return ['error' => "Error al preparar la consulta: " . $this->conn->error];
         }
-        
-        return $roles;
+
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $inventario = $result->fetch_all(MYSQLI_ASSOC);
+            $stmt->close();
+            return $inventario;
+        } else {
+            $stmt->close();
+            return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];
+        }
     }
 
-    public function getRoleById($rol_id) {
-        $query = "SELECT rol_id, rol_nombre, rol_descripcion, permiso_id FROM roles WHERE rol_id = ?";
+    // Método para registrar un despacho
+    public function registrarDespacho($despacho, $precio_total) {
+        $query = "CALL TP_salida(?, ?)";
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param('i', $rol_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc(); // Retornar solo una fila
+        if (!$stmt) {
+            return ['error' => "Error al preparar la consulta: " . $this->conn->error];
+        }
+
+        $stmt->bind_param("sd", $despacho, $precio_total);
+
+        if ($stmt->execute()) {
+            $affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+            if ($affected_rows > 0) {
+                return ['status' => 'success', 'message' => 'Despacho registrado correctamente'];
+            } else {
+                return ['status' => 'error', 'message' => 'No se registró ningún despacho'];
+            }
+        } else {
+            $stmt->close();
+            return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];
+        }
     }
-    
-    
 }
 ?>

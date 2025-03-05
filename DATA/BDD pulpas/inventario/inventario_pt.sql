@@ -1,24 +1,5 @@
 SELECT * FROM fpulpas.inventario_pt;
 -- ultimo
-CREATE TABLE `inventario_pt` (
-  `id_pt` int NOT NULL AUTO_INCREMENT,
-  `pro_id` int NOT NULL,
-  `presentacion` varchar(20) NOT NULL,
-  `cant_ingresada` decimal(10,2) NOT NULL,
-  `cant_disponible` decimal(10,2) NOT NULL,
-  `p_u` decimal(10,2) NOT NULL,
-  `p_t` decimal(10,2) NOT NULL,
-  `p_v_s` decimal(10,2) DEFAULT NULL,
-  `fecha_caducidad` date DEFAULT NULL,
-  `composicion` text,
-  `estado` enum('disponible','stock bajo','agotado') DEFAULT 'disponible',
-  `observacion` text,
-  PRIMARY KEY (`id_pt`),
-  KEY `pro_id` (`pro_id`),
-  CONSTRAINT `inventario_pt_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `produccion` (`pro_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 DELIMITER $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `TP_reg`(
@@ -360,11 +341,10 @@ CALL PR_cancelar_prod(13);
 
 DELIMITER $$
 
-CREATE TRIGGER data_adicional_inv_pt
+CREATE TRIGGER composicion_pt
 BEFORE INSERT ON inventario_pt
 FOR EACH ROW
 BEGIN
-    DECLARE v_fecha_elaboracion DATE;
     DECLARE v_composicion TEXT DEFAULT '';
     DECLARE v_fruta_nombre VARCHAR(100);
     DECLARE done INT DEFAULT FALSE;
@@ -382,17 +362,6 @@ BEGIN
     -- Manejador para el cursor
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
-    -- Obtener la fecha de elaboración de la producción
-    SELECT pro_fecha INTO v_fecha_elaboracion
-    FROM produccion
-    WHERE pro_id = NEW.pro_id;
-
-    -- Calcular el precio de venta sugerido (p_u * 1.20)
-    SET NEW.p_v_s = NEW.p_u * 1.20;
-
-    -- Calcular la fecha de caducidad (fecha_elaboracion + 30 días)
-    SET NEW.fecha_caducidad = DATE_ADD(v_fecha_elaboracion, INTERVAL 30 DAY);
-
     -- Determinar la composición de frutas
     OPEN cur;
     read_loop: LOOP
@@ -409,16 +378,14 @@ BEGIN
 
     -- Asignar la composición a NEW.composicion
     SET NEW.composicion = TRIM(LEADING ', ' FROM v_composicion);
-
-    -- Asignar la cantidad ingresada a cant_disponible
-    SET NEW.cant_disponible = NEW.cant_ingresada;
 END$$
 
 DELIMITER ;
 
-DROP TRIGGER IF EXISTS data_adicional_inv_pt;
 
--- SELECT PARA INFORMACION LOTES PT
+DROP TRIGGER IF EXISTS composicion_pt;
+
+
 SELECT 
     p.lote_PT AS lote,
     GROUP_CONCAT(CONCAT(i.presentacion, ' (', i.cant_disponible, ' ', i.estado, ')')) AS presentaciones,
@@ -426,3 +393,4 @@ SELECT
 FROM produccion p
 JOIN inventario_pt i ON p.pro_id = i.pro_id
 GROUP BY p.lote_PT;
+

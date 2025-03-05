@@ -127,6 +127,7 @@ CREATE TABLE `inventario_pt` (
   `id_pt` int NOT NULL AUTO_INCREMENT,
   `pro_id` int NOT NULL,
   `presentacion` varchar(20) NOT NULL,
+  `cant_ingresada` decimal(10,2) NOT NULL,
   `cant_disponible` decimal(10,2) NOT NULL,
   `p_u` decimal(10,2) NOT NULL,
   `p_t` decimal(10,2) NOT NULL,
@@ -138,7 +139,32 @@ CREATE TABLE `inventario_pt` (
   PRIMARY KEY (`id_pt`),
   KEY `pro_id` (`pro_id`),
   CONSTRAINT `inventario_pt_ibfk_1` FOREIGN KEY (`pro_id`) REFERENCES `produccion` (`pro_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `despacho_pt` (
+  `id_despacho` int NOT NULL AUTO_INCREMENT,
+  `fecha_despacho` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `estado` enum('activo','anulado') DEFAULT 'activo',
+  `cantidad_total` decimal(10,2) NOT NULL,
+  `precio_total` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_despacho`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `det_despacho` (
+  `id_detalle` int NOT NULL AUTO_INCREMENT,
+  `id_despacho` int NOT NULL,
+  `id_pt` int NOT NULL,
+  `lote` varchar(50) NOT NULL,
+  `cantidad_despachada` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id_detalle`),
+  KEY `id_despacho` (`id_despacho`),
+  KEY `id_pt` (`id_pt`),
+  CONSTRAINT `det_despacho_ibfk_1` FOREIGN KEY (`id_despacho`) REFERENCES `despacho_pt` (`id_despacho`),
+  CONSTRAINT `det_despacho_ibfk_2` FOREIGN KEY (`id_pt`) REFERENCES `inventario_pt` (`id_pt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
 
 
 CREATE TABLE `usuarios` (
