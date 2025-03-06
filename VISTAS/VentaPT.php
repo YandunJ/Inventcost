@@ -29,8 +29,8 @@
                     <h1>Despacho de Producto Terminado</h1>
                     <div class="mb-3">
                         <button id="btnBuscarProducto" class="btn btn-primary" data-toggle="modal" data-target="#modalBuscarProducto">Buscar Producto</button>
-                        <label class="ml-3">Método de Salida:</label>
-                        <input type="checkbox" id="switchMetodoSalida" data-toggle="toggle" data-on="FIFO" data-off="LIFO" data-onstyle="success" data-offstyle="danger" checked>
+                        <!-- <label class="ml-3">Método de Salida:</label>
+                        <input type="checkbox" id="switchMetodoSalida" data-toggle="toggle" data-on="FIFO" data-off="LIFO" data-onstyle="success" data-offstyle="danger" checked> -->
                     </div>
                     <h2>Productos a Despachar</h2>
 <table id="tablaDespacho" class="table table-bordered table-hover">

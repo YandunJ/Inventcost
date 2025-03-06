@@ -87,7 +87,7 @@ public function getArticuloById($cat_id) {
     }
         // Métodos relacionados con categorías y unidades de medida
         public function getCategorias() {
-            $query = "SELECT ctg_id, ctg_nombre FROM categorias";
+            $query = "SELECT ctg_id, ctg_nombre FROM categorias WHERE ctg_id IN (1, 2)";
             $result = $this->conn->FN_getConnect()->query($query);
         
             if ($result) {
@@ -102,7 +102,7 @@ public function getArticuloById($cat_id) {
         }
         
         public function getUnidadesMedida() {
-            $query = "SELECT prs_id, prs_nombre FROM presentacion";
+            $query = "SELECT prs_id, prs_nombre FROM presentacion WHERE ctg_id = 2 OR prs_nombre = 'KILOGRAMOS'";
             $result = $this->conn->FN_getConnect()->query($query);
         
             if ($result) {
@@ -115,7 +115,6 @@ public function getArticuloById($cat_id) {
                 return ['error' => 'Error al obtener unidades: ' . $this->conn->FN_getConnect()->error];
             }
         }
-        
 
     
 }

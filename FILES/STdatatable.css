@@ -6,8 +6,9 @@
 
 .table-compact th {
     /* background-color: #1c497a; */
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
+    background-color: #2366ae;
+    /* background-color: #4574a0; */
+    color: rgb(255, 255, 255);
     font-weight: normal; /* Evitar negritas */
     padding: 8px; /* Ajustar el padding */
     font-size: 11px; /* Tamaño reducido para encabezados */

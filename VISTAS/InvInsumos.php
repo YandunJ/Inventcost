@@ -30,7 +30,7 @@
             <h1 class="text-center">Inventario de Insumos</h1>
             <div class="text-right mb-3">
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_Insumos" data-is-new="true">
-                        Agregar
+                    <i class="fas fa-plus"></i> Agregar
                     </button>
                     </div>
                  

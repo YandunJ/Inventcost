@@ -31,9 +31,9 @@
 <div class="page-header" style="position: relative;">
     <h1 class="text-center">
         Catálogo Inventario 
-        <button id="helpButton" class="btn btn-link p-0" title="Ayuda">
+        <!-- <button id="helpButton" class="btn btn-link p-0" title="Ayuda">
             <i class="fas fa-info-circle fa-lg"></i>
-        </button>
+        </button> -->
     </h1>
     <div id="customHelp" class="help-message">
         Este módulo permite gestionar el catálogo de inventario. Aquí puedes agregar, editar y consultar insumos.
@@ -43,7 +43,7 @@
                     <div class="text-right mb-3">
                         <!-- Botón para abrir el modal -->
                      <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
-    Agregar
+                     <i class="fas fa-plus"></i> Agregar
 </button>
 
                     </div>

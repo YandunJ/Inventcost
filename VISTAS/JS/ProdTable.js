@@ -33,9 +33,7 @@ $(document).ready(function () {
                                 <a class="dropdown-item ver-btn" href="#" data-id="${row.pro_id}">
                                     <i class="fas fa-eye"></i> Ver
                                 </a>
-                                <a class="dropdown-item edit-btn" href="#" data-id="${row.pro_id}">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
+                            
                                 <a class="dropdown-item cancel-btn" href="#" data-id="${row.pro_id}">
                                     <i class="fas fa-times"></i> Cancelar
                                 </a>

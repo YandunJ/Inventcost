@@ -26,8 +26,13 @@
                 <div class="container-fluid">
                     <h1 class="text-center">Inventario Frutas</h1>
                     <div class="text-right mb-3">
+                    <!-- <select id="filtroEstado" class="form-control">
+    <option value="">Todos</option>
+    <option value="disponible">Disponible</option>
+    <option value="agotado">Agotado</option>
+</select> -->
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_MP" data-is-new="true">
-    Agregar
+                    <i class="fas fa-plus"></i> Agregar
 </button>
 </div>
 

@@ -1,6 +1,7 @@
 <?php
+// MODELO/modProducto.php
 
-class VentaPT {
+class Producto {
     private $conn;
 
     public function __construct() {
@@ -8,9 +9,8 @@ class VentaPT {
         $this->conn = $conexion->FN_getConnect();
     }
 
-    // Método para obtener el inventario de PT
-    public function obtenerInventarioPT() {
-        $query = "CALL TP_data_s()";
+    public function obtenerLotesProductoTerminado() {
+        $query = "CALL Tp_data()";
 
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
@@ -19,35 +19,30 @@ class VentaPT {
 
         if ($stmt->execute()) {
             $result = $stmt->get_result();
-            $inventario = $result->fetch_all(MYSQLI_ASSOC);
+            $lotes = $result->fetch_all(MYSQLI_ASSOC);
             $stmt->close();
-            return $inventario;
+            return $lotes;
         } else {
             $stmt->close();
             return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];
         }
     }
 
-    // Método para registrar un despacho
-    public function registrarDespacho($despacho, $precio_total) {
-        $query = "CALL TP_salida(?, ?)";
+    public function obtenerDetallesLote($lote_PT) {
+        $query = "CALL Tp_detalles(?)";
 
         $stmt = $this->conn->prepare($query);
         if (!$stmt) {
             return ['error' => "Error al preparar la consulta: " . $this->conn->error];
         }
 
-        $stmt->bind_param("sd", $despacho, $precio_total);
+        $stmt->bind_param("s", $lote_PT);
 
         if ($stmt->execute()) {
-            $affected_rows = $stmt->affected_rows;
+            $result = $stmt->get_result();
+            $detalles = $result->fetch_all(MYSQLI_ASSOC);
             $stmt->close();
-
-            if ($affected_rows > 0) {
-                return ['status' => 'success', 'message' => 'Despacho registrado correctamente'];
-            } else {
-                return ['status' => 'error', 'message' => 'No se registró ningún despacho'];
-            }
+            return $detalles;
         } else {
             $stmt->close();
             return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];

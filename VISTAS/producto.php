@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotes Producto Terminado</title>
     <link rel="stylesheet" href="../FILES/global.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -28,44 +26,16 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1>Lotes de Producto Terminado</h1>
-                    <div class="mb-3">
-                        <select id="filtroTipo">
-                            <option value="lotes">Lotes</option>
-                            <option value="presentaciones">Presentaciones</option>
-                        </select>
-                        <select id="filtroEstado">
-                            <option value="">Todos</option>
-                            <option value="disponible">Disponible</option>
-                            <option value="stock bajo">Stock bajo</option>
-                            <option value="agotado">Agotado</option>
-                        </select>
-                        <input type="text" id="fechaInicio" placeholder="Desde">
-                        <input type="text" id="fechaFin" placeholder="Hasta">
-                        <button id="btnConsultar" class="btn btn-primary">Consultar</button>
-                    </div>
+                <h1 class="text-center">
+                        Lotes de Producto Terminado</h1>
                     <div id="tablaLotesPT_wrapper">
                         <table id="tablaLotesPT" class="table table-bordered table-hover">
                             <thead>
-                                <tr id="columnasTabla">
-                                    <!-- Columnas dinámicas -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Datos cargados dinámicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <div id="tablaPresentacionesPT_wrapper" style="display: none;">
-                        <table id="tablaPresentacionesPT" class="table table-bordered table-hover">
-                            <thead>
                                 <tr>
-                                    <th>Presentación</th>
-                                    <th>Cantidad Disponible</th>
-                                    <th>Precio Unitario</th>
-                                    <th>Precio Venta Sugerido</th>
-                                    <th>Composición</th>
-                                    <th>Estado</th>
+                                    <th>Lote</th>
+                                    <th>Fecha de Producción</th>
+                                    <th>Total Disponible (kg)</th>
+                                    <th>Precio Total</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -80,23 +50,21 @@
         </div>
         <!-- /.content-wrapper -->
 
-        <!-- Main Footer -->
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
                 FRAN FRUIT
             </div>
-            <strong>&copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>. Derechos Reservados.</strong>
+            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
         </footer>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="../Public/dist/js/adminlte.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <!-- Custom JS -->
-    <script src="JS/invTerminado.js"></script>
+    <script src="../Public/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <script src="JS/Pt.js"></script>
+    <script src="JS/DTesp.js"></script>
+    <script src="JS/cerrarsesion.js"></script>
 </body>
 </html>

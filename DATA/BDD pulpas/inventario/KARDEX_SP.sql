@@ -1,16 +1,5 @@
 SELECT * FROM fpulpas.kardex;
 
--- otra kardex
-CREATE TABLE kardex (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    fecha DATE,
-    cat_id INT,
-    cantidad DECIMAL(10, 2),
-    tipo_movimiento ENUM('Entrada', 'Salida'),
-    saldo DECIMAL(10, 2),
-    FOREIGN KEY (cat_id) REFERENCES catalogo(cat_id)
-);
-
 DELIMITER $$
 
 CREATE PROCEDURE `Akardex`(

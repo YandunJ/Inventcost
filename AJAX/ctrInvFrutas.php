@@ -192,16 +192,19 @@ function obtenerMateriaPrima() {
         
 
 function eliminarMateriaPrima() {
-    $id_inv = $_POST['id_inv'];  // Recibe el ID de inventario desde la solicitud
-    $materiaPrima = new MateriaPrima();
+    if (isset($_POST['id_inv'])) {
+        $id_inv = $_POST['id_inv'];
+        $materiaPrima = new MateriaPrima();
 
-    try {
-        $materiaPrima->eliminar($id_inv);  // Llama al método de eliminación en el modelo
-        echo json_encode(['status' => 'success']);  // Responde con éxito si la eliminación se realiza correctamente
-    } catch (Exception $e) {
-        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);  // Muestra el mensaje de error en caso de falla
+        try {
+            $result = $materiaPrima->eliminarMateriaPrima($id_inv);
+            echo json_encode(['status' => $result ? 'success' : 'error', 'message' => $result ? 'Registro eliminado correctamente' : 'No se pudo eliminar el registro']);
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Datos incompletos.']);
     }
 }
-
  
 ?>

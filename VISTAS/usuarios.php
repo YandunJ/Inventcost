@@ -27,7 +27,9 @@
                 <div class="container-fluid">
                     <h1 class="text-center">Gestionar Usuarios</h1>
                     <div class="text-right mb-3">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalRegistroUsuario">Registrar Usuario</button>
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#modalRegistroUsuario">
+                        <i class="fas fa-plus"></i> Agregar Usuario
+                        </button>
                     </div>
                     <table id="tablaUsuarios" class="table table-bordered table-hover table-compact">
                         <thead>

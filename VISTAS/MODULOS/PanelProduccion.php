@@ -1,3 +1,6 @@
+<?php
+session_start();
+$nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SESSION['apellido'] : 'User Name';
 ?>
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
@@ -9,42 +12,68 @@
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-            <div class="image">
-                <img src="../FILES/usulog.png" class="img-circle elevation-2" alt="User Image">
-            </div>
             <div class="info">
-                <a href="#" class="d-block"><?php echo $nombreCompleto; ?></a>
+                <a href="#" class="d-block" style="font-size: 1.2em; font-weight: bold;">¡Hola! <?php echo $nombreCompleto; ?></a>
             </div>
         </div>
-
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item">
-                    <a href="index.php" class="nav-link">
-                        <i class="nav-icon fas fa-home"></i>
-                        <p>Inicio</p>
-                    </a>
-                </li>
-           
-                <li class="nav-item">
-                    <a href="Presentacion.php" class="nav-link">
-                        <i class="nav-icon fas fa-box"></i>
-                        <p>Presentaciones</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Costos.php" class="nav-link">
-                        <i class="nav-icon fas fa-dollar-sign"></i>
-                        <p>Costos</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="Produccion.php" class="nav-link">
+                <!-- Gestión de Producción -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-industry"></i>
-                        <p>Producción</p>
+                        <p>
+                            Producción
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="Costos.php" class="nav-link">
+                                <i class="nav-icon fas fa-dollar-sign"></i>
+                                <p>Costos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="Presentacion.php" class="nav-link">
+                                <i class="nav-icon fas fa-tags"></i>
+                                <p>Presentaciones</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="PRODUCCION.php" class="nav-link">
+                                <i class="nav-icon fas fa-cogs"></i>
+                                <p>Realizar Producción</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+                <!-- Gestión de Salidas -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-dolly"></i>
+                        <p>
+                            Despacho Producto 
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="producto.php" class="nav-link">
+                                <i class="nav-icon fas fa-box-open"></i>
+                                <p>Lotes Producto Terminado</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="VentaPT.php" class="nav-link">
+                                <i class="nav-icon fas fa-arrow-right"></i>
+                                <p>Registrar Venta</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Gestión de Kardex -->
                 <li class="nav-item">
                     <a href="Kardex.php" class="nav-link">
                         <i class="nav-icon fas fa-clipboard-list"></i>

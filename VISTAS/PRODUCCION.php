@@ -23,12 +23,17 @@
     <div class="content-wrapper">
         <section class="content">
             <div class="container-fluid">
-                <h1>Producción</h1>
-                <!-- Botón para abrir el modal -->
+            <h1 class="text-center">
+                    Producción</h1>
+                <div class="text-right mb-3">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalRegistrarProduccion">
-                    Agregar Producción
+                <i class="fas fa-plus"></i> Agregar Producción
                 </button>
+                </div>
+
+
                 <!-- Modal para el formulario de producción -->
+                 
                 <div class="modal fade" id="modalRegistrarProduccion" tabindex="-1" role="dialog" aria-labelledby="produccionModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-xl" role="document">
                         <div class="modal-content">

@@ -1,7 +1,7 @@
 -- estado INVENTARIO
 DELIMITER $$
 
-CREATE TRIGGER act_estado_stock_inv
+CREATE TRIGGER act_estado_inv
 BEFORE UPDATE ON inventario
 FOR EACH ROW
 BEGIN
@@ -14,16 +14,13 @@ BEGIN
     -- Actualizar estado según la cantidad restante
     IF NEW.cant_restante = 0 THEN
         SET NEW.estado = 'agotado';
-    ELSEIF NEW.cant_restante < (NEW.cant_ingresada * 0.2) THEN
-        SET NEW.estado = 'stock bajo';
     ELSE
         SET NEW.estado = 'disponible';
     END IF;
 END$$
+
 DELIMITER ;
 
-
-SELECT * FROM fpulpas.kardex;
 
 -- elimar un trigger
 DROP TRIGGER IF EXISTS kar2;

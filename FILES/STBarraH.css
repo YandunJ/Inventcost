@@ -1,0 +1,23 @@
+.main-header.navbar {
+    background: linear-gradient(to right, #403F96, #853F69, #EA4026);
+    color: white;
+}
+
+.main-header.navbar .nav-link,
+.main-header.navbar .navbar-brand,
+.main-header.navbar .navbar-nav .nav-item .nav-link {
+    color: white;
+}
+
+.breadcrumb {
+    background: transparent;
+    margin-bottom: 0;
+}
+
+.breadcrumb-item a {
+    color: white;
+}
+
+.breadcrumb-item.active {
+    color: #f8f9fa;
+}

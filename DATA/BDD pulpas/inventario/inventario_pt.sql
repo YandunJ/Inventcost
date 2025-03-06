@@ -386,11 +386,51 @@ DELIMITER ;
 DROP TRIGGER IF EXISTS composicion_pt;
 
 
-SELECT 
-    p.lote_PT AS lote,
-    GROUP_CONCAT(CONCAT(i.presentacion, ' (', i.cant_disponible, ' ', i.estado, ')')) AS presentaciones,
-    SUM(i.cant_disponible) AS total_disponible
-FROM produccion p
-JOIN inventario_pt i ON p.pro_id = i.pro_id
-GROUP BY p.lote_PT;
+DELIMITER //
 
+CREATE PROCEDURE `Tp_data`()
+BEGIN
+    SELECT 
+        p.lote_PT AS lote,
+        p.pro_fecha AS fecha_produccion,
+        SUM(pt.cant_disponible) AS total_disponible,
+        SUM(pt.p_t) AS precio_total
+    FROM 
+        produccion p
+    JOIN 
+        inventario_pt pt ON p.pro_id = pt.pro_id
+    GROUP BY 
+        p.lote_PT, p.pro_fecha;
+END //
+
+DELIMITER ;
+
+call fpulpas.Tp_data();
+
+DELIMITER //
+
+CREATE PROCEDURE `Tp_detalles`(IN lote_PT VARCHAR(50))
+BEGIN
+    SELECT 
+        pt.id_pt,
+        pt.presentacion,
+        pt.cant_ingresada,
+        pt.cant_disponible,
+        pt.p_u,
+        pt.p_t,
+        pt.p_v_s,
+        pt.fecha_caducidad,
+        pt.composicion,
+        pt.estado,
+        pt.observacion
+    FROM 
+        inventario_pt pt
+    JOIN 
+        produccion p ON pt.pro_id = p.pro_id
+    WHERE 
+        p.lote_PT = lote_PT;
+END //
+
+DELIMITER ;
+
+call fpulpas.Tp_detalles('PT_0403251');

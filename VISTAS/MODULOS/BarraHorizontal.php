@@ -19,7 +19,7 @@ if (isset($_SESSION['rol_id'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Otros meta tags y enlaces -->
+<link rel="stylesheet" href="../FILES/STBarraH.css">
 <!--     
     <style>
         .modal-header {
@@ -99,6 +99,7 @@ if (isset($_SESSION['rol_id'])) {
 
 <!-- Scripts -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
+
 
 <script>
 $(document).ready(function() {

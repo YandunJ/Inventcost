@@ -153,30 +153,22 @@
             
        
             
-            public function eliminar($mp_id) {
-                $sql = "CALL sp_EliminarRegistroMP(?)";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("i", $mp_id);
-                if (!$stmt->execute()) {
-                    throw new Exception($stmt->error);
+            public function eliminarMateriaPrima($id_inv) {
+                // Preparación y ejecución de la eliminación
+                $stmt = $this->conn->prepare("CALL mp_elm(?)");
+                if (!$stmt) {
+                    throw new Exception("Error en la preparación de la consulta: " . $this->conn->error);
                 }
-            }
-
-            public function obtenerDetalleLote($lote_id) {
-                $sql = "CALL sp_DetalleLote(?)";
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bind_param("i", $lote_id);
-                $stmt->execute();
-                $result = $stmt->get_result();
-                
+            
+                $stmt->bind_param("i", $id_inv);
+            
+                $result = $stmt->execute();
                 if (!$result) {
-                    throw new Exception("Error en la ejecución de la consulta: " . $this->conn->error);
+                    throw new Exception("Error en la ejecución de la consulta: " . $stmt->error);
                 }
-                
-                $data = $result->fetch_assoc();
+            
                 $stmt->close();
-                
-                return $data;
+                return $result;
             }
                 // Función para obtener frutas
                     public function obtenerFrutas() {

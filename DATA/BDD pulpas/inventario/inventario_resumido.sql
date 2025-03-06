@@ -375,39 +375,16 @@ SELECT * FROM fpulpas.inventario;
 
 DELIMITER $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_act`(
-    IN p_id_inv INT,
-    IN p_cat_id INT,
-    IN p_proveedor_id INT,
-    IN p_cant_ingresada DECIMAL(10,2),
-    IN p_precio_total DECIMAL(10,2),
-    IN p_precio_unitario DECIMAL(10,2),
-    IN p_brix DECIMAL(5,2),
-    IN p_observacion TEXT
+CREATE DEFINER=`root`@`localhost` PROCEDURE `mp_elm`(
+    IN p_id_inv INT
 )
 BEGIN
-    UPDATE inventario
-    SET 
-        cat_id = p_cat_id,
-        proveedor_id = p_proveedor_id,
-        cant_ingresada = p_cant_ingresada,
-        p_t = p_precio_total,
-        p_u = p_precio_unitario,
-        brix = p_brix,
-        observacion = p_observacion,
-        fecha_hora = NOW()
-    WHERE id_inv = p_id_inv;
+    -- Verificar si se ha hecho algún consumo de este lote en producción
+    IF (SELECT COUNT(*) FROM prod_detalle WHERE id_inv = p_id_inv) > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede eliminar este lote porque ya se ha hecho un consumo en producción.';
+    ELSE
+        DELETE FROM inventario WHERE id_inv = p_id_inv;
+    END IF;
 END$$
 
 DELIMITER ;
-
-CALL mp_act(
-    17, -- p_id_inv
-    2, -- p_cat_id
-    1, -- p_proveedor_id
-    20.00, -- p_cant_ingresada
-    20.00, -- p_precio_total
-    2.00, -- p_precio_unitario
-    10.00, -- p_brix
-    'nada' -- p_observacion
-);

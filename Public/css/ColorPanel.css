@@ -1,8 +1,11 @@
 .main-sidebar {
     /* background-color: #102e6a !important; */
-    background-color: #263238 !important;
+    background-color: #403F96 !important;
     
 
+    .main-header.navbar {
+        background: linear-gradient(to right, #403F96, #853F69, #EA4026);
+    }
     
         /* background-color: #44629F !important; */
 

@@ -28,7 +28,9 @@
                 <h1 class="text-center">Proveedores</h1>
                 <div class="text-right mb-3">
                 <!-- Botón para abrir el modal -->
-<button class="btn btn-primary mb-3" id="addProveedorButton">Agregar Nuevo</button>
+<button class="btn btn-primary mb-3" id="addProveedorButton">
+<i class="fas fa-plus"></i> Agregar
+</button>
 </div>
 
 <!-- Modal -->

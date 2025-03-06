@@ -30,7 +30,7 @@
                     <div class="text-right mb-3">
                         <!-- Botón para abrir el modal -->
                         <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#modalFormulario" data-action="add">
-                            Agregar Costo
+                        <i class="fas fa-plus"></i> Agregar
                         </button>
                     </div>
                     

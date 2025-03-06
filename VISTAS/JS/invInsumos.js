@@ -156,9 +156,7 @@ const insumosTable = $('#inventarioInsumosdt').DataTable({
                             <i class="fas fa-cog"></i>
                         </button>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item details-btn" href="#" data-id="${row.ID}">
-                                <i class="fas fa-info-circle"></i> Detalles
-                            </a>
+                         
                             <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
                                 <i class="fas fa-edit"></i> Editar
                             </a>
