@@ -73,13 +73,13 @@
                                 <label for="prs_abreviacion">Abreviación</label>
                                 <input type="text" class="form-control" id="prs_abreviacion" name="prs_abreviacion" required>
                             </div>
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="prs_estado">Estado</label>
                                 <select class="form-control" id="prs_estado" name="prs_estado" required>
                                     <option value="vigente">Vigente</option>
                                     <option value="descontinuado">Descontinuado</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

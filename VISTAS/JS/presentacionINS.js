@@ -13,7 +13,6 @@ $(document).ready(function () {
         "columns": [
             { "data": "prs_nombre" },         // Nombre de la presentación
             { "data": "prs_abreviacion" },    // Abreviación de la presentación
-            
             {
                 "data": null,
                 "render": function (data, type, row) {
@@ -59,7 +58,6 @@ $(document).ready(function () {
                     $('#prs_id').val(data.prs_id || ''); // Evitar valores nulos
                     $('#prs_nombre').val(data.prs_nombre || '');
                     $('#prs_abreviacion').val(data.prs_abreviacion || '');
-                    $('#prs_estado').val(data.prs_estado || '').trigger('change');
 
                     $('#modalFormulario').modal('show');
                 } else {
@@ -83,8 +81,7 @@ $(document).ready(function () {
             action: action,
             prs_id: prs_id,
             prs_nombre: $('#prs_nombre').val(),
-            prs_abreviacion: $('#prs_abreviacion').val(),
-            prs_estado: $('#prs_estado').val()
+            prs_abreviacion: $('#prs_abreviacion').val()
         };
 
         $.ajax({
@@ -115,7 +112,6 @@ $(document).ready(function () {
     // Limpiar campos al cerrar el modal
     $('#modalFormulario').on('hidden.bs.modal', function () {
         $('#presentacionForm')[0].reset(); // Reinicia todos los campos
-        $('#prs_estado').val('').trigger('change');
         $('#prs_id').val('0'); // Resetear campo oculto
         $('#modalFormularioLabel').text('Agregar Presentación de Insumo'); // Resetear título por defecto
     });

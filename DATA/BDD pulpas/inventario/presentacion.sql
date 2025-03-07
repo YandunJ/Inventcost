@@ -121,14 +121,49 @@ call fpulpas.UM_data_id(1);
 
 DELIMITER //
 
-CREATE PROCEDURE UM_data()
+CREATE PROCEDURE `UM_data_ins`()
 BEGIN
     SELECT prs_id, prs_nombre, prs_abreviacion, prs_estado, ctg_id, equivalencia
-    FROM presentacion;
+    FROM presentacion
+    WHERE ctg_id = 2;
 END //
 
 DELIMITER ;
-call fpulpas.UM_data();
+call fpulpas.UM_data_ins();
+ALTER TABLE presentacion MODIFY prs_abreviacion VARCHAR(250) NULL;
 
 
-ALTER TABLE presentacion MODIFY prs_abreviacion VARCHAR(10) NULL;
+DELIMITER //
+CREATE PROCEDURE `UM_CRUD_ins`(
+    IN `p_opcion` INT,
+    IN `p_prs_id` INT,
+    IN `p_prs_nombre` VARCHAR(50),
+    IN `p_prs_abreviacion` VARCHAR(10)
+)
+BEGIN
+    IF p_opcion = 1 THEN
+        -- Insertar nueva presentación de insumo
+        INSERT INTO presentacion (prs_nombre, prs_abreviacion, prs_estado, ctg_id)
+        VALUES (p_prs_nombre, p_prs_abreviacion, 'vigente', 2);
+    ELSEIF p_opcion = 2 THEN
+        -- Actualizar presentación de insumo existente
+        UPDATE presentacion
+        SET prs_nombre = p_prs_nombre,
+            prs_abreviacion = p_prs_abreviacion
+        WHERE prs_id = p_prs_id AND ctg_id = 2;
+    END IF;
+END //
+DELIMITER ;
+
+
+DELIMITER //
+CREATE PROCEDURE `UM_data_id_ins`(
+    IN `p_prs_id` INT
+)
+BEGIN
+    SELECT prs_id, prs_nombre, prs_abreviacion
+    FROM presentacion
+    WHERE prs_id = p_prs_id AND ctg_id = 2;
+END //
+DELIMITER ;
+call fpulpas.UM_data_id_ins(2);
