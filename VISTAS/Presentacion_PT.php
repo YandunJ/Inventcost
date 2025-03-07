@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Presentaciones de Producto Terminado</title>
     <link rel="stylesheet" href="../FILES/global.css">
+    <style>
+        .alerta-equivalencia {
+            display: none;
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -36,7 +47,7 @@
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
-                                    <th>Equivalencia</th>
+                                    <th>Equivalencia (g)</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -69,8 +80,11 @@
                                 <input type="text" class="form-control" id="prs_nombre" name="prs_nombre" required>
                             </div>
                             <div class="form-group">
-                                <label for="equivalencia">Equivalencia</label>
+                                <label for="equivalencia">Equivalencia (g)</label>
                                 <input type="number" class="form-control" id="equivalencia" name="equivalencia" required>
+                            </div>
+                            <div class="alerta-equivalencia" id="alertaEquivalencia">
+                                Asegúrese de ingresar la equivalencia en gramos correctamente. Por ejemplo, si el nombre es "2 kilos", la equivalencia debe ser "2000".
                             </div>
                         </div>
                         <div class="modal-footer">

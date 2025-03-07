@@ -1,102 +1,64 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once "../CONFIG/conexion.php";
-require_once "../MODELO/modPresent.php";
+require_once "../MODELO/modPrsPT.php";
 
 // Captura la acción enviada por el cliente
 $action = $_POST['action'] ?? ($_GET['action'] ?? '');
 
 switch ($action) {
-    case 'registrarPresentacion':
-        registrarPresentacion();
-        break;
-    case 'actualizarPresentacion':
-        actualizarPresentacion();
+    case 'obtenerPresentacionesPT':
+        obtenerPresentacionesPT();
         break;
     case 'obtenerPresentacionPorId':
         obtenerPresentacionPorId();
         break;
-    case 'obtenerTodasPresentaciones':
-        obtenerTodasPresentaciones();
+    case 'addPresentacion':
+        gestionarPresentacion(1);
         break;
-        case 'obtenerPresentacionesPT':
-            obtenerPresentacionesPT();
-            break;
+    case 'updatePresentacion':
+        gestionarPresentacion(2);
+        break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
 }
 
 // Funciones relacionadas
-function registrarPresentacion() {
-    $prs_nombre = $_POST['prs_nombre'];
-    $prs_abreviacion = $_POST['prs_abreviacion'] ?? null;
-    $prs_estado = $_POST['prs_estado'];
-    $ctg_id = $_POST['ctg_id'];
-    $equivalencia = $_POST['equivalencia'];
-
-    $presentacion = new Presentacion();
-    $result = $presentacion->gestionarPresentacion(1, 0, $prs_nombre, $prs_abreviacion, $prs_estado, $ctg_id, $equivalencia);
-
-    // Verifica si el SP devolvió un resultado
-    if ($result === true || ($result && $result->fetch_assoc()['message'] === 'Success')) {
-        echo json_encode(['status' => 'success', 'message' => 'Presentación registrada correctamente']);
-    } else {
-        http_response_code(500);
-        echo json_encode(['status' => 'error', 'message' => 'Error al registrar la presentación']);
-    }
-}
-
-
-function actualizarPresentacion() {
-    $prs_id = $_POST['prs_id'];
-    $prs_nombre = $_POST['prs_nombre'];
-    $prs_abreviacion = $_POST['prs_abreviacion'] ?? null;
-    $prs_estado = $_POST['prs_estado'];
-    $ctg_id = $_POST['ctg_id'];
-    $equivalencia = $_POST['equivalencia'];
-
-    $presentacion = new Presentacion();
-    $result = $presentacion->gestionarPresentacion(2, $prs_id, $prs_nombre, $prs_abreviacion, $prs_estado, $ctg_id, $equivalencia);
-    if ($result) {
-        echo json_encode(['status' => 'success']);
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error al actualizar la presentación']);
-    }
-}
-
-function obtenerPresentacionPorId() {
-    $prs_id = $_POST['prs_id'];
-    $presentacion = new Presentacion();
-    $result = $presentacion->obtenerPresentacionPorId($prs_id);
-    echo json_encode($result);
-}
-
-function obtenerTodasPresentaciones() {
-    $presentacion = new Presentacion();
-    $result = $presentacion->obtenerTodasPresentaciones();
+function obtenerPresentacionesPT() {
+    $presentacion = new PresentacionPT();
+    $result = $presentacion->obtenerPresentacionesPT();
     $presentaciones = [];
     while ($row = $result->fetch_assoc()) {
         $presentaciones[] = $row;
     }
     echo json_encode($presentaciones);
 }
-function obtenerPresentacionesPT() {
-    global $conn;
-    $sql = "SELECT prs_id, prs_nombre FROM presentacion WHERE ctg_id = 3 AND prs_estado = 'vigente'";
-    $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
-        $data = [];
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-        echo json_encode(['status' => 'success', 'data' => $data]);
+function obtenerPresentacionPorId() {
+    $prs_id = $_POST['prs_id'];
+    $presentacion = new PresentacionPT();
+    $data = $presentacion->obtenerPresentacionPorId($prs_id);
+    if (isset($data['error'])) {
+        echo json_encode(['status' => 'error', 'message' => $data['error']]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'No se encontraron presentaciones']);
+        echo json_encode(['status' => 'success', 'data' => $data]);
     }
 }
 
+function gestionarPresentacion($opcion) {
+    $prs_id = $_POST['prs_id'];
+    $prs_nombre = $_POST['prs_nombre'];
+    $equivalencia = $_POST['equivalencia'];
+
+    $presentacion = new PresentacionPT();
+    $result = $presentacion->gestionarPresentacion($opcion, $prs_id, $prs_nombre, $equivalencia);
+
+    if (isset($result['error'])) {
+        echo json_encode(['status' => 'error', 'message' => $result['error']]);
+    } else {
+        echo json_encode(['status' => 'success', 'message' => 'Operación realizada con éxito']);
+    }
+}
 ?>

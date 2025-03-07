@@ -1,221 +1,126 @@
 $(document).ready(function () {
-    // Cargar categorías desde la base de datos
-    function cargarCategorias() {
-        $.ajax({
-            url: '../AJAX/ctrInvCatalogo.php',
-            type: 'POST',
-            data: { action: 'getCategorias' },
-            success: function (response) {
-                const result = JSON.parse(response);
-                if (result.status === 'success' && Array.isArray(result.data)) {
-                    let options = "<option value=''>Seleccione una categoría</option>";
-                    result.data.forEach(function (categoria) {
-                        if (categoria.ctg_id == 2 || categoria.ctg_id == 3) { // Solo cargar Insumos y Producto Terminado
-                            options += `<option value="${categoria.ctg_id}">${categoria.ctg_nombre}</option>`;
-                        }
-                    });
-                    $('#categoria').html(options);
-                    $('#filtroCategoria').html(options);
-                } else {
-                    console.error("Error al cargar categorías: ", result);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
+    // Inicializar DataTables
+    var table = $('#presentacionTable').DataTable({
+        "ajax": {
+            "url": "../AJAX/ctrPrsPT.php",
+            "type": "POST",
+            "data": { action: "obtenerPresentacionesPT" },
+            "dataSrc": function (json) {
+                console.log(json); // Verificar qué datos llegan del servidor
+                return json;
             }
-        });
-    }
-
-    // Cargar presentaciones desde la base de datos
-    function cargarPresentaciones(filtroCategoria = '3') {
-        $.ajax({
-            url: '../AJAX/ctrPresent.php',
-            type: 'POST',
-            data: { action: 'obtenerTodasPresentaciones' },
-            success: function (response) {
-                const presentaciones = JSON.parse(response);
-                let filas = '';
-                presentaciones.forEach(presentacion => {
-                    if (filtroCategoria == '' || (filtroCategoria == '2' && presentacion.ctg_id != '3') || (filtroCategoria == '3' && presentacion.ctg_id == '3')) {
-                        filas += `
-                            <tr>
-                                <td>${presentacion.prs_nombre}</td>`;
-                        if (filtroCategoria == '2') {
-                            filas += `<td>${presentacion.prs_abreviacion}</td>`;
-                        }
-                        if (filtroCategoria == '3') {
-                            filas += `
-                                <td>${presentacion.equivalencia}</td>
-                                <td>${presentacion.prs_estado == 'vigente' ? 'Vigente' : 'Descontinuado'}</td>`;
-                        }
-                        filas += `
-                                <td>
-                                    <button type="button" class="btn btn-warning btn-sm editar-presentacion" data-id="${presentacion.prs_id}">Editar</button>
-                                </td>
-                            </tr>`;
-                    }
-                });
-                $('#presentacionTable tbody').html(filas);
-
-                // Mostrar u ocultar columnas según la categoría seleccionada
-                if (filtroCategoria == '2') {
-                    $('.abreviacion-column').show();
-                    $('.equivalencia-column').hide();
-                    $('.estado-column').hide();
-                } else {
-                    $('.abreviacion-column').hide();
-                    $('.equivalencia-column').show();
-                    $('.estado-column').show();
+        },
+        "columns": [
+            { "data": "prs_nombre" },         // Nombre de la presentación
+            { "data": "equivalencia" },       // Equivalencia de la presentación
+            {
+                "data": null,
+                "render": function (data, type, row) {
+                    return `
+                        <div class="btn-group">
+                            <button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item edit-btn" href="#" data-id="${row.prs_id}" data-toggle="modal" data-target="#modalFormulario" data-action="edit">
+                                    <i class="fas fa-edit"></i> Editar
+                                </a>
+                            </div>
+                        </div>
+                    `;
                 }
-                $('.categoria-column').hide(); // Ocultar siempre la columna de categoría
-            },
-            error: function (xhr, status, error) {
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
             }
-        });
-    }
-
-    // Mostrar u ocultar los campos de equivalencia y estado según la categoría seleccionada
-    $('#categoria').on('change', function () {
-        if ($(this).val() == '3') { // Producto Terminado
-            $('#abreviacion').removeAttr('required');
-            $('#abreviacionContainer').hide();
-            $('#equivalenciaContainer').show();
-            $('#estadoContainer').show();
-        } else {
-            $('#abreviacion').attr('required', 'required');
-            $('#abreviacionContainer').show();
-            $('#equivalenciaContainer').hide();
-            $('#estadoContainer').hide();
-        }
+        ],
+        "language": dataTableLanguage
     });
 
-    // Filtrar presentaciones por categoría
-    $('#filtroCategoria').on('change', function () {
-        const filtroCategoria = $(this).val();
-        cargarPresentaciones(filtroCategoria);
+    // Mostrar mensaje de advertencia al abrir el modal
+    $('#modalFormulario').on('show.bs.modal', function () {
+        $('#alertaEquivalencia').fadeIn();
+        setTimeout(function () {
+            $('#alertaEquivalencia').fadeOut();
+        }, 10000); // Mostrar el mensaje durante 10 segundos
     });
 
-    // Agregar o actualizar presentación
-    $('#presentacionForm').on('submit', function (e) {
-        e.preventDefault();
-        const prs_id = $('#id_presentacion').val();
-        const prs_nombre = $('#nombre').val();
-        const prs_abreviacion = $('#abreviacion').val();
-        const prs_estado = $('#estado').is(':checked') ? 'vigente' : 'descontinuado';
-        const ctg_id = $('#categoria').val();
-        const equivalencia = parseFloat($('#equivalencia').val()) || 0;
+    // Cargar datos en el formulario al editar
+    $('#presentacionTable').on('click', '.edit-btn', function () {
+        let prs_id = $(this).data('id');
 
-        const action = prs_id == 0 ? 'registrarPresentacion' : 'actualizarPresentacion';
+        // Cambiar título del modal
+        $('#modalFormularioLabel').text('Editar Presentación de Producto Terminado');
 
+        // AJAX para cargar datos de la presentación
         $.ajax({
-            url: '../AJAX/ctrPresent.php',
+            url: '../AJAX/ctrPrsPT.php',
             type: 'POST',
             data: {
-                action: action,
-                prs_id: prs_id,
-                prs_nombre: prs_nombre,
-                prs_abreviacion: ctg_id == '3' ? '' : prs_abreviacion,
-                prs_estado: prs_estado,
-                ctg_id: ctg_id,
-                equivalencia: equivalencia
+                action: 'obtenerPresentacionPorId',
+                prs_id: prs_id
             },
+            dataType: 'json',
             success: function (response) {
-                try {
-                    const result = JSON.parse(response);
-                    if (result.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Éxito',
-                            text: result.message || 'Presentación guardada correctamente',
-                        });
-                        $('#modalFormulario').modal('hide');
-                        cargarPresentaciones();
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: result.message || 'Error desconocido',
-                        });
-                    }
-                } catch (e) {
-                    console.error("Respuesta inválida del servidor: ", response);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Error al procesar la respuesta del servidor.',
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error en el servidor. Verifique la consola para más detalles.',
-                });
-            }
-        });
-    });
+                if (response.status === 'success') {
+                    let data = response.data;
 
-    // Editar presentación
-    $('#presentacionTable').on('click', '.editar-presentacion', function () {
-        const prs_id = $(this).data('id');
-        $.ajax({
-            url: '../AJAX/ctrPresent.php',
-            type: 'POST',
-            data: { action: 'obtenerPresentacionPorId', prs_id: prs_id },
-            success: function (response) {
-                const presentacion = JSON.parse(response);
-                $('#id_presentacion').val(presentacion.prs_id);
-                $('#nombre').val(presentacion.prs_nombre);
-                $('#abreviacion').val(presentacion.prs_abreviacion);
-                $('#estado').prop('checked', presentacion.prs_estado === 'vigente');
-                $('#categoria').val(presentacion.ctg_id);
-                $('#equivalencia').val(presentacion.equivalencia);
-                if (presentacion.ctg_id == '3') {
-                    $('#abreviacion').removeAttr('required');
-                    $('#abreviacionContainer').hide();
-                    $('#equivalenciaContainer').show();
-                    $('#estadoContainer').show();
+                    // Llenar los campos del formulario
+                    $('#prs_id').val(data.prs_id || ''); // Evitar valores nulos
+                    $('#prs_nombre').val(data.prs_nombre || '');
+                    $('#equivalencia').val(data.equivalencia || '');
+
+                    $('#modalFormulario').modal('show');
                 } else {
-                    $('#abreviacion').attr('required', 'required');
-                    $('#abreviacionContainer').show();
-                    $('#equivalenciaContainer').hide();
-                    $('#estadoContainer').hide();
+                    Swal.fire('Error', response.message, 'error');
                 }
-                $('#modalFormulario').modal('show');
             },
-            error: function (xhr, status, error) {
-                console.error("Error: ", error);
-                console.error("Response: ", xhr.responseText);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Error al obtener los datos de la presentación. Verifique la consola para más detalles.',
-                });
+            error: function () {
+                Swal.fire('Error', 'No se pudo cargar la presentación.', 'error');
             }
         });
     });
 
-    // Cambiar el texto del estado según el checkbox
-    const estadoCheckbox = document.getElementById("estado");
-    const estadoText = document.getElementById("estado-text");
+    // Manejar la acción de agregar o editar
+    $('#presentacionForm').on('submit', function (e) {
+        e.preventDefault();
 
-    estadoCheckbox.addEventListener("change", () => {
-        if (estadoCheckbox.checked) {
-            estadoText.textContent = "Vigente";
-            estadoText.style.color = "#4CAF50";
-        } else {
-            estadoText.textContent = "Descontinuado";
-            estadoText.style.color = "#FF0000";
-        }
+        let prs_id = $('#prs_id').val();
+        let action = prs_id && prs_id !== "0" ? 'updatePresentacion' : 'addPresentacion';
+
+        let formData = {
+            action: action,
+            prs_id: prs_id,
+            prs_nombre: $('#prs_nombre').val(),
+            equivalencia: $('#equivalencia').val()
+        };
+
+        $.ajax({
+            url: '../AJAX/ctrPrsPT.php',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire('Éxito', response.message, 'success');
+
+                    // Limpiar formulario después de operación exitosa
+                    $('#presentacionForm')[0].reset();
+                    $('#prs_id').val('0');
+
+                    $('#modalFormulario').modal('hide');
+                    table.ajax.reload();
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function () {
+                Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+            }
+        });
     });
 
-    // Cargar categorías y presentaciones al cargar la página
-    cargarCategorias();
-    cargarPresentaciones();
+    // Limpiar campos al cerrar el modal
+    $('#modalFormulario').on('hidden.bs.modal', function () {
+        $('#presentacionForm')[0].reset(); // Reinicia todos los campos
+        $('#prs_id').val('0'); // Resetear campo oculto
+        $('#modalFormularioLabel').text('Agregar Presentación de Producto Terminado'); // Resetear título por defecto
+    });
 });
