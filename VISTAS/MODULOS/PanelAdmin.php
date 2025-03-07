@@ -31,23 +31,22 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="proveedores.php" class="nav-link">
-                                <i class="nav-icon fas fa-truck"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Proveedores</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="Presentacion.php" class="nav-link">
-                                <i class="nav-icon fas fa-tags"></i>
-                                <p>Presentaciones</p>
+                            <a href="Presentacion_INS.php" class="nav-link">
+                                <span class="nav-icon">•</span>
+                                <p>Presentaciones Insumos</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="Catalogo.php" class="nav-link">
-                                <i class="nav-icon fas fa-edit"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Catálogo</p>
                             </a>
                         </li>
-                    
                     </ul>
                 </li>
                 <!-- Gestión de Lotes -->
@@ -62,23 +61,22 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="InvFrutas.php" class="nav-link">
-                                <i class="nav-icon fas fa-apple-alt"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Lotes Frutas</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="InvInsumos.php" class="nav-link">
-                                <i class="nav-icon fas fa-box"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Lotes Insumos</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="producto.php" class="nav-link">
-                                <i class="nav-icon fas fa-box-open"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Lotes Producto Terminado</p>
                             </a>
                         </li>
-                     
                     </ul>
                 </li>
                 <!-- Gestión de Producción -->
@@ -91,21 +89,18 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a href="Costos.php" class="nav-link">
-                                <i class="nav-icon fas fa-dollar-sign"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Costos</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="PRODUCCION.php" class="nav-link">
-                                <i class="nav-icon fas fa-cogs"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Realizar Producción</p>
                             </a>
                         </li>
-                   
-                     
-                       
                     </ul>
                 </li>
                 <!-- Gestión de Salidas -->
@@ -113,29 +108,23 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-dolly"></i>
                         <p>
-                            Despacho Producto 
+                            Producto Terminado
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a href="producto.php" class="nav-link">
-                                <i class="nav-icon fas fa-box-open"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Lotes Producto Terminado</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="VentaPT.php" class="nav-link">
-                                <i class="nav-icon fas fa-arrow-right"></i>
-                                <p>Registrar Venta</p>
+                                <span class="nav-icon">•</span>
+                                <p>Registrar Salida</p>
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a href="HistorialSalidas.php" class="nav-link">
-                                <i class="nav-icon fas fa-history"></i>
-                                <p>Historial de Salidas</p>
-                            </a>
-                        </li> -->
                     </ul>
                 </li>
                 <!-- Gestión de Kardex -->
@@ -150,23 +139,18 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
-                            Usuarios
+                            Usuariosc
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="usuarios.php" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
+                                <span class="nav-icon">•</span>
                                 <p>Mis Usuarios</p>
                             </a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a href="roles.php" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Roles de usuario</p>
-                            </a>
-                        </li> -->
+                   
                     </ul>
                 </li>
             </ul>
