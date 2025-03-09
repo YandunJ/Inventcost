@@ -25,7 +25,7 @@
         <div class="content-wrapper">
             <section class="content">
                 <div class="container-fluid">
-                    <h1 class="text-center">Gestionar Usuarios</h1>
+                    <h1 class="text-center">Gestión de Usuarios</h1>
                     <div class="text-right mb-3">
                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalRegistroUsuario">
                         <i class="fas fa-plus"></i> Agregar Usuario
@@ -122,14 +122,15 @@
             </div>
         </div>
 
-        <!-- Main Footer -->
-        <footer class="main-footer">
+           <!-- Main Footer -->
+           <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
-                Custom footer text
+                FRAN FRUIT
             </div>
-            <strong>&copy; 2024 <a href="https://adminlte.io">FranFruit.io</a>. Derechos Reservados.</strong>
+            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
         </footer>
     </div>
+    
     <!-- ./wrapper -->
     <script src="../Public/plugins/jquery/jquery.min.js"></script>
     

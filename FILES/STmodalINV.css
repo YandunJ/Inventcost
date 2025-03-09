@@ -1,19 +1,16 @@
-/* Modal */
 /* Ajustar el tamaño del modal */
-/* .modal-lg { */
-    /* max-width: 60%; Ajusta el ancho máximo del modal grande */
-/* } */
+.modal-lg {
+    max-width: 80%; /* Ajusta el ancho máximo del modal grande */
+}
 
-/* .modal-dialog { */
-    /* max-width: 75%; Ajusta el ancho máximo del modal */
-    /* margin: 1.75rem auto; Ajusta el margen superior e inferior */
-/* } */
+.modal-dialog {
+    max-width: 100%; /* Ajusta el ancho máximo del modal */
+    margin: 1.75rem auto; /* Ajusta el margen superior e inferior */
+}
 
-/* .modal-content { */
-    /* padding: 20px; Ajusta el padding del contenido del modal */
-/* } */
-
-
+.modal-content {
+    padding: 20px; /* Ajusta el padding del contenido del modal */
+}
 
 /* Estilos para el encabezado del modal */
 .modal-header h3 {
@@ -24,6 +21,7 @@
 .modal-header {
     padding: 10px 15px; /* Reduce el padding vertical */
 }
+
 .modal-form-container {
     display: flex;
     flex-direction: column;
@@ -73,18 +71,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* border: 1px solid #ced4da; */
-    border: 1px solid #403F96 ;
-    background-color: #acaae5 ;
+    border: 1px solid #403F96;
+    background-color: #acaae5;
     cursor: pointer;
     font-size: 18px;
 }
-
 
 .input-quantity .currency {
     font-weight: bold;
     margin-left: 5px;
 }
+
 .custom-switch-container {
     display: flex;
     align-items: center;
@@ -129,7 +126,7 @@
 }
 
 input:checked + .slider {
-    background-color: #4CAF50;  
+    background-color: #4CAF50;
 }
 
 input:checked + .slider:before {

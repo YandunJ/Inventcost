@@ -4,7 +4,7 @@ SELECT * FROM fpulpas.det_despacho;
 
 
 CREATE TABLE `det_despacho` (
-  `id_detalle` int NOT NULL AUTO_INCREMENT,
+  `id_detalle` int NOT NULL AUTO_INCREMENT,	
   `id_despacho` int NOT NULL,
   `id_pt` int NOT NULL,
   `lote` varchar(50) NOT NULL,

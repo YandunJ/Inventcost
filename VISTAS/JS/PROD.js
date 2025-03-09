@@ -36,6 +36,7 @@ $(document).ready(function () {
         });
     }
 
+
     // MP
     const columnasMP = [
         { data: 'FechaHora' },
@@ -54,8 +55,8 @@ $(document).ready(function () {
                     <div class="input-group-prepend">
                         <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
                     </div>
-                    <input type="number" class="form-control cantidad-consumir text-center" 
-                           value="0" min="0" max="${row.CantidadDisponible}" step="1" disabled>
+                    <input type="text" class="form-control cantidad-consumir text-center" 
+                           value="0" min="0" max="${row.CantidadDisponible}" step="0.01" disabled>
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
                     </div>
@@ -80,6 +81,7 @@ $(document).ready(function () {
         }
     );
 
+
     // INSUMOS
     const columnasINS = [
         { data: 'FechaHora' },
@@ -97,8 +99,8 @@ $(document).ready(function () {
                     <div class="input-group-prepend">
                         <button type="button" class="btn btn-outline-secondary btn-sm decrementar" disabled>-</button>
                     </div>
-                    <input type="number" class="form-control cantidad-consumir text-center" 
-                           value="0" min="0" max="${row.CantidadRestante}" step="0.5" disabled>
+                    <input type="text" class="form-control cantidad-consumir text-center" 
+                           value="0" min="0" max="${row.CantidadRestante}" step="0.01" disabled>
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary btn-sm incrementar" disabled>+</button>
                     </div>
@@ -122,7 +124,6 @@ $(document).ready(function () {
             return row.CantidadRestante > 0; // Filtro: solo mostrar registros con cantidad restante
         }
     );
-
     // Función para recargar los DataTables de Materia Prima e Insumos
     function recargarTablas() {
         LotesMP.ajax.reload();
@@ -165,7 +166,7 @@ $(document).ready(function () {
                     <div class="input-group-prepend">
                         <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
                     </div>
-                    <input type="number" class="form-control precio-ht" min="0" step="0.01" value="0">
+                    <input type="text" class="form-control precio-ht" min="0" step="0.01" value="0">
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
                     </div>
@@ -180,7 +181,7 @@ $(document).ready(function () {
                     <div class="input-group-prepend">
                         <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
                     </div>
-                    <input type="number" class="form-control horas-por-dia" min="0" value="0">
+                    <input type="text" class="form-control horas-por-dia" min="0" value="0">
                     <div class="input-group-append">
                         <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
                     </div>
@@ -225,30 +226,30 @@ $(document).ready(function () {
             "data": null,
             "render": function () {
                 return `
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
-                        </div>
-                        <input type="number" class="form-control cantidad-unidades" min="0" value="0">
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
-                        </div>
-                    </div>`;
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                    </div>
+                    <input type="text" class="form-control cantidad-unidades" value="0">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                    </div>
+                </div>`;
             }
         },
         {
             "data": null,
             "render": function () {
                 return `
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
-                        </div>
-                        <input type="number" class="form-control precio-unitario" min="0" step="0.01" value="0">
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
-                        </div>
-                    </div>`;
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <button type="button" class="btn btn-outline-secondary btn-sm decrementar">-</button>
+                    </div>
+                    <input type="text" class="form-control precio-unitario" value="0">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary btn-sm incrementar">+</button>
+                    </div>
+                </div>`;
             }
         },
         { "data": null, className: 'costo-total', defaultContent: '$0.00' }
@@ -256,115 +257,129 @@ $(document).ready(function () {
     "language": dataTableLanguage
 });
 
+    // Función para validar los datos de cada pestaña
+    function validarDatosProduccion() {
+        // Validar Materia Prima
+        let validMP = false;
+        $('#LotesMP tbody tr').each(function () {
+            if ($(this).find('.select-mp').is(':checked')) {
+                const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+                if (cantidad > 0) {
+                    validMP = true;
+                    return false; // Salir del bucle
+                }
+            }
+        });
 
-  // Función para validar los datos de cada pestaña
-  function validarDatosProduccion() {
-    // Validar Materia Prima
-    let validMP = false;
-    $('#LotesMP tbody tr').each(function () {
-        if ($(this).find('.select-mp').is(':checked')) {
-            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
-            if (cantidad > 0) {
-                validMP = true;
+        // Validar Insumos
+        let validINS = false;
+        $('#LotesINS tbody tr').each(function () {
+            if ($(this).find('.seleccionar-checkbox').is(':checked')) {
+                const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
+                if (cantidad > 0) {
+                    validINS = true;
+                    return false; // Salir del bucle
+                }
+            }
+        });
+
+        // Validar Mano de Obra
+        let validMO = false;
+        $('#tablaManoObra tbody tr').each(function () {
+            const cantidadPersonas = parseFloat($(this).find('.cantidad-personas').val()) || 0;
+            const horasTrabajadas = parseFloat($(this).find('.horas-por-dia').val()) || 0;
+            const precioHora = parseFloat($(this).find('.precio-ht').val()) || 0;
+            if (cantidadPersonas > 0 && horasTrabajadas > 0 && precioHora > 0) {
+                validMO = true;
                 return false; // Salir del bucle
             }
-        }
-    });
+        });
 
-    // Validar Insumos
-    let validINS = false;
-    $('#LotesINS tbody tr').each(function () {
-        if ($(this).find('.seleccionar-checkbox').is(':checked')) {
-            const cantidad = parseFloat($(this).find('.cantidad-consumir').val()) || 0;
-            if (cantidad > 0) {
-                validINS = true;
+        // Validar Costos Indirectos
+        let validCI = false;
+        $('#tablaCostosIndirectos tbody tr').each(function () {
+            const cantidadUnidades = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
+            const precioUnitario = parseFloat($(this).find('.precio-unitario').val()) || 0;
+            if (cantidadUnidades > 0 && precioUnitario > 0) {
+                validCI = true;
                 return false; // Salir del bucle
             }
-        }
-    });
+        });
 
-    // Validar Mano de Obra
-    let validMO = false;
-    $('#tablaManoObra tbody tr').each(function () {
-        const cantidadPersonas = parseFloat($(this).find('.cantidad-personas').val()) || 0;
-        const horasTrabajadas = parseFloat($(this).find('.horas-por-dia').val()) || 0;
-        const precioHora = parseFloat($(this).find('.precio-ht').val()) || 0;
-        if (cantidadPersonas > 0 && horasTrabajadas > 0 && precioHora > 0) {
-            validMO = true;
-            return false; // Salir del bucle
-        }
-    });
-
-    // Validar Costos Indirectos
-    let validCI = false;
-    $('#tablaCostosIndirectos tbody tr').each(function () {
-        const cantidadUnidades = parseFloat($(this).find('.cantidad-unidades').val()) || 0;
-        const precioUnitario = parseFloat($(this).find('.precio-unitario').val()) || 0;
-        if (cantidadUnidades > 0 && precioUnitario > 0) {
-            validCI = true;
-            return false; // Salir del bucle
-        }
-    });
-
-    return validMP && validINS && validMO && validCI;
-}
-$('#btnRegistrarProduccionModal').on('click', function () {
-    if (!validarDatosProduccion()) {
-        alert('Por favor, complete todos los datos necesarios en cada pestaña antes de registrar la producción.');
-        return;
+        return validMP && validINS && validMO && validCI;
     }
 
-    const cant_producida = $('#totalPresentaciones').val() || 0; // Usar el total de presentaciones como cantidad producida
-    const lotes_mp = JSON.stringify(getLotesMP());
-    const lotes_ins = JSON.stringify(getLotesINS());
-    const mano_obra = JSON.stringify(getDatosManoObra());
-    const costos_indirectos = JSON.stringify(getCostosIndirectos());
-    const presentaciones_pt = JSON.stringify(getPresentacionesPT());
-    const lote_pt = $('#loteProductoTerminado').val(); // Obtener el lote de Producto Terminado
-
-    console.log("Datos de Materia Prima:", JSON.parse(lotes_mp));
-    console.log("Datos de Insumos:", JSON.parse(lotes_ins));
-    console.log("Datos de Mano de Obra:", JSON.parse(mano_obra));
-    console.log("Datos de Costos Indirectos:", JSON.parse(costos_indirectos));
-    console.log("Datos de Producto Terminado:", JSON.parse(presentaciones_pt));
-    console.log("Lote de Producto Terminado:", lote_pt);
-
-    $.ajax({
-        url: '../AJAX/ctrProduccionMP.php',
-        type: 'POST',
-        data: {
-            action: 'registrarProduccion',
-            cant_producida: cant_producida,
-            lotes_mp: lotes_mp,
-            lotes_ins: lotes_ins,
-            mano_obra: mano_obra,
-            costos_indirectos: costos_indirectos,
-            presentaciones_pt: presentaciones_pt,
-            lote_pt: lote_pt
-        },
-        success: function (response) {
-            try {
-                const result = JSON.parse(response);
-                if (result.status === 'success') {
-                    alert('Producción registrada correctamente');
-                    // Cerrar el modal
-                    $('#modalRegistrarProduccion').modal('hide');
-                    // Limpiar el formulario
-                    limpiarFormularioProduccion();
-                    // Disparar el evento personalizado para recargar los DataTables
-                    $(document).trigger('produccionRegistrada');
-                } else {
-                    alert('Error: ' + result.message);
-                }
-            } catch (e) {
-                alert('Error en la respuesta del servidor: ' + response);
-            }
-        },
-        error: function (xhr, status, error) {
-            alert('Error en la solicitud AJAX: ' + error);
+    $('#btnRegistrarProduccionModal').on('click', function () {
+        if (!validarDatosProduccion()) {
+            Swal.fire('Error', 'Por favor, complete todos los datos necesarios en cada pestaña antes de registrar la producción.', 'error');
+            return;
         }
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Deseas registrar esta producción? Si has ingresado algún dato incorrecto, tendrás que cancelar esta producción y registrarla nuevamente.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, registrar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const cant_producida = $('#totalPresentaciones').val() || 0; // Usar el total de presentaciones como cantidad producida
+                const lotes_mp = JSON.stringify(getLotesMP());
+                const lotes_ins = JSON.stringify(getLotesINS());
+                const mano_obra = JSON.stringify(getDatosManoObra());
+                const costos_indirectos = JSON.stringify(getCostosIndirectos());
+                const presentaciones_pt = JSON.stringify(getPresentacionesPT());
+                const lote_pt = $('#loteProductoTerminado').val(); // Obtener el lote de Producto Terminado
+
+                console.log("Datos de Materia Prima:", JSON.parse(lotes_mp));
+                console.log("Datos de Insumos:", JSON.parse(lotes_ins));
+                console.log("Datos de Mano de Obra:", JSON.parse(mano_obra));
+                console.log("Datos de Costos Indirectos:", JSON.parse(costos_indirectos));
+                console.log("Datos de Producto Terminado:", JSON.parse(presentaciones_pt));
+                console.log("Lote de Producto Terminado:", lote_pt);
+
+                $.ajax({
+                    url: '../AJAX/ctrProduccionMP.php',
+                    type: 'POST',
+                    data: {
+                        action: 'registrarProduccion',
+                        cant_producida: cant_producida,
+                        lotes_mp: lotes_mp,
+                        lotes_ins: lotes_ins,
+                        mano_obra: mano_obra,
+                        costos_indirectos: costos_indirectos,
+                        presentaciones_pt: presentaciones_pt,
+                        lote_pt: lote_pt
+                    },
+                    success: function (response) {
+                        try {
+                            const result = JSON.parse(response);
+                            if (result.status === 'success') {
+                                Swal.fire('Éxito', 'Producción registrada correctamente.', 'success').then(() => {
+                                    // Cerrar el modal
+                                    $('#modalRegistrarProduccion').modal('hide');
+                                    // Limpiar el formulario
+                                    limpiarFormularioProduccion();
+                                    // Disparar el evento personalizado para recargar los DataTables
+                                    $(document).trigger('produccionRegistrada');
+                                });
+                            } else {
+                                Swal.fire('Error', result.message || 'Ocurrió un error inesperado.', 'error');
+                            }
+                        } catch (e) {
+                            Swal.fire('Error', 'Error en la respuesta del servidor: ' + response, 'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire('Error', 'Error de comunicación con el servidor', 'error');
+                        console.error("Error: ", error);
+                        console.error("Response: ", xhr.responseText);
+                    }
+                });
+            }
+        });
     });
-});
 
 // Función para obtener los datos de Producto Terminado
 function getPresentacionesPT() {
@@ -450,8 +465,8 @@ window.getLotesINS = getLotesINS;
 window.getDatosManoObra = getDatosManoObra;
 window.getCostosIndirectos = getCostosIndirectos;
 
-// Evento para habilitar/deshabilitar campo y botones (Materia Prima)
-$('#LotesMP tbody').on('change', '.select-mp', function () {
+  // Evento para habilitar/deshabilitar campo y botones (Materia Prima)
+  $('#LotesMP tbody').on('change', '.select-mp', function () {
     const row = $(this).closest('tr');
     const cantidadInput = row.find('.cantidad-consumir');
     const incrementarBtn = row.find('.incrementar');

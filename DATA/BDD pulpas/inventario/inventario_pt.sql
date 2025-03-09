@@ -264,29 +264,78 @@ DELIMITER ;
 -- Declarar una variable para almacenar el ID de la producción
 SET @pro_id = 0;
 
--- Llamar al SP PR_consumo
+-- Llamar al SP PR_consumo- GUARDA MAL SUBTTOTALES
 CALL PR_consumo(
-    50.00, -- Cantidad producida
-    '[{"id_inv": 3, "cantidad": 1.00}]', -- Lotes de materia prima
-    '[{"id_inv": 4, "cantidad": 1.00}]', -- Lotes de insumos
-    '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 8, "mo_precio_hora": 50}]', -- Mano de obra
-    '[{"cat_id": 2, "cst_cant": 5, "cst_presentacion": "LITROS", "cst_precio_ht": 30}]', -- Costos indirectos
-    'PT_2802253', -- Lote de Producto Terminado
+    40.00, -- Cantidad producida
+    '[{"id_inv": 1, "cantidad": 0.10}]', -- Lotes de materia prima
+    '[{"id_inv": 2, "cantidad": 0.10}]', -- Lotes de insumos
+    '[{"cat_id": 1, "mo_cant_personas": 2, "mo_horas_trabajadas": 3, "mo_precio_hora": 2}]', -- Mano de obra
+    '[{"cat_id": 2, "cst_cant": 1, "cst_presentacion": "LITROS", "cst_precio_ht": 2}]', -- Costos indirectos
+    'PT_28022516', -- Lote de Producto Terminado
     @pro_id -- Parámetro de salida para el ID de la producción
 );
+
 -- Verificar el ID de la producción generada
 SELECT @pro_id;
 
--- Llamar al SP TP_reg con múltiples presentaciones
+-- Llamar al SP TP_reg con el pro_id generado
 CALL TP_reg(
-    @pro_id, -- ID de la producción generada
-    '[{"presentacion": "100 gr", "cant_disponible": 10.00, "p_u": 5.00, "p_t": 50.00}, 
-    {"presentacion": "200 gr", "cant_disponible": 20.00, "p_u": 10.00, "p_t": 200.00}]'
+    @pro_id, -- ID de la producción generada por PR_consumo
+    CURDATE(), -- Fecha de elaboración (puedes cambiarla según sea necesario)
+    '[{"presentacion": "100 gr", "cant_disponible": 10.00, "p_u": 5.00, "p_t": 50.00, "composicion": "Fruta"}, 
+      {"presentacion": "200 gr", "cant_disponible": 20.00, "p_u": 10.00, "p_t": 200.00, "composicion": "Fruta"}]' -- JSON con las presentaciones
 );
-
--- Verificar los registros en la tabla inventario_pt
 SELECT * FROM inventario_pt WHERE pro_id = @pro_id;
 
+
+DELIMITER $$
+
+CREATE TRIGGER subtotales_PD
+AFTER INSERT ON produccion
+FOR EACH ROW
+BEGIN
+    DECLARE subtotal_mtpm DECIMAL(10, 2) DEFAULT 0;
+    DECLARE subtotal_ins DECIMAL(10, 2) DEFAULT 0;
+    DECLARE subtotal_mo DECIMAL(10, 2) DEFAULT 0;
+    DECLARE subtotal_ci DECIMAL(10, 2) DEFAULT 0;
+    DECLARE total_produccion DECIMAL(10, 2) DEFAULT 0;
+
+    -- Calcular subtotal de materia prima (prod_detalle)
+    SELECT IFNULL(SUM(pdet_cantidad_usada * i.p_u), 0) INTO subtotal_mtpm
+    FROM prod_detalle pd
+    JOIN inventario i ON pd.id_inv = i.id_inv
+    WHERE pd.pro_id = NEW.pro_id;
+
+    -- Calcular subtotal de insumos (prod_detalle)
+    SELECT IFNULL(SUM(pdet_cantidad_usada * i.p_u), 0) INTO subtotal_ins
+    FROM prod_detalle pd
+    JOIN inventario i ON pd.id_inv = i.id_inv
+    WHERE pd.pro_id = NEW.pro_id;
+
+    -- Calcular subtotal de mano de obra (prcostos)
+    SELECT IFNULL(SUM(cst_costo_total), 0) INTO subtotal_mo
+    FROM prcostos
+    WHERE pro_id = NEW.pro_id AND cst_presentacion = 'UNIDADES';
+
+    -- Calcular subtotal de costos indirectos (prcostos)
+    SELECT IFNULL(SUM(cst_costo_total), 0) INTO subtotal_ci
+    FROM prcostos
+    WHERE pro_id = NEW.pro_id AND cst_presentacion != 'UNIDADES';
+
+    -- Calcular el total de producción
+    SET total_produccion = subtotal_mtpm + subtotal_ins + subtotal_mo + subtotal_ci;
+
+    -- Actualizar los subtotales y el total en la tabla produccion (solo para el registro recién insertado)
+    UPDATE produccion
+    SET pro_subtotal_mtpm = subtotal_mtpm,
+        pro_subtotal_ins = subtotal_ins,
+        pro_subtotal_mo = subtotal_mo,
+        pro_subtotal_ci = subtotal_ci,
+        pro_total = total_produccion
+    WHERE pro_id = NEW.pro_id; -- Restringir la actualización al registro recién insertado
+END$$
+
+DELIMITER ;
 
 DELIMITER $$
 

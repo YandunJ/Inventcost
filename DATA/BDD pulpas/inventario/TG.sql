@@ -24,6 +24,7 @@ DELIMITER ;
 
 -- elimar un trigger
 DROP TRIGGER IF EXISTS kar2;
+DROP TRIGGER IF EXISTS subtotales_PD;
 
 -- TG Kardex para entradas y salidas 
 -- ENTRADAS MP , INS
@@ -123,3 +124,51 @@ BEGIN
 END $$
 
 DELIMITER ;
+
+
+
+
+-- PRODUCCION (composicion de PT)
+DELIMITER $$
+
+CREATE TRIGGER composicion_pt
+BEFORE INSERT ON inventario_pt
+FOR EACH ROW
+BEGIN
+    DECLARE v_composicion TEXT DEFAULT '';
+    DECLARE v_fruta_nombre VARCHAR(100);
+    DECLARE done INT DEFAULT FALSE;
+
+    -- Cursor para obtener las frutas utilizadas en la producción
+    DECLARE cur CURSOR FOR
+        SELECT DISTINCT c.cat_nombre
+        FROM prod_detalle pd
+        JOIN inventario i ON pd.id_inv = i.id_inv
+        JOIN catalogo c ON i.cat_id = c.cat_id
+        JOIN categorias ct ON c.ctg_id = ct.ctg_id
+        WHERE pd.pro_id = NEW.pro_id 
+          AND ct.ctg_nombre = 'Materia Prima';
+
+    -- Manejador para el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Determinar la composición de frutas
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_fruta_nombre;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        -- Concatenar las frutas sin repetir
+        IF v_composicion NOT LIKE CONCAT('%', v_fruta_nombre, '%') THEN
+            SET v_composicion = CONCAT_WS(', ', v_composicion, v_fruta_nombre);
+        END IF;
+    END LOOP;
+    CLOSE cur;
+
+    -- Asignar la composición a NEW.composicion
+    SET NEW.composicion = TRIM(LEADING ', ' FROM v_composicion);
+END$$
+
+DELIMITER ;
+

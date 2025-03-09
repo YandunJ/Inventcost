@@ -7,7 +7,7 @@ $(document).ready(function () {
           dataSrc: 'data',
       },
       columns: [
-          { data: 'proveedor_id' },
+          
           { data: 'nombre_empresa' },
           { data: 'representante' },
           { data: 'correo' },

@@ -13,14 +13,16 @@ $(document).ready(function () {
             }
         },
         columns: [
-            { data: 'pro_id' }, // Asegúrate de que el pro_id se muestre en el DataTable
-            { data: 'pro_fecha' },
-            { data: 'pro_cant_producida' },
-            { data: 'pro_subtotal_mtpm' },
-            { data: 'pro_subtotal_ins' },
-            { data: 'pro_subtotal_mo' },
-            { data: 'pro_subtotal_ci' },
-            { data: 'pro_total' },
+            // { data: 'pro_id' }, // ID de la producción
+            { data: 'pro_fecha' }, // Fecha de producción
+            { data: 'lote_PT' }, // Lote de producto terminado
+            { data: 'pro_cant_producida' }, // Cantidad producida
+            
+            { data: 'pro_subtotal_mtpm' }, // Subtotal de materia prima
+            { data: 'pro_subtotal_ins' }, // Subtotal de insumos
+            { data: 'pro_subtotal_mo' }, // Subtotal de mano de obra
+            { data: 'pro_subtotal_ci' }, // Subtotal de costos indirectos
+            { data: 'pro_total' }, // Total de la producción
             {
                 data: null,
                 render: function (data, type, row) {

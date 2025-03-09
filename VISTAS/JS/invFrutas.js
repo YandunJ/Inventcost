@@ -132,14 +132,6 @@ $(document).ready(function() {
         updateQuantity(amount, inputId, step);
     });
 
-    // Validar que la cantidad ingresada sea múltiplo de 0.50
-    $('#cantidad_ingresada').on('input', function () {
-        const cantidad = parseFloat($(this).val());
-        if (cantidad % 0.50 !== 0) {
-            $(this).val((Math.round(cantidad * 2) / 2).toFixed(2));
-        }
-    });
-
     // Calcular Precio Unitario dinámicamente
     $('#cantidad_ingresada, #precio_total').on('input', function () {
         const cantidad = parseFloat($('#cantidad_ingresada').val()) || 1; // Evitar división por 0

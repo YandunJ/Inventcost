@@ -12,11 +12,38 @@ CREATE TABLE prod_detalle (
 
 DROP TRIGGER IF EXISTS k2;
 
--- pdet_cantidad_producida DECIMAL(10,2) DEFAULT 0,
--- pdet_cantidad_desperdiciada DECIMAL(10,2) DEFAULT 0,
--- Producción con 50 kg de manzanas usadas, 5 fundas de pulpa producidas, y 2 kg de desperdicio
-ALTER TABLE prod_detalle ADD COLUMN inv_lote VARCHAR(50) AFTER inv_id;
 
+
+SELECT 
+    pd.pdet_cantidad_usada, 
+    i.p_u, 
+    i.lote,
+    CASE 
+        WHEN i.lote LIKE 'MP%' THEN pd.pdet_cantidad_usada * i.p_u 
+        ELSE 0 
+    END AS subtotal_mtpm,
+    CASE 
+        WHEN i.lote LIKE 'INS%' THEN pd.pdet_cantidad_usada * i.p_u 
+        ELSE 0 
+    END AS subtotal_ins
+FROM prod_detalle pd
+LEFT JOIN inventario i ON pd.id_inv = i.id_inv
+WHERE pd.pro_id = 24;
+
+
+SELECT 
+    pc.cst_costo_total, 
+    pc.cst_presentacion,
+    CASE 
+        WHEN pc.cst_presentacion = 'UNIDADES' THEN pc.cst_costo_total 
+        ELSE 0 
+    END AS subtotal_mo,
+    CASE 
+        WHEN pc.cst_presentacion != 'UNIDADES' THEN pc.cst_costo_total 
+        ELSE 0 
+    END AS subtotal_ci
+FROM prcostos pc
+WHERE pc.pro_id = 24;
 
 
 DELIMITER $$

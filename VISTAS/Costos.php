@@ -48,7 +48,7 @@
                                     <form id="costForm">
                                         <input type="hidden" id="id_costo" name="id_costo" value="0">
                                         <div class="form-group">
-                                            <label for="nombre">Nombre del Costo:</label>
+                                            <label for="nombre">Nombre  o Descripcion de la Actividad:</label>
                                             <input type="text" id="nombre" name="nombre" class="form-control" required placeholder="Ej:Despulpado, Agua, Electricidad">
                                         </div>
                                         <div class="form-group">
@@ -58,7 +58,7 @@
                                             </select>
                                         </div>
                                         <div class="form-group" id="unidadMedidaGroup" style="display: none;">
-                                            <label for="unidad_medida">Presentación:</label>
+                                            <label for="unidad_medida">Unidad de Medida:</label>
                                             <select id="unidad_medida" name="unidad_medida" class="form-control">
                                                 <!-- Opciones se cargarán dinámicamente -->
                                             </select>

@@ -72,7 +72,7 @@
                     <table id="proveedoresTable" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                
                                 <th>Nombre Empresa</th>
                                 <th>Representante</th>
                                 

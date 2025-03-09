@@ -167,3 +167,53 @@ BEGIN
 END //
 DELIMITER ;
 call fpulpas.UM_data_id_ins(2);
+
+
+
+DELIMITER //
+
+CREATE PROCEDURE `UM_data_pt`()
+BEGIN
+    SELECT prs_id, prs_nombre, prs_abreviacion, prs_estado, ctg_id, equivalencia
+    FROM presentacion
+    WHERE ctg_id = 3;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE `UM_CRUD_pt`(
+    IN `p_opcion` INT,
+    IN `p_prs_id` INT,
+    IN `p_prs_nombre` VARCHAR(50),
+    IN `p_equivalencia` INT
+)
+BEGIN
+    IF p_opcion = 1 THEN
+        -- Insertar nueva presentación de producto terminado
+        INSERT INTO presentacion (prs_nombre, prs_abreviacion, prs_estado, ctg_id, equivalencia)
+        VALUES (p_prs_nombre, '', 'vigente', 3, p_equivalencia);
+    ELSEIF p_opcion = 2 THEN
+        -- Actualizar presentación de producto terminado existente
+        UPDATE presentacion
+        SET prs_nombre = p_prs_nombre,
+            equivalencia = p_equivalencia
+        WHERE prs_id = p_prs_id AND ctg_id = 3;
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE `UM_data_id_pt`(
+    IN `p_prs_id` INT
+)
+BEGIN
+    SELECT prs_id, prs_nombre, equivalencia
+    FROM presentacion
+    WHERE prs_id = p_prs_id AND ctg_id = 3;
+END //
+
+DELIMITER ;

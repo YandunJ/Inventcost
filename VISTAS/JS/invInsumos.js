@@ -94,31 +94,82 @@ $('#unidad_medida').on('change', function() {
 // Inicializar validación de cantidad al cargar la página
 $('#unidad_medida').trigger('change');
 
-$(document).ready(function () {
-    function updateQuantity(amount, inputId, step) {
-        const inputField = document.getElementById(inputId);
-        if (!inputField) return;
-        const minValue = parseFloat(inputField.getAttribute('min')) || 0;
-        const currentValue = parseFloat(inputField.value) || minValue;
-        const newValue = Math.max(currentValue + (amount * step), minValue);
-        inputField.value = newValue.toFixed(step === 1 ? 0 : 2); // Enteros o decimales
-        inputField.dispatchEvent(new Event('input')); // Disparar evento input
+  // Función para actualizar la cantidad
+  function updateQuantity(amount, inputId, step) {
+    const inputField = document.getElementById(inputId);
+    if (!inputField) return;
+    const minValue = parseFloat(inputField.getAttribute('min')) || 0;
+    const currentValue = parseFloat(inputField.value) || minValue;
+    const newValue = Math.max(currentValue + (amount * step), minValue);
+    inputField.value = newValue.toFixed(step === 1 ? 0 : 2); // Enteros o decimales
+    inputField.dispatchEvent(new Event('input')); // Disparar evento input
+}
+
+// Verificar la unidad de medida y ajustar el comportamiento del campo de cantidad
+$('#cat_id').change(function () {
+    const idArticulo = $(this).val();
+
+    if (idArticulo) {
+        $.ajax({
+            url: "../AJAX/ctrInvInsumos.php",
+            type: "POST",
+            data: { action: 'obtenerUnidadMedida', id_articulo: idArticulo },
+            dataType: "json",
+            success: function (response) {
+                if (response.status === 'success') {
+                    const unidadMedida = response.unidad_medida.toLowerCase(); // Convertir a minúsculas
+                    const cantidadInput = $('#cantidad_ingresada');
+
+                    // Si la unidad de medida es "unidades", usar enteros
+                    if (unidadMedida === 'unidades') {
+                        cantidadInput.attr('step', '1'); // Incremento en enteros
+                        cantidadInput.attr('min', '1'); // Mínimo de 1
+                        cantidadInput.val(Math.floor(cantidadInput.val())); // Redondear a entero
+                    } else {
+                        cantidadInput.attr('step', '0.01'); // Incremento en decimales
+                        cantidadInput.removeAttr('min'); // Sin mínimo
+                    }
+
+                    $('#unidad_medida').val(response.unidad_medida); // Actualizar el campo de unidad de medida
+                } else {
+                    alert("Error al cargar la presentación.");
+                    console.error("Error loading unit: ", response);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Ocurrió un error al cargar la presentación.");
+                console.error("Error: ", error);
+                console.error("Response: ", xhr.responseText);
+            }
+        });
+    } else {
+        $('#unidad_medida').val(''); // Limpiar el campo si no hay selección
     }
+});
 
-    $(".btn-minus, .btn-plus").on("click", function () {
-        const inputId = $(this).siblings("input").attr("id");
-        const step = $(this).hasClass("quantity-decimal") ? 0.01 : 1;
-        const amount = $(this).hasClass("btn-plus") ? 1 : -1;
-        updateQuantity(amount, inputId, step);
-    });
+// Manejar los botones de incremento y decremento para la cantidad
+$(".btn-minus.quantity-int, .btn-plus.quantity-int").on("click", function () {
+    const inputId = $(this).siblings("input").attr("id");
+    const unidadMedida = $('#unidad_medida').val().toLowerCase(); // Obtener la unidad de medida
+    const step = (unidadMedida === 'unidades') ? 1 : 0.01; // Definir el paso según la unidad
+    const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+    updateQuantity(amount, inputId, step);
+});
 
-    // Calcular precio unitario dinámicamente
-    $('#cantidad_ingresada, #precio_total').on('input', function () {
-        const cantidad = parseFloat($('#cantidad_ingresada').val()) || 0;
-        const precioTotal = parseFloat($('#precio_total').val()) || 0;
-        const precioUnitario = cantidad > 0 ? (precioTotal / cantidad).toFixed(2) : 0;
-        $('#precio_unitario').val(precioUnitario);
-    });
+// Manejar los botones de incremento y decremento para el precio total (siempre decimales)
+$(".btn-minus.quantity-decimal, .btn-plus.quantity-decimal").on("click", function () {
+    const inputId = $(this).siblings("input").attr("id");
+    const step = 0.01; // Siempre decimales para el precio total
+    const amount = $(this).hasClass("btn-plus") ? 1 : -1;
+    updateQuantity(amount, inputId, step);
+});
+
+// Calcular precio unitario dinámicamente
+$('#cantidad_ingresada, #precio_total').on('input', function () {
+    const cantidad = parseFloat($('#cantidad_ingresada').val()) || 0;
+    const precioTotal = parseFloat($('#precio_total').val()) || 0;
+    const precioUnitario = cantidad > 0 ? (precioTotal / cantidad).toFixed(2) : 0;
+    $('#precio_unitario').val(precioUnitario);
 });
 
 const insumosTable = $('#inventarioInsumosdt').DataTable({

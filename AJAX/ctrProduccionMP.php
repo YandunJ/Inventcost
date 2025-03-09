@@ -1,13 +1,13 @@
 <?php
-// filepath: /c:/inetpub/wwwroot/adfrutas/AJAX/ctrProduccionMP.php
+//AJAX/ctrProduccionMP.php
 
 require_once "../CONFIG/conexion.php";
 require_once "../MODELO/modProduccionMP.php";
 
-$conn = (new Cls_DataConnection())->FN_getConnect(); 
+// Captura la acción enviada por el cliente
+$action = $_POST['action'] ?? ($_GET['action'] ?? '');
 
-$action = isset($_POST['action']) ? $_POST['action'] : (isset($_GET['action']) ? $_GET['action'] : '');
-
+// Controlador principal
 switch ($action) {
     case 'registrarProduccion':
         registrarProduccion();
@@ -36,6 +36,47 @@ switch ($action) {
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
+}
+
+function registrarProduccion() {
+    $produccion = new Produccion();
+    
+    $cant_producida = isset($_POST['cant_producida']) ? $_POST['cant_producida'] : 0;
+    $lotes_mp = isset($_POST['lotes_mp']) ? $_POST['lotes_mp'] : '[]';
+    $lotes_ins = isset($_POST['lotes_ins']) ? $_POST['lotes_ins'] : '[]';
+    $mano_obra = isset($_POST['mano_obra']) ? $_POST['mano_obra'] : '[]';
+    $costos_indirectos = isset($_POST['costos_indirectos']) ? $_POST['costos_indirectos'] : '[]';
+    $presentaciones_pt = isset($_POST['presentaciones_pt']) ? $_POST['presentaciones_pt'] : '[]';
+    $lote_pt = isset($_POST['lote_pt']) ? $_POST['lote_pt'] : '';
+    $fecha_elaboracion = isset($_POST['fecha_elaboracion']) ? $_POST['fecha_elaboracion'] : date('Y-m-d');
+
+    // Nuevos parámetros para los subtotales y el total de producción
+    $subtotal_mtpm = isset($_POST['subtotal_mtpm']) ? $_POST['subtotal_mtpm'] : 0;
+    $subtotal_ins = isset($_POST['subtotal_ins']) ? $_POST['subtotal_ins'] : 0;
+    $subtotal_mo = isset($_POST['subtotal_mo']) ? $_POST['subtotal_mo'] : 0;
+    $subtotal_ci = isset($_POST['subtotal_ci']) ? $_POST['subtotal_ci'] : 0;
+    $total_produccion = isset($_POST['total_produccion']) ? $_POST['total_produccion'] : 0;
+
+    try {
+        $result = $produccion->registrarProduccion(
+            $cant_producida, 
+            $lotes_mp, 
+            $lotes_ins, 
+            $mano_obra, 
+            $costos_indirectos, 
+            $presentaciones_pt, 
+            $lote_pt, 
+            $fecha_elaboracion,
+            $subtotal_mtpm,
+            $subtotal_ins,
+            $subtotal_mo,
+            $subtotal_ci,
+            $total_produccion
+        );
+        echo json_encode($result);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    }
 }
 
 function cancelarProduccion() {
@@ -67,65 +108,23 @@ function generarNumeroLotePT() {
 }
 
 function obtenerPresentacionesPT() {
-    global $conn;
-    $sql = "SELECT prs_id, prs_nombre, equivalencia FROM presentacion WHERE ctg_id = 3 AND prs_estado = 'vigente'";
-    $result = $conn->query($sql);
-
-    if (!$result) {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
-        return;
-    }
-
-    $data = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-    }
-
-    echo json_encode(['status' => 'success', 'data' => $data]);
-    exit;
-}
-
-function registrarProduccion() {
     $produccion = new Produccion();
-    
-    $cant_producida = isset($_POST['cant_producida']) ? $_POST['cant_producida'] : 0;
-    $lotes_mp = isset($_POST['lotes_mp']) ? $_POST['lotes_mp'] : '[]';
-    $lotes_ins = isset($_POST['lotes_ins']) ? $_POST['lotes_ins'] : '[]';
-    $mano_obra = isset($_POST['mano_obra']) ? $_POST['mano_obra'] : '[]';
-    $costos_indirectos = isset($_POST['costos_indirectos']) ? $_POST['costos_indirectos'] : '[]';
-    $presentaciones_pt = isset($_POST['presentaciones_pt']) ? $_POST['presentaciones_pt'] : '[]';
-    $lote_pt = isset($_POST['lote_pt']) ? $_POST['lote_pt'] : '';
-    $fecha_elaboracion = isset($_POST['fecha_elaboracion']) ? $_POST['fecha_elaboracion'] : date('Y-m-d');
-
     try {
-        $result = $produccion->registrarProduccion($cant_producida, $lotes_mp, $lotes_ins, $mano_obra, $costos_indirectos, $presentaciones_pt, $lote_pt, $fecha_elaboracion);
-        echo json_encode($result);
+        $data = $produccion->obtenerPresentacionesPT();
+        echo json_encode(['status' => 'success', 'data' => $data]);
     } catch (Exception $e) {
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
 }
 
 function obtenerProducciones() {
-    global $conn;
-    $sql = "CALL PROD_data_G()";
-    $result = $conn->query($sql);
-
-    if (!$result) {
-        echo json_encode(['status' => 'error', 'message' => $conn->error]);
-        return;
+    $produccion = new Produccion();
+    try {
+        $data = $produccion->obtenerProducciones();
+        echo json_encode(['status' => 'success', 'data' => $data]);
+    } catch (Exception $e) {
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
-
-    $data = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $data[] = $row;
-        }
-    }
-
-    echo json_encode(['status' => 'success', 'data' => $data]);
-    exit;
 }
 
 function obtenerDetallesProduccion() {

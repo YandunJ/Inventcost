@@ -42,6 +42,12 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="Presentacion_PT.php" class="nav-link">
+                                <span class="nav-icon">•</span>
+                                <p>Presentaciones Productos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="Catalogo.php" class="nav-link">
                                 <span class="nav-icon">•</span>
                                 <p>Catálogo</p>
@@ -71,12 +77,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                                 <p>Lotes Insumos</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="producto.php" class="nav-link">
-                                <span class="nav-icon">•</span>
-                                <p>Lotes Producto Terminado</p>
-                            </a>
-                        </li>
+                      
                     </ul>
                 </li>
                 <!-- Gestión de Producción -->
@@ -89,16 +90,11 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                            <a href="Presentacion_PT.php" class="nav-link">
-                                <span class="nav-icon">•</span>
-                                <p>Presentaciones Productos</p>
-                            </a>
-                        </li>
+              
                         <li class="nav-item">
                             <a href="Costos.php" class="nav-link">
                                 <span class="nav-icon">•</span>
-                                <p>Costos</p>
+                                <p>Actividades Costos</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -145,7 +141,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-users"></i>
                         <p>
-                            Usuariosc
+                            Usuarios
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>

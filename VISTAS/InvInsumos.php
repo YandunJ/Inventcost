@@ -30,7 +30,7 @@
             <h1 class="text-center">Inventario de Insumos</h1>
             <div class="text-right mb-3">
                     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_Insumos" data-is-new="true">
-                    <i class="fas fa-plus"></i> Agregar
+                    <i class="fas fa-plus"></i> Registrar Entrada
                     </button>
                     </div>
                  
@@ -75,18 +75,18 @@
 
                     <!-- Fila 2 -->
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="cantidad_ingresada">Cantidad Ingresada:</label>
-                            <div class="input-quantity">
-                                <button type="button" class="btn-minus quantity-int">-</button>
-                                <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" value="0" min="0" required>
-                                <button type="button" class="btn-plus quantity-int">+</button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-        <label for="unidad_medida">Presentación:</label>
-        <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
+                    <div class="form-group">
+    <label for="cantidad_ingresada">Cantidad a Ingresar:</label>
+    <div class="input-quantity">
+        <button type="button" class="btn-minus quantity-int">-</button>
+        <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" class="form-control" value="0" min="0" step="0.01" required>
+        <button type="button" class="btn-plus quantity-int">+</button>
     </div>
+</div>
+<div class="form-group">
+    <label for="unidad_medida">Presentación:</label>
+    <input type="text" id="unidad_medida" name="unidad_medida" class="form-control" readonly>
+</div>
                         <div class="form-group">
                             <label for="precio_total">Precio Total:</label>
                             <div class="input-quantity">
@@ -111,7 +111,6 @@
         </div>
     </div>
 </div>
-
 
                     <hr>
                     <table id="inventarioInsumosdt" class="table table-bordered table-hover table-compact">
@@ -147,7 +146,7 @@
             <div class="float-right d-none d-sm-inline">
                 FRAN FRUIT
             </div>
-            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
+            <strong>&copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
         </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

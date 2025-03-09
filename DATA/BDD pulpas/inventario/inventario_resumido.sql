@@ -28,6 +28,9 @@ CREATE TABLE `inventario` (
     FOREIGN KEY (proveedor_id) REFERENCES proveedores(proveedor_id)
 );
 
+call fpulpas.PROD_data_G();
+
+TRUNCATE TABLE inventario;
 
 -- sp 
 DELIMITER $$

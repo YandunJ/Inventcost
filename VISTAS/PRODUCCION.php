@@ -99,7 +99,7 @@
                                                         <th>Insumo</th>
                                                         <th>Presentacion</th>
                                                         <th>Disponible</th>
-                                                        <th>Precio Unitario</th>
+                                                        <th>Precio</th>
                                                         <th>Cantidad Consumo</th>
                                                         <th>Seleccionar</th>
                                                     </tr>
@@ -248,14 +248,16 @@
                     <table id="tablaProducciones" class="table table-bordered table-hover table-compact">
                         <thead>
                             <tr>
-                            <th>ID</th>
+                            <!-- <th>ID</th> -->
                                 <th>Fecha de Producción</th>
+                                <th>Lote</th>
                                 <th>Cantidad Producida (gramos)</th>
-                                <th>Subt. Materia Prima</th>
-                                <th>Subt. Insumos</th>
-                                <th>Subt. Mano de Obra</th>
-                                <th>Subt. Costos Indirectos</th>
-                                <th>TOTAL</th>
+                                
+                                <th>Sbt. Materia Prima</th>
+                                <th>Sbt. Insumos</th>
+                                <th>Sbt. Mano de Obra</th>
+                                <th>Sbt. Costos Indirectos</th>
+                                <th>COSTO TOTAL PRODUCCION</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -264,8 +266,18 @@
                 
             </div>
         </section>
+
     </div>
-</div>
+
+    <!-- Main Footer -->
+    <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                FRAN FRUIT
+            </div>
+            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
+        </footer>
+    </div>
+    
 <!-- Modal para ver los detalles de una producción -->
 <div class="modal fade modal-entradas" id="verProduccionModal" tabindex="-1" role="dialog" aria-labelledby="verProduccionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -327,9 +339,10 @@
 </div>
 <!-- Scripts -->
 <script src="../Public/plugins/jquery/jquery.min.js"></script>
-<script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="../Public/dist/js/adminlte.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="../Public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="../Public/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 <script src="JS/PROD.js"></script>
 <script src="JS/ProdPT.js"></script>
