@@ -1,6 +1,4 @@
 <?php
-// filepath: /c:/inetpub/wwwroot/adfrutas/AJAX/ctrVentaPT.php
-
 require_once "../CONFIG/conexion.php";
 require_once "../MODELO/modVentaPT.php";
 

@@ -29,7 +29,7 @@
                 <h1 class="text-center">
                         Lotes de Producto Terminado</h1>
                     <div id="tablaLotesPT_wrapper">
-                        <table id="tablaLotesPT" class="table table-bordered table-hover">
+                        <table id="tablaLotesPT" class="table table-bordered table-hover table-compact">
                             <thead>
                                 <tr>
                                     <th>Lote</th>

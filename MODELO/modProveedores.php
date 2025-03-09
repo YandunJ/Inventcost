@@ -51,5 +51,15 @@ class Proveedores {
 
         return $data;
     }
+
+    // Habilitar o deshabilitar un proveedor
+    public function prov_toggle_status($proveedor_id, $estado) {
+        $stmt = $this->conn->prepare("CALL prov_toggle_status(?, ?)");
+        $stmt->bind_param('is', $proveedor_id, $estado);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        return $result;
+    }
 }
 ?>

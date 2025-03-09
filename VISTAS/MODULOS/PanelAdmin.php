@@ -68,7 +68,7 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <li class="nav-item">
                             <a href="InvFrutas.php" class="nav-link">
                                 <span class="nav-icon">•</span>
-                                <p>Lotes Frutas</p>
+                                <p>Lotes Materia Prima</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -124,7 +124,13 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <li class="nav-item">
                             <a href="VentaPT.php" class="nav-link">
                                 <span class="nav-icon">•</span>
-                                <p>Registrar Salida</p>
+                                <p> Despachar Producto</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="SalidasH.php" class="nav-link">
+                                <span class="nav-icon">•</span>
+                                <p>Historial Despachos</p>
                             </a>
                         </li>
                     </ul>

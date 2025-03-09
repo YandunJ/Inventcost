@@ -23,6 +23,9 @@ switch ($action) {
     case 'getProveedorById':
         getProveedorById($proveedores);
         break;
+    case 'toggleStatusProveedor':
+        toggleStatusProveedor($proveedores);
+        break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -60,5 +63,10 @@ function getProveedores($proveedores) {
 function getProveedorById($proveedores) {
     $data = $proveedores->prov_datos_id($_POST['proveedor_id']);
     echo json_encode(['status' => $data ? 'success' : 'error', 'data' => $data]);
+}
+
+function toggleStatusProveedor($proveedores) {
+    $result = $proveedores->prov_toggle_status($_POST['proveedor_id'], $_POST['estado']);
+    echo json_encode(['status' => $result ? 'success' : 'error']);
 }
 ?>

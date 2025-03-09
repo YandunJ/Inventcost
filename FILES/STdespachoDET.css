@@ -1,0 +1,43 @@
+.modal-header {
+    background-color: #dad6d6;
+    border-bottom: 1px solid #dad6d6;
+}
+
+.modal-body {
+    padding: 10px;
+}
+
+.modal-body .row {
+    margin-bottom: 5px;
+}
+
+.modal-body .table {
+    margin-bottom: 5px;
+}
+
+.modal-body .table th, .modal-body .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.modal-body .table th {
+    background-color: #dad6d6;
+}
+
+.modal-body .table-custom {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #5dd05c;
+}
+
+.modal-footer .btn {
+    min-width: 100px;
+}
+
+.text-right {
+    text-align: right;
+}

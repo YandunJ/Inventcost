@@ -26,13 +26,14 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <h1>Despacho de Producto Terminado</h1>
+                <h1 class="text-center">
+                        Despacho de Producto Terminado</h1>
                     <div class="mb-3">
                         <button id="btnBuscarProducto" class="btn btn-primary" data-toggle="modal" data-target="#modalBuscarProducto">Buscar Producto</button>
                         <!-- <label class="ml-3">Método de Salida:</label>
                         <input type="checkbox" id="switchMetodoSalida" data-toggle="toggle" data-on="FIFO" data-off="LIFO" data-onstyle="success" data-offstyle="danger" checked> -->
                     </div>
-                    <h2>Productos a Despachar</h2>
+                    <h3>Productos a Despachar</h3>
 <table id="tablaDespacho" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -40,7 +41,7 @@
             <th>Lote</th>
             <th>Pulpa</th>
             <th>Cantidad</th>
-            <th>P.V.S.</th>
+            <th>P.V.P.</th>
             <th>Precio Total</th>   
             <th>Acciones</th>
         </tr>
@@ -70,14 +71,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <table id="tablaProductos" class="table table-bordered table-hover mt-3">
+                        <table id="tablaProductos" class="table table-bordered table-hover table-compact">
                             <thead>
                                 <tr>
                                     <th>Presentación</th>
                                     <th>Lote</th>
                                     <th>Pulpa</th>
                                     <th>Costo Unitario</th>
-                                    <th>Precio de Venta Sugerido</th>
+                                    <th>P.V.S</th>
                                     <th>Disponible</th>
                                     <th>Cantidad a Consumir</th>
                                     <th>Seleccionar</th>

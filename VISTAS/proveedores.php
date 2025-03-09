@@ -54,14 +54,14 @@
           </div>
           <div class="form-group">
             <label for="correo">Correo</label>
-            <input type="email" class="form-control" id="correo" name="correo" placeholder="empresa@correo.com" required maxlength="40">
+            <input type="email" class="form-control" id="correo" name="correo" placeholder="empresa@correo.com" maxlength="40">
           </div>
           <div class="form-group">
             <label for="telefono">Teléfono</label>
-            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
+            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono">
           </div>
           <button type="submit" class="btn btn-primary">Guardar</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-secondary" id="cancelarProveedorButton" data-bs-dismiss="modal">Cancelar</button>
         </form>
       </div>
     </div>

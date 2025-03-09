@@ -156,13 +156,14 @@ CREATE TABLE `det_despacho` (
   `id_pt` int NOT NULL,
   `lote` varchar(50) NOT NULL,
   `cantidad_despachada` decimal(10,2) NOT NULL,
-  `precio_venta` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id_detalle`),
   KEY `id_despacho` (`id_despacho`),
   KEY `id_pt` (`id_pt`),
   CONSTRAINT `det_despacho_ibfk_1` FOREIGN KEY (`id_despacho`) REFERENCES `despacho_pt` (`id_despacho`),
   CONSTRAINT `det_despacho_ibfk_2` FOREIGN KEY (`id_pt`) REFERENCES `inventario_pt` (`id_pt`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 
 
 

@@ -111,7 +111,7 @@ $(document).ready(function() {
                     <td>${lote}</td>
                     <td>${pulpa}</td>
                     <td><input type="number" class="form-control cantidad-despacho" value="${cantidadConsumir}" min="1" max="${cantidadDisponible}" readonly></td>
-                    <td>${precioVentaSugerido}</td>
+                    <td><input type="number" class="form-control precio-venta" value="${precioVentaSugerido}" min="${precioVentaSugerido}" step="0.01"></td>
                     <td class="precio-total">${(cantidadConsumir * precioVentaSugerido).toFixed(2)}</td>
                     <td><button class="btn btn-danger btnEliminar">Eliminar</button></td>
                 </tr>
@@ -127,11 +127,33 @@ $(document).ready(function() {
     function actualizarPrecios() {
         let precioTotalSalida = 0;
         $('#tablaDespacho tbody tr').each(function() {
-            const precioTotal = parseFloat($(this).find('.precio-total').text());
+            const cantidad = parseFloat($(this).find('.cantidad-despacho').val());
+            const precioVenta = parseFloat($(this).find('.precio-venta').val());
+            const precioTotal = cantidad * precioVenta;
+            $(this).find('.precio-total').text(precioTotal.toFixed(2));
             precioTotalSalida += precioTotal;
         });
         $('#precioTotalSalida').text(precioTotalSalida.toFixed(2));
     }
+
+    // Actualizar precios totales al cambiar el precio de venta
+    $('#tablaDespacho tbody').on('input', '.precio-venta', function() {
+        const precioVentaSugerido = parseFloat($(this).attr('min'));
+        const precioVenta = parseFloat($(this).val());
+
+        // if (precioVenta < precioVentaSugerido) {
+        //     Swal.fire('Error', 'El precio de venta no puede ser menor al precio de venta sugerido.', 'error');
+        //     $(this).val(precioVentaSugerido);
+        // }
+
+        actualizarPrecios();
+    });
+
+    // Eliminar producto de la tabla de despacho
+    $('#tablaDespacho tbody').on('click', '.btnEliminar', function() {
+        $(this).closest('tr').remove();
+        actualizarPrecios();
+    });
 
     // Procesar Despacho
     $('#btnRegistrarSalida').on('click', function() {
@@ -140,8 +162,8 @@ $(document).ready(function() {
             const id_pt = $(this).find('td').eq(0).text();
             const lote = $(this).find('td').eq(1).text();
             const cantidad = $(this).find('.cantidad-despacho').val();
-            const precioUnitario = $(this).find('td').eq(4).text();
-            despacho.push({ id_pt, lote, cantidad_despachada: parseFloat(cantidad), precio_unitario: parseFloat(precioUnitario) });
+            const precioVenta = $(this).find('.precio-venta').val();
+            despacho.push({ id_pt, lote, cantidad_despachada: parseFloat(cantidad), precio_venta: parseFloat(precioVenta) });
         });
 
         if (despacho.length === 0) {
@@ -150,12 +172,6 @@ $(document).ready(function() {
         }
 
         const precioTotalSalida = parseFloat($('#precioTotalSalida').text());
-
-        // Imprimir los datos en la consola
-        console.log('Datos a enviar al SP:', {
-            despacho: JSON.stringify(despacho),
-            precio_total: precioTotalSalida
-        });
 
         // Enviar los datos del despacho al servidor para procesarlos
         $.ajax({

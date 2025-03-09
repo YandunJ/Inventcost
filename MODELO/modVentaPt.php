@@ -40,14 +40,8 @@ class VentaPT {
         $stmt->bind_param("sd", $despacho, $precio_total);
 
         if ($stmt->execute()) {
-            $affected_rows = $stmt->affected_rows;
             $stmt->close();
-
-            if ($affected_rows > 0) {
-                return ['status' => 'success', 'message' => 'Despacho registrado correctamente'];
-            } else {
-                return ['status' => 'error', 'message' => 'No se registró ningún despacho'];
-            }
+            return ['status' => 'success', 'message' => 'Despacho registrado correctamente'];
         } else {
             $stmt->close();
             return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];

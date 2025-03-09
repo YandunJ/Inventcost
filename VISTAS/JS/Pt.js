@@ -44,9 +44,9 @@ $(document).ready(function () {
             success: function (response) {
                 if (response.estado === 'exito') {
                     var detalles = response.datos;
-                    var detailsHtml = '<table class="table table-bordered table-hover table-compact"><thead><tr><th>ID</th><th>Presentación</th><th>Cantidad Ingresada</th><th>Cantidad Disponible</th><th>Precio Unitario</th><th>Precio Total</th><th>Precio Venta Sugerido</th><th>Fecha Caducidad</th><th>Composición</th><th>Estado</th><th>Observación</th></tr></thead><tbody>';
+                    var detailsHtml = '<table class="table table-bordered table-hover table-compact"><thead><tr><th>Presentación</th><th>Cantidad Disponible</th><th>Precio Unitario</th><th>Precio Total</th><th>Precio Venta Sugerido</th><th>Fecha Caducidad</th><th>Composición</th><th>Observación</th></tr></thead><tbody>';
                     detalles.forEach(function (detalle) {
-                        detailsHtml += '<tr><td>' + detalle.id_pt + '</td><td>' + detalle.presentacion + '</td><td>' + detalle.cant_ingresada + '</td><td>' + detalle.cant_disponible + '</td><td>' + detalle.p_u + '</td><td>' + detalle.p_t + '</td><td>' + detalle.p_v_s + '</td><td>' + detalle.fecha_caducidad + '</td><td>' + detalle.composicion + '</td><td>' + detalle.estado + '</td><td>' + (detalle.observacion ? detalle.observacion : '') + '</td></tr>';
+                        detailsHtml += '<tr><td>' + detalle.presentacion + '</td><td>' + detalle.cant_disponible + '</td><td>' + detalle.p_u + '</td><td>' + detalle.p_t + '</td><td>' + detalle.p_v_s + '</td><td>' + detalle.fecha_caducidad + '</td><td>' + detalle.composicion + '</td><td>' + (detalle.observacion ? detalle.observacion : '') + '</td></tr>';
                     });
                     detailsHtml += '</tbody></table>';
                     Swal.fire({
