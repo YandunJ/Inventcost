@@ -91,6 +91,11 @@ $('#unidad_medida').on('change', function() {
     }
 });
 
+
+
+
+
+
 // Inicializar validación de cantidad al cargar la página
 $('#unidad_medida').trigger('change');
 
