@@ -24,11 +24,20 @@
             <section class="content">
                 <div class="container-fluid">
                     <h1 class="text-center">Inventario Frutas</h1>
-                    <div class="text-right mb-3">
+                    <!-- filepath: c:\inetpub\wwwroot\adfrutas\VISTAS\InvFrutas.php -->
+<div class="text-right mb-3">
+    <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_MP" data-is-new="true">
+        <i class="fas fa-plus"></i> Registrar Entrada
+    </button>
+    <!-- <button type="button" class="btn btn-secondary mb-3" id="filtroLotes">
+        <i class="fas fa-filter"></i> Mostrar Lotes Agotados
+    </button> -->
+</div>
+                    <!-- <div class="text-right mb-3">
                         <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#Form_MP" data-is-new="true">
                             <i class="fas fa-plus"></i> Registrar Entrada
                         </button>
-                    </div>
+                    </div> -->
                     <div id="tablaInventarioFrutas_wrapper">
                         <table id="tablaMateriaPrimas" class="table table-bordered table-hover table-compact">
                             <thead>
@@ -38,7 +47,7 @@
                                     <th>Proveedor</th>
                                     <th>Fruta</th>
                                     <th>Cant. Inicial</th>
-                                    <th>Cant. Disp.</th>
+                                    <th>Disponible</th>
                                     <th>Precio Unit.</th>
                                     <th>Precio Total</th>
                                     <th>Brix</th>

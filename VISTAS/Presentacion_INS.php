@@ -37,7 +37,6 @@
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Abreviación</th>
-                                    
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -67,19 +66,12 @@
                             <input type="hidden" id="prs_id" name="prs_id" value="0">
                             <div class="form-group">
                                 <label for="prs_nombre">Nombre</label>
-                                <input type="text" class="form-control" id="prs_nombre" name="prs_nombre" required>
+                                <input type="text" class="form-control" id="prs_nombre" name="prs_nombre" placeholder="Ejemplo: Unidades" required>
                             </div>
                             <div class="form-group">
                                 <label for="prs_abreviacion">Abreviación</label>
-                                <input type="text" class="form-control" id="prs_abreviacion" name="prs_abreviacion" required>
+                                <input type="text" class="form-control" id="prs_abreviacion" name="prs_abreviacion" placeholder="Ejemplo: Un" required>
                             </div>
-                            <!-- <div class="form-group">
-                                <label for="prs_estado">Estado</label>
-                                <select class="form-control" id="prs_estado" name="prs_estado" required>
-                                    <option value="vigente">Vigente</option>
-                                    <option value="descontinuado">Descontinuado</option>
-                                </select>
-                            </div> -->
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

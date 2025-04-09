@@ -222,6 +222,11 @@ const insumosTable = $('#inventarioInsumosdt').DataTable({
     ],
     language: dataTableLanguage
 });
+
+
+
+
+
     
  // Abrir modal de nuevo registro
  $('button[data-is-new="true"]').on('click', function () {

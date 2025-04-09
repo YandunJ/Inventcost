@@ -33,7 +33,7 @@
                             <thead>
                                 <tr>
                                     <th>Fecha de Despacho</th>
-                                    <th>Estado</th>
+                                    <th>N. Comprobante</th>
                                     <th>Cantidad Total</th>
                                     <th>Precio Total</th>
                                     <th>Acciones</th>
@@ -53,52 +53,52 @@
 
         <!-- Modal para mostrar detalles de la salida -->
         <div class="modal fade" id="detalleSalidaModal" tabindex="-1" role="dialog" aria-labelledby="detalleSalidaModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="detalleSalidaModalLabel">Detalles del Despacho</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-md-12 text-right"> <!-- Ajustar a la derecha -->
-                                    <p><strong>N° Comprobante:</strong> <span id="detalleNComprobante"></span></p>
-                                    <p><strong>Fecha de Despacho:</strong> <span id="detalleFechaDespacho"></span></p>
-                                </div>
-                            </div>
-                            <hr>
-                            <h6>Detalles de los Productos:</h6>
-                            <table class="table table-bordered table-custom">
-                                <thead>
-                                    <tr>
-                                        <th>Lote</th>
-                                        <th>Producto</th>
-                                        <th>Composición</th>
-                                        <th>Cantidad Despachada</th>
-                                        <th>P.V.P</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="detalleProductos">
-                                    <!-- Los detalles de los productos se llenarán aquí dinámicamente -->
-                                </tbody>
-                            </table>
-                            <div class="row">
-                                <div class="col-md-12 text-right"> <!-- Ajustar a la derecha -->
-                                    <p><strong>Cantidad Total:</strong> <span id="detalleCantidadTotal"></span></p>
-                                    <p><strong>Total:</strong> <span id="detallePrecioTotal"></span> $</p>
-                                </div>
-                            </div>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalleSalidaModalLabel">Detalles del Despacho</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12 text-right detalle-info">
+                            <p><strong>N° Comprobante:</strong> <span id="detalleNComprobante"></span></p>
+                            <p><strong>Fecha de Despacho:</strong> <span id="detalleFechaDespacho"></span></p>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <hr>
+                    <h6>Detalles de los Productos:</h6>
+                    <table class="table table-bordered table-custom">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Producto</th>
+                                <th>Composición</th>
+                                <th>Cantidad Despachada</th>
+                                <th>P.V.P</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detalleProductos">
+                            <!-- Los detalles de los productos se llenarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-12 text-right detalle-info">
+                            <p><strong>Cantidad Total:</strong> <span id="detalleCantidadTotal"></span></p>
+                            <p><strong>Total:</strong> <span id="detallePrecioTotal"></span> $</p>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
         </div>
+    </div>
+</div>
         <footer class="main-footer">
             <div class="float-right d-none d-sm-inline">
                 FRAN FRUIT

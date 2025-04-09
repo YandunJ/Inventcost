@@ -48,5 +48,24 @@ class Producto {
             return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];
         }
     }
+
+    public function actualizarObservacion($id_pt, $observacion) {
+        $query = "UPDATE inventario_pt SET observacion = ? WHERE id_pt = ?";
+
+        $stmt = $this->conn->prepare($query);
+        if (!$stmt) {
+            return ['error' => "Error al preparar la consulta: " . $this->conn->error];
+        }
+
+        $stmt->bind_param("si", $observacion, $id_pt);
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return ['estado' => 'exito'];
+        } else {
+            $stmt->close();
+            return ['error' => "Error al ejecutar la consulta: " . $this->conn->error];
+        }
+    }
 }
 ?>

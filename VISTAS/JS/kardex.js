@@ -76,7 +76,7 @@ $(document).ready(function () {
     });
 
     function mostrarDetalles(data, ctg_id) {
-        let detallesHtml = '<table class="table table-bordered table-hover table-compact"><thead><tr><th>ID</th><th>Fecha</th><th>Lote</th><th>Cantidad</th><th>Precio Unitario</th><th>Precio Total</th>';
+        let detallesHtml = '<table class="table table-bordered table-hover table-compact"><thead><tr><th>Fecha</th><th>Lote</th><th>Cantidad</th><th>Precio Unitario</th><th>Precio Total</th>';
         if (ctg_id == 1) {
             detallesHtml += '<th>Proveedor</th><th>Brix</th><th>Observación</th>';
         } else if (ctg_id == 2) {
@@ -85,7 +85,7 @@ $(document).ready(function () {
         detallesHtml += '<th>Tipo Movimiento</th></tr></thead><tbody>';
         data.forEach(function (detalle) {
             detallesHtml += `<tr>
-                <td>${detalle.id_kardex}</td>
+                
                 <td>${detalle.fecha_hora}</td>
                 <td>${detalle.lote}</td>
                 <td>${detalle.cantidad}</td>

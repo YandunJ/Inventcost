@@ -77,11 +77,11 @@
                             <input type="hidden" id="prs_id" name="prs_id" value="0">
                             <div class="form-group">
                                 <label for="prs_nombre">Nombre</label>
-                                <input type="text" class="form-control" id="prs_nombre" name="prs_nombre" required>
+                                <input type="text" class="form-control" id="prs_nombre" name="prs_nombre" placeholder="Ejemplo: 2 kilos" required>
                             </div>
                             <div class="form-group">
                                 <label for="equivalencia">Equivalencia (g)</label>
-                                <input type="number" class="form-control" id="equivalencia" name="equivalencia" required>
+                                <input type="number" class="form-control" id="equivalencia" name="equivalencia" placeholder="Ejemplo: 2000" required>
                             </div>
                             <div class="alerta-equivalencia" id="alertaEquivalencia">
                                 Asegúrese de ingresar la equivalencia en gramos correctamente. Por ejemplo, si el nombre es "2 kilos", la equivalencia debe ser "2000".

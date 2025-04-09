@@ -385,10 +385,123 @@ BEGIN
 END$$
 
 DELIMITER ;
+-- respaldo sp 
+DELIMITER $$
+CREATE DEFINER=`root`@`localhost` PROCEDURE `PR_cancelar_prod`(
+    IN p_pro_id INT -- ID de la producción a cancelar
+)
+BEGIN
+    DECLARE v_lote_id INT;
+    DECLARE v_cantidad DECIMAL(10,2);
+    DECLARE done INT DEFAULT FALSE;
+
+    -- Cursor para recorrer los consumos de la producción
+    DECLARE cur CURSOR FOR
+        SELECT id_inv, pdet_cantidad_usada
+        FROM prod_detalle
+        WHERE pro_id = p_pro_id;
+
+    -- Manejador para cuando no haya más registros en el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Iniciar la reversión de los consumos
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_lote_id, v_cantidad;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Revertir el consumo: aumentar la cantidad disponible en el lote
+        UPDATE inventario
+        SET cant_restante = cant_restante + v_cantidad
+        WHERE id_inv = v_lote_id;
+    END LOOP;
+    CLOSE cur;
+
+    -- Eliminar los lotes de PT asociados a la producción
+    DELETE FROM inventario_pt WHERE pro_id = p_pro_id;
+
+    -- Eliminar los costos asociados a la producción
+    DELETE FROM prcostos WHERE pro_id = p_pro_id;
+
+    -- Eliminar los consumos de la producción
+    DELETE FROM prod_detalle WHERE pro_id = p_pro_id;
+
+    -- Eliminar la producción
+    DELETE FROM produccion WHERE pro_id = p_pro_id;
+END$$
+DELIMITER ;
+
 -- Llamar al SP para cancelar la producción
-CALL PR_cancelar_prod(13);
+CALL PR_cancelar_prod(24);
 
 DELIMITER $$
+
+
+DELIMITER $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `PR_cancelar_prod`(
+    IN p_pro_id INT -- ID de la producción a cancelar
+)
+BEGIN
+    DECLARE v_lote_id INT;
+    DECLARE v_cantidad DECIMAL(10,2);
+    DECLARE v_despachos INT;
+    DECLARE done INT DEFAULT FALSE;
+
+    -- Cursor para recorrer los consumos de la producción
+    DECLARE cur CURSOR FOR
+        SELECT id_inv, pdet_cantidad_usada
+        FROM prod_detalle
+        WHERE pro_id = p_pro_id;
+
+    -- Manejador para cuando no haya más registros en el cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    -- Validar que no se hayan realizado despachos de las presentaciones del lote de PT
+    SELECT COUNT(*) INTO v_despachos
+    FROM det_despacho dd
+    INNER JOIN inventario_pt ipt ON dd.id_pt = ipt.id_pt
+    WHERE ipt.pro_id = p_pro_id;
+
+    IF v_despachos > 0 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No se puede cancelar la producción porque se han realizado despachos de las presentaciones del lote de PT.';
+    END IF;
+
+    -- Iniciar la reversión de los consumos
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO v_lote_id, v_cantidad;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Revertir el consumo: aumentar la cantidad disponible en el lote
+        UPDATE inventario
+        SET cant_restante = cant_restante + v_cantidad
+        WHERE id_inv = v_lote_id;
+    END LOOP;
+    CLOSE cur;
+
+    -- Eliminar los lotes de PT asociados a la producción
+    DELETE FROM inventario_pt WHERE pro_id = p_pro_id;
+
+    -- Eliminar los costos asociados a la producción
+    DELETE FROM prcostos WHERE pro_id = p_pro_id;
+
+    -- Eliminar los consumos de la producción
+    DELETE FROM prod_detalle WHERE pro_id = p_pro_id;
+
+    -- Eliminar la producción
+    DELETE FROM produccion WHERE pro_id = p_pro_id;
+END$$
+
+DELIMITER ;
+
+
+
+
 
 CREATE TRIGGER composicion_pt
 BEFORE INSERT ON inventario_pt

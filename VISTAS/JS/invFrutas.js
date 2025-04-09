@@ -49,64 +49,80 @@ $(document).ready(function() {
         }
     });
 
-    // Inicializar DataTable
-    const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
-        ajax: {
-            url: '../AJAX/ctrInvFrutas.php',
-            type: 'POST',
-            data: function(d) {
-                d.action = 'cargarMateriaPrima';
-                d.estado = $('#filtroEstado').val(); // Agregar filtro de estado
-            },
-            dataSrc: function (json) {
-                if (json.status === 'success') {
-                    return json.data;
-                } else {
-                    Swal.fire('Error', json.message || 'Error al cargar los datos.', 'error');
-                    return [];
-                }
-            }
+  // Inicializar DataTable
+  const materiaPrimasTable = $('#tablaMateriaPrimas').DataTable({
+    ajax: {
+        url: '../AJAX/ctrInvFrutas.php',
+        type: 'POST',
+        data: function(d) {
+            d.action = 'cargarMateriaPrima';
+            d.estado = $('#filtroEstado').val(); // Agregar filtro de estado
         },
-        columns: [
-            { data: 'FechaHora'},
-            { data: 'Lote'},
-            { data: 'Proveedor'},
-            { data: 'Articulo'},
-            { data: 'CantidadIngresada'},
-            { data: 'CantidadDisponible' },
-            { data: 'PrecioUnitario'},
-            { data: 'PrecioTotal' },
-            { data: 'Brix'},    
-            { data: 'Observacion'},
-            { data: 'Estado' },
-            {
-                data: null,
-                render: function (data, type, row) {
-                    return `
-                        <div class="btn-group">
-                            <button class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown">
-                                <i class="fas fa-cog"></i>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
-                                    <i class="fas fa-edit"></i> Editar
-                                </a>
-                                <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
-                                    <i class="fas fa-trash-alt"></i> Eliminar
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                }
+        dataSrc: function (json) {
+            if (json.status === 'success') {
+                return json.data;
+            } else {
+                Swal.fire('Error', json.message || 'Error al cargar los datos.', 'error');
+                return [];
             }
-        ],
-        language: dataTableLanguage
-    });
+        }
+    },
+    order: [[0, 'desc']], // Ordenar por la primera columna (Fecha) en orden descendente
+    columns: [
+        { data: 'FechaHora'},
+        { data: 'Lote'},
+        { data: 'Proveedor'},
+        { data: 'Articulo'},
+        { data: 'CantidadIngresada'},
+        { data: 'CantidadDisponible' },
+        { data: 'PrecioUnitario'},
+        { data: 'PrecioTotal' },
+        { data: 'Brix'},    
+        { data: 'Observacion'},
+        { data: 'Estado' },
+        {
+            data: null,
+            render: function (data, type, row) {
+                return `
+                    <div class="btn-group">
+                        <button class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item edit-btn" href="#" data-id="${row.ID}">
+                                <i class="fas fa-edit"></i> Editar
+                            </a>
+                            <a class="dropdown-item delete-btn" href="#" data-id="${row.ID}">
+                                <i class="fas fa-trash-alt"></i> Eliminar
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    ],
+    language: dataTableLanguage,
+    initComplete: function() {
+        // Aplicar filtro inicial para mostrar solo los lotes disponibles
+        this.api().column(10).search('Disponible').draw();
+    }
+});
 
-    // Filtro de estado
-    $('#filtroEstado').on('change', function() {
-        materiaPrimasTable.ajax.reload();
-    });
+// Filtro de estado
+$('#filtroEstado').on('change', function() {
+    materiaPrimasTable.ajax.reload();
+});
+
+// Filtro de lotes disponibles/agotados
+let mostrarAgotados = false;
+$('#filtroLotes').on('click', function() {
+    mostrarAgotados = !mostrarAgotados;
+    const textoBoton = mostrarAgotados ? 'Mostrar Lotes Disponibles' : 'Mostrar Lotes Agotados';
+    $(this).text(textoBoton);
+
+    // Aplicar filtro
+    materiaPrimasTable.column(10).search(mostrarAgotados ? 'Agotado' : 'Disponible').draw();
+});
 
     // Función genérica para actualizar los valores
     function updateQuantity(amount, inputId, step) {

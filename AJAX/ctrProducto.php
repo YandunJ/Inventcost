@@ -14,6 +14,9 @@ switch ($accion) {
     case 'obtenerDetallesLote':
         obtenerDetallesLote();
         break;
+    case 'actualizarObservacion':
+        actualizarObservacion();
+        break;
     default:
         echo json_encode(['estado' => 'error', 'mensaje' => 'Acción no válida']);
         break;
@@ -33,7 +36,6 @@ function obtenerLotesProductoTerminado() {
     }
 }
 
-
 function obtenerDetallesLote() {
     $producto = new Producto();
     $lote_PT = $_POST['lote_PT'];
@@ -45,6 +47,22 @@ function obtenerDetallesLote() {
         }
         echo json_encode(['estado' => 'exito', 'datos' => $detalles]);
         exit; // Asegúrate de que no se agregue nada más después del JSON
+    } catch (Exception $e) {
+        echo json_encode(['estado' => 'error', 'mensaje' => $e->getMessage()]);
+    }
+}
+
+function actualizarObservacion() {
+    $producto = new Producto();
+    $id_pt = $_POST['id_pt'];
+    $observacion = $_POST['observacion'];
+
+    try {
+        $resultado = $producto->actualizarObservacion($id_pt, $observacion);
+        if (isset($resultado['error'])) {
+            throw new Exception($resultado['error']);
+        }
+        echo json_encode(['estado' => 'exito']);
     } catch (Exception $e) {
         echo json_encode(['estado' => 'error', 'mensaje' => $e->getMessage()]);
     }

@@ -142,6 +142,12 @@ $nombreCompleto = isset($_SESSION['nombre']) ? $_SESSION['nombre'] . ' ' . $_SES
                         <p>Kardex</p>
                     </a>
                 </li>
+                <!-- <li class="nav-item">
+                    <a href="KardexPT.php" class="nav-link">
+                        <i class="nav-icon fas fa-clipboard-list"></i>
+                        <p>Kardex</p>
+                    </a>
+                </li> -->
                 <!-- Gestión de Personal -->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">

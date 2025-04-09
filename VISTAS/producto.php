@@ -26,15 +26,19 @@
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                <h1 class="text-center">
-                        Lotes de Producto Terminado</h1>
+                    <h1 class="text-center">Lotes de Producto Terminado</h1>
+                    <div class="text-right mb-3">
+                        <!-- <button id="btnGenerarPDF" class="btn btn-primary">
+                            <i class="fas fa-file-pdf"></i> Generar PDF
+                        </button> -->
+                    </div>
                     <div id="tablaLotesPT_wrapper">
                         <table id="tablaLotesPT" class="table table-bordered table-hover table-compact">
                             <thead>
                                 <tr>
                                     <th>Lote</th>
                                     <th>Fecha de Producción</th>
-                                    <th>Total Disponible (kg)</th>
+                                    <th>Unidades  Disponible </th>
                                     <th>Precio Total</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -54,7 +58,7 @@
             <div class="float-right d-none d-sm-inline">
                 FRAN FRUIT
             </div>
-            <strong>Copyright &copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>.</strong> Derechos Reservados.
+            <strong>&copy; 2024 <a href="https://www.instagram.com/pulpafranfruit?igsh=MThuYTRrN3Fvcjg1OA==">FranFruit.io</a>. Derechos Reservados.</strong>
         </footer>
     </div>
     <script src="../Public/plugins/jquery/jquery.min.js"></script>

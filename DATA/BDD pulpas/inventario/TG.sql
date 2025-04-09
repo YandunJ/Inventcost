@@ -23,7 +23,7 @@ DELIMITER ;
 
 
 -- elimar un trigger
-DROP TRIGGER IF EXISTS kar2;
+DROP TRIGGER IF EXISTS pt_kar2;
 DROP TRIGGER IF EXISTS subtotales_PD;
 
 -- TG Kardex para entradas y salidas 
@@ -81,10 +81,10 @@ BEGIN
         (SELECT fecha_hora FROM inventario WHERE id_inv = NEW.id_inv),
         (SELECT cat_id FROM inventario WHERE id_inv = NEW.id_inv),
         (SELECT lote FROM inventario WHERE id_inv = NEW.id_inv),
-        NEW.pdet_cantidad_usada,  -- Registrar la salida como un valor positivo
+        NEW.pdet_cantidad_usada,
         COALESCE(saldo_anterior, 0),
-        COALESCE(saldo_anterior, 0) - NEW.pdet_cantidad_usada,  -- Ajustar el stock restando la cantidad usada
-        'salida'
+        COALESCE(saldo_anterior, 0) - NEW.pdet_cantidad_usada,
+        'Consumo Producción'  -- Cambiado de 'salida' a 'Consumo Producción'
     );
 END $$
 
@@ -126,8 +126,112 @@ END $$
 DELIMITER ;
 
 
+DELIMITER $$
+
+CREATE TRIGGER kar4
+AFTER DELETE ON inventario
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+
+    -- Obtener el saldo anterior
+    SELECT stock_actual INTO saldo_anterior
+    FROM kardex
+    WHERE cat_id = OLD.cat_id
+    ORDER BY fecha_hora DESC
+    LIMIT 1;
+
+    -- Insertar registro de ajuste en kardex
+    INSERT INTO kardex (fecha_hora, cat_id, lote, cantidad, stock_anterior, stock_actual, tipo_movimiento)
+    VALUES (
+        NOW(),  -- Fecha y hora actual
+        OLD.cat_id,
+        OLD.lote,
+        -OLD.cant_ingresada,  -- Cantidad eliminada (negativa)
+        COALESCE(saldo_anterior, 0),
+        COALESCE(saldo_anterior, 0) - OLD.cant_ingresada,
+        'ajuste'
+    );
+END $$
+
+DELIMITER ;
 
 
+-- KARDEX PRODUCTO TERMIANDO
+DELIMITER $$
+
+CREATE TRIGGER pt_kar1
+AFTER INSERT ON inventario_pt
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+
+    -- Obtener el saldo anterior (si existe)
+    SELECT stock_actual INTO saldo_anterior
+    FROM kardex_PT
+    WHERE id_pt = NEW.id_pt
+    ORDER BY fecha_hora DESC
+    LIMIT 1;
+
+    -- Si no hay saldo anterior, establecerlo en 0
+    IF saldo_anterior IS NULL THEN
+        SET saldo_anterior = 0;
+    END IF;
+
+    -- Insertar registro en kardex_PT
+    INSERT INTO kardex_PT (fecha_hora, id_pt, presentacion, lote, cantidad, stock_anterior, stock_actual, tipo_movimiento, comprobante_despacho)
+    VALUES (
+        NOW(),  -- Fecha y hora actual
+        NEW.id_pt,
+        NEW.presentacion,
+        NEW.pro_id,  -- Guardamos el pro_id en lugar del lote
+        NEW.cant_ingresada,
+        saldo_anterior,  -- Stock anterior
+        saldo_anterior + NEW.cant_ingresada,  -- Stock actual
+        'entrada',  -- Tipo de movimiento: entrada
+        NULL  -- Comprobante de despacho (solo para salidas)
+    );
+END $$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER pt_kar2
+AFTER INSERT ON det_despacho
+FOR EACH ROW
+BEGIN
+    DECLARE saldo_anterior DECIMAL(10, 2);
+    DECLARE comprobante VARCHAR(20);
+
+    -- Obtener el saldo anterior
+    SELECT stock_actual INTO saldo_anterior
+    FROM kardex_PT
+    WHERE id_pt = NEW.id_pt
+    ORDER BY fecha_hora DESC
+    LIMIT 1;
+
+    -- Obtener el número de comprobante de despacho
+    SELECT n_comprobante INTO comprobante
+    FROM despacho_pt
+    WHERE id_despacho = NEW.id_despacho;
+
+    -- Insertar registro en kardex_PT
+    INSERT INTO kardex_PT (fecha_hora, id_pt, presentacion, lote, cantidad, stock_anterior, stock_actual, tipo_movimiento, comprobante_despacho)
+    VALUES (
+        NOW(),  -- Fecha y hora actual
+        NEW.id_pt,
+        (SELECT presentacion FROM inventario_pt WHERE id_pt = NEW.id_pt),
+        (SELECT pro_id FROM inventario_pt WHERE id_pt = NEW.id_pt),  -- Guardamos el pro_id en lugar del lote
+        NEW.cantidad_despachada,
+        COALESCE(saldo_anterior, 0),
+        COALESCE(saldo_anterior, 0) - NEW.cantidad_despachada,
+        'salida',  -- Tipo de movimiento: salida
+        comprobante  -- Número de comprobante de despacho
+    );
+END $$
+
+DELIMITER ;
 -- PRODUCCION (composicion de PT)
 DELIMITER $$
 

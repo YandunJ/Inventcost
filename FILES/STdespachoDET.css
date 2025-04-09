@@ -1,18 +1,18 @@
 .modal-header {
-    background-color: #dad6d6;
-    border-bottom: 1px solid #dad6d6;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
 }
 
 .modal-body {
-    padding: 10px;
+    padding: 20px;
 }
 
 .modal-body .row {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
 }
 
 .modal-body .table {
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
 .modal-body .table th, .modal-body .table td {
@@ -21,17 +21,12 @@
 }
 
 .modal-body .table th {
-    background-color: #dad6d6;
-}
-
-.modal-body .table-custom {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #f1f1f1;
 }
 
 .modal-footer {
     background-color: #f8f9fa;
-    border-top: 1px solid #5dd05c;
+    border-top: 1px solid #dee2e6;
 }
 
 .modal-footer .btn {

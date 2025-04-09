@@ -16,6 +16,9 @@ switch ($action) {
     case 'getDetalleKardex':
         getDetalleKardex($kardex);
         break;
+    case 'getKardexPT':
+        getKardexPT($kardex);
+        break;
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
         break;
@@ -38,4 +41,20 @@ function getDetalleKardex($kardex) {
     $data = $kardex->obtenerDetalleKardex($cat_id, $fecha_inicio, $fecha_fin);
     echo json_encode(['status' => 'success', 'data' => $data]);
 }
+
+// function getKardexPT($kardex) {
+//     $fecha_inicio = $_POST['fecha_inicio'];
+//     $fecha_fin = $_POST['fecha_fin'];
+
+//     $data = $kardex->obtenerKardexPT($fecha_inicio, $fecha_fin);
+    
+//     // Verificar qué datos está trayendo
+//     echo '<pre>';
+//     print_r($data);
+//     echo '</pre>';
+//     exit();
+
+//     echo json_encode(['status' => 'success', 'data' => $data]);
+// }
+
 ?>

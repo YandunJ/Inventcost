@@ -9,7 +9,7 @@ $(document).ready(function () {
         order: [[0, 'desc']], // Ordenar por la columna de fecha de despacho en orden descendente
         columns: [
             { data: 'fecha_despacho' },
-            { data: 'estado' },
+            { data: 'n_comprobante' },
             { data: 'cantidad_total' },
             { data: 'precio_total' },
             {

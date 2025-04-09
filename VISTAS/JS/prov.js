@@ -25,9 +25,7 @@ $(document).ready(function () {
                                 <a class="dropdown-item edit-btn" href="#" data-id="${row.proveedor_id}">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <a class="dropdown-item toggle-status-btn" href="#" data-id="${row.proveedor_id}" data-status="${row.estado}">
-                                    <i class="fas fa-toggle-${row.estado === 'habilitado' ? 'on' : 'off'}"></i> ${row.estado === 'habilitado' ? 'Deshabilitar' : 'Habilitar'}
-                                </a>
+                                
                             </div>
                         </div>
                     `;

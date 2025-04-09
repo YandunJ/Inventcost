@@ -136,76 +136,25 @@ CALL TP_salida('[{
 
 
 
-DELIMITER $$
+-- Declarar variables para almacenar el estado y el mensaje
+SET @p_status = '';
+SET @p_message = '';
 
-CREATE PROCEDURE `TP_cancelar_salida`(
-    IN p_id_despacho INT
-)
-BEGIN
-    DECLARE v_id_pt INT;
-    DECLARE v_lote VARCHAR(50);
-    DECLARE v_cantidad_despachada DECIMAL(10,2);
-    DECLARE mensaje_error VARCHAR(255);
-    DECLARE prev_safe_updates INT;
-    DECLARE done INT DEFAULT 0;
+-- Llamar al SP
+CALL TP_cancelar_salida(16, @p_status, @p_message);
 
-    -- Declarar cursor
-    DECLARE cur CURSOR FOR 
-        SELECT id_pt, lote, cantidad_despachada 
-        FROM det_despacho 
-        WHERE id_despacho = p_id_despacho;
+-- Mostrar el resultado
+SELECT @p_status AS status, @p_message AS message;
+-- Verificar si el despacho fue eliminado
+SELECT * FROM despacho_pt WHERE id_despacho = 16;
 
-    -- Declarar manejador de excepciones
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+-- Verificar si los detalles del despacho fueron eliminados
+SELECT * FROM det_despacho WHERE id_despacho = 16;
 
-    -- Iniciar transacción
-    START TRANSACTION;
+-- Verificar que las cantidades se devolvieron al inventario
+SELECT * FROM inventario_pt WHERE id_pt IN (11, 12);
 
-    -- Guardar estado original de SQL_SAFE_UPDATES
-    SET prev_safe_updates = @@SQL_SAFE_UPDATES;
-    SET SQL_SAFE_UPDATES = 0;
-
-    -- Verificar si el despacho existe y está activo
-    IF NOT EXISTS (SELECT 1 FROM despacho_pt WHERE id_despacho = p_id_despacho AND estado = 'activo') THEN
-        SET mensaje_error = CONCAT('Error: El despacho con id_despacho ', p_id_despacho, ' no existe o ya está anulado.');
-        ROLLBACK;
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = mensaje_error;
-    END IF;
-
-    -- Abrir cursor
-    OPEN cur;
-
-    -- Procesar los detalles del despacho
-    read_loop: LOOP
-        FETCH cur INTO v_id_pt, v_lote, v_cantidad_despachada;
-        IF done THEN
-            LEAVE read_loop;
-        END IF;
-
-        -- Actualizar inventario
-        UPDATE inventario_pt 
-        SET cant_disponible = cant_disponible + v_cantidad_despachada
-        WHERE id_pt = v_id_pt;
-    END LOOP;
-
-    -- Cerrar cursor
-    CLOSE cur;
-
-    -- Anular el despacho
-    UPDATE despacho_pt 
-    SET estado = 'anulado'
-    WHERE id_despacho = p_id_despacho;
-
-    -- Confirmar transacción
-    COMMIT;
-
-    -- Restaurar estado original de SQL_SAFE_UPDATES
-    SET SQL_SAFE_UPDATES = prev_safe_updates;
-END $$
-
-DELIMITER ;
-
-CALL TP_cancelar_salida(6);
+CALL TP_cancelar_salida(13);
 
 DELIMITER $$
 
@@ -234,6 +183,7 @@ CREATE PROCEDURE TP_historial_2 (IN despacho_id INT)
 BEGIN
     SELECT 
         dp.id_despacho,
+        dp.n_comprobante,
         dp.fecha_despacho,
         dp.estado AS estado_despacho,
         dp.cantidad_total,
@@ -242,6 +192,7 @@ BEGIN
         ddp.id_pt,
         ddp.lote,
         ddp.cantidad_despachada,
+        ddp.precio_venta,
         ipt.presentacion,
         ipt.p_u AS precio_unitario,
         ipt.p_v_s AS precio_venta_sugerido,
@@ -260,4 +211,4 @@ END //
 
 DELIMITER ;
 
-call fpulpas.TP_historial_2(2);
+call fpulpas.TP_historial_2(18);

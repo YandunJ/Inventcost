@@ -165,6 +165,21 @@ CREATE TABLE `det_despacho` (
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
+CREATE TABLE `kardex_PT` (
+    `id_pt_kardex` INT AUTO_INCREMENT PRIMARY KEY,
+    `fecha_hora` DATETIME NOT NULL,
+    `id_pt` INT NOT NULL,
+    `presentacion` VARCHAR(20) NOT NULL,
+    `lote` VARCHAR(50) NOT NULL,
+    `cantidad` DECIMAL(10, 2) NOT NULL,
+    `stock_anterior` DECIMAL(10, 2) NOT NULL,
+    `stock_actual` DECIMAL(10, 2) NOT NULL,
+    `tipo_movimiento` ENUM('entrada', 'salida', 'ajuste') NOT NULL,
+    `comprobante_despacho` VARCHAR(50) DEFAULT NULL,  -- Número de comprobante de despacho (solo para salidas)
+    `observacion` TEXT,
+    FOREIGN KEY (`id_pt`) REFERENCES `inventario_pt`(`id_pt`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 CREATE TABLE `usuarios` (
   `usu_id` int NOT NULL AUTO_INCREMENT,

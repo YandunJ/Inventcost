@@ -13,11 +13,9 @@ $(document).ready(function () {
             }
         },
         columns: [
-            // { data: 'pro_id' }, // ID de la producción
             { data: 'pro_fecha' }, // Fecha de producción
             { data: 'lote_PT' }, // Lote de producto terminado
             { data: 'pro_cant_producida' }, // Cantidad producida
-            
             { data: 'pro_subtotal_mtpm' }, // Subtotal de materia prima
             { data: 'pro_subtotal_ins' }, // Subtotal de insumos
             { data: 'pro_subtotal_mo' }, // Subtotal de mano de obra
@@ -32,10 +30,7 @@ $(document).ready(function () {
                                 <i class="fas fa-cog"></i>
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item ver-btn" href="#" data-id="${row.pro_id}">
-                                    <i class="fas fa-eye"></i> Ver
-                                </a>
-                            
+                              
                                 <a class="dropdown-item cancel-btn" href="#" data-id="${row.pro_id}">
                                     <i class="fas fa-times"></i> Cancelar
                                 </a>
@@ -71,8 +66,8 @@ $(document).ready(function () {
                         costosAsociados.forEach(costo => {
                             costosAsociadosTable.append(`
                                 <tr>
-                                    <td>${costo.cst_id}</td>
-                                    <td>${costo.cat_id}</td>
+                                    
+                                    
                                     <td>${costo.cst_cant}</td>
                                     <td>${costo.cst_presentacion}</td>
                                     <td>${costo.cst_horas_persona}</td>
@@ -120,6 +115,11 @@ $(document).ready(function () {
                             alert('Producción cancelada correctamente');
                             // Actualizar el DataTable
                             tablaProducciones.ajax.reload();
+                            // Recargar los datos del modal
+                            $('#verProduccionModal').modal('hide');
+                            $('#verProduccionModal').on('hidden.bs.modal', function () {
+                                $('#tablaCostosAsociados tbody').empty();
+                            });
                         } else {
                             alert('Error: ' + result.message);
                         }
@@ -132,5 +132,10 @@ $(document).ready(function () {
                 }
             });
         }
+    });
+
+    // Escuchar el evento personalizado para recargar el DataTable
+    $(document).on('produccionRegistrada', function () {
+        tablaProducciones.ajax.reload();
     });
 });
