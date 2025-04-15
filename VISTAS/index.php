@@ -30,68 +30,58 @@
                     <!-- Default content goes here -->
                     <h1>Bienvenido al sistema </h1>
                     <div class="row">
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-info">
-                                <div class="inner">
-                                    <h3 id="cantidadFrutas">0</h3>
-                                    <p> Frutas en Catalogo</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-apple-alt"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-success">
-                                <div class="inner">
-                                    <h3 id="cantidadProveedores">0</h3>
-                                    <p>Proveedores</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-truck"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-warning">
-                                <div class="inner">
-                                    <h3 id="cantidadPresentaciones">0</h3>
-                                    <p>Presentaciones</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-box"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-primary">
-                                <div class="inner">
-                                    <h3 id="cantidadManoObra">0</h3>
-                                    <p>Actividades Mano de Obra</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-hands-helping"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-secondary">
-                                <div class="inner">
-                                    <h3 id="cantidadCostosInd">0</h3>
-                                    <p>Actividades  Costos Indirectos</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Aquí puedes agregar más cuadros de estadísticas -->
-                    </div>
+    <!-- Lotes MP -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3 id="cantidadLotesMP">0</h3>
+                <p>Lotes de Fruta Disponible</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-boxes"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lotes INS -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3 id="cantidadLotesINS">0</h3>
+                <p>Lotes de Insumos Disponible</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-pallet"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lotes PT -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3 id="cantidadLotesPT">0</h3>
+                <p>Lotes de Pulpas Disponibles</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-warehouse"></i>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lotes Próximos a Vencer -->
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3 id="cantidadLotesProximos">0</h3>
+                <p>Lotes de Pulpa por Vencer</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+    </div>
+</div>
                     <!-- Gráficos -->
                     <div class="row">
                         <div class="col-lg-8 col-12">

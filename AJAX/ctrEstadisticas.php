@@ -8,24 +8,20 @@ $action = $_POST['action'];
 $estadisticas = new Estadisticas();
 
 switch ($action) {
-    case 'obtenerCantidadFrutas':
-        obtenerCantidadFrutas($estadisticas);
+    case 'obtenerLotesMP':
+        obtenerLotesMP($estadisticas);
         break;
-
-    case 'obtenerCantidadProveedores':
-        obtenerCantidadProveedores($estadisticas);
+        
+    case 'obtenerLotesINS':
+        obtenerLotesINS($estadisticas);
         break;
-
-    case 'obtenerCantidadPresentaciones':
-        obtenerCantidadPresentaciones($estadisticas);
+        
+    case 'obtenerLotesPT':
+        obtenerLotesPT($estadisticas);
         break;
-
-    case 'obtenerCantidadManoObra':
-        obtenerCantidadManoObra($estadisticas);
-        break;
-
-    case 'obtenerCantidadCostosInd':
-        obtenerCantidadCostosInd($estadisticas);
+        
+    case 'obtenerLotesProximosVencer':
+        obtenerLotesProximosVencer($estadisticas);
         break;
 
     case 'obtenerEntradasPorCategoria':
@@ -37,32 +33,27 @@ switch ($action) {
         break;
 }
 
-function obtenerCantidadFrutas($estadisticas) {
-    $data = $estadisticas->obtenerCantidadFrutas();
+function obtenerLotesMP($estadisticas) {
+    $data = $estadisticas->obtenerLotesMP();
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }
 
-function obtenerCantidadProveedores($estadisticas) {
-    $data = $estadisticas->obtenerCantidadProveedores();
+
+function obtenerLotesINS($estadisticas) {
+    $data = $estadisticas->obtenerLotesINS();
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }
 
-function obtenerCantidadPresentaciones($estadisticas) {
-    $data = $estadisticas->obtenerCantidadPresentaciones();
+function obtenerLotesPT($estadisticas) {
+    $data = $estadisticas->obtenerLotesINS();
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }
 
-function obtenerCantidadManoObra($estadisticas) {
-    $data = $estadisticas->obtenerCantidadManoObra();
-    echo json_encode(['status' => 'success', 'data' => $data]);
-    exit;
-}
-
-function obtenerCantidadCostosInd($estadisticas) {
-    $data = $estadisticas->obtenerCantidadCostosInd();
+function obtenerLotesProximosVencer($estadisticas) {
+    $data = $estadisticas->obtenerLotesProximosVencer();
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }
