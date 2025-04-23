@@ -82,52 +82,20 @@
         </div>
     </div>
 </div>
-                    <!-- Gráficos -->
-                    <div class="row">
-                        <div class="col-lg-8 col-12">
-                            <canvas id="myBarChart"></canvas>
-                        </div>
-                        <div class="col-lg-4 col-12">
-                            <!-- Filtro de fechas para el gráfico de pastel -->
-                            <form id="filtroFechas" class="mb-3">
-                                <div class="form-row align-items-center">
-                                    <div class="col-auto">
-                                        <label for="mes" class="sr-only">Mes</label>
-                                        <select class="form-control mb-2" id="mes">
-                                            <option value="1">Enero</option>
-                                            <option value="2">Febrero</option>
-                                            <option value="3">Marzo</option>
-                                            <option value="4">Abril</option>
-                                            <option value="5">Mayo</option>
-                                            <option value="6">Junio</option>
-                                            <option value="7">Julio</option>
-                                            <option value="8">Agosto</option>
-                                            <option value="9">Septiembre</option>
-                                            <option value="10">Octubre</option>
-                                            <option value="11">Noviembre</option>
-                                            <option value="12">Diciembre</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-auto">
-                                        <label for="anio" class="sr-only">Año</label>
-                                        <select class="form-control mb-2" id="anio">
-                                            <?php
-                                            $currentYear = date('Y');
-                                            for ($year = 2000; $year <= 2100; $year++) {
-                                                $selected = ($year == $currentYear) ? 'selected' : '';
-                                                echo "<option value=\"$year\" $selected>$year</option>";
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button type="button" class="btn btn-primary mb-2" id="filtrar">Filtrar</button>
-                                    </div>
-                                </div>
-                            </form>
-                            <canvas id="myPieChart"></canvas>
-                        </div>
-                    </div>
+
+
+<div class="col-lg-12">
+    <div class="card shadow-sm" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;"> <!-- Contenedor tipo tarjeta -->
+        <div class="card-header bg-white" style="border-bottom: 1px solid #e2e8f0; padding: 10px 15px;">
+            <h5 class="card-title mb-0" style="font-size: 1.1rem; color: #2d3748;">Stock de Pulpas por Presentación</h5>
+        </div>
+        <div class="card-body p-3" style="padding: 15px;"> <!-- Reduce el padding interno -->
+            <div class="chart-container" style="position: relative; margin: auto; padding: 15px; height: 400px; width: 100%;"> <!-- Control de tamaño -->
+                <canvas id="myPieChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
                 </div><!-- /.container-fluid -->
             </section>
             <!-- /.content -->

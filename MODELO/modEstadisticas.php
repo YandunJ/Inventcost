@@ -48,5 +48,15 @@ public function obtenerLotesProximosVencer() {
 
         return $data;
     }
+
+    public function obtenerStockPT() {
+        $sql = "CALL EST_Stock_PT()";
+        $result = $this->conn->ejecutarSP($sql);
+        $data = [];
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
+        }
+        return $data;
+    }
 }
 ?>

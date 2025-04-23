@@ -27,6 +27,11 @@ switch ($action) {
     case 'obtenerEntradasPorCategoria':
         obtenerEntradasPorCategoria($estadisticas);
         break;
+        
+        case 'obtenerStockPT':
+            obtenerStockPT($estadisticas);
+            break;
+      
 
     default:
         echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);
@@ -65,4 +70,11 @@ function obtenerEntradasPorCategoria($estadisticas) {
     echo json_encode(['status' => 'success', 'data' => $data]);
     exit;
 }
+  
+        // Función correspondiente
+        function obtenerStockPT($estadisticas) {
+            $data = $estadisticas->obtenerStockPT();
+            echo json_encode(['status' => 'success', 'data' => $data]);
+            exit;
+        }
 ?>
