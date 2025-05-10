@@ -71,3 +71,29 @@ button {
 .text-center {
     text-align: center;
 }
+
+
+/* Estilos para la sección de subtotales */
+.subtotales-container .card-header {
+    background-color: #2366ae; /* Color similar al DataTable */
+    color: #fff; /* Texto blanco */
+    padding: 5px 5px; /* Ajustar el padding */
+    cursor: pointer;
+}
+
+.subtotales-container .card-title {
+    font-size: 0.9rem; /* Reducir el tamaño de la fuente */
+}
+
+#subtotalesContent {
+    display: none; /* Ocultar por defecto */
+}
+
+#toggleSubtotales {
+    background: none;
+    border: none;
+    color: #ececec;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-left: auto; /* Mover el botón al extremo derecho */
+}

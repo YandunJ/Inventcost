@@ -7,6 +7,7 @@
     <title>Inventario de Insumos</title>
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="../FILES/global.css">
+    <link rel="stylesheet" href="../FILES/STmodalINS.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">

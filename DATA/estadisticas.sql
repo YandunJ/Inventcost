@@ -100,3 +100,19 @@ END //
 DELIMITER ;
 
 CALL EST_invert_mes(03, 2025); -- Octubre 2023
+
+
+
+DELIMITER //
+CREATE PROCEDURE EST_Stock_PT()
+BEGIN
+    SELECT 
+        pt.presentacion AS presentacion,
+        SUM(pt.cant_disponible) AS total_disponible
+    FROM inventario_pt pt
+    WHERE pt.estado = 'disponible'
+    GROUP BY pt.presentacion;
+END //
+DELIMITER ;
+
+CALL EST_Stock_PT();

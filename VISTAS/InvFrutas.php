@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lotes Materia Prima</title>
     <link rel="stylesheet" href="../FILES/global.css">
+    <link rel="stylesheet" href="../FILES/STmodalMP.css">
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -104,8 +105,9 @@
                                     <label for="cantidad_ingresada">Cantidad:</label>
                                     <div class="input-quantity">
                                         <button type="button" class="btn-minus quantity-int">-</button>
-                                        <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" value="1" min="0" step="0.01" required>
                                         <span class="currency">Kg</span>
+                                        <input type="number" id="cantidad_ingresada" name="cantidad_ingresada" value="1" min="0" step="0.01" required>
+                                        
                                         <button type="button" class="btn-plus quantity-int">+</button>
                                     </div>
                                 </div>

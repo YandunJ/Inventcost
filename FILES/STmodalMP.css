@@ -1,0 +1,105 @@
+/* ========== ESTILO VISUAL MEJORADO - SIN TOCAR ESTRUCTURA ========== */
+/* Ajustar el tamaño del modal */
+.modal-dialog.modal-lg {
+    width: 800px; /* Forzar un ancho específico */
+    max-width: 800px; /* Asegurar que no exceda este ancho */
+    margin: auto; /* Centrar el modal */
+    padding: 20px; /* Espaciado interno opcional */
+}
+
+/* Fondo del modal */
+.modal-content {
+    background-color: #fdfdfd;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+/* Título */
+.modal-header .modal-title {
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Etiquetas */
+.modal-form-container label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+/* Inputs, selects y textarea */
+.modal-form-container input[type="text"],
+.modal-form-container input[type="number"],
+.modal-form-container select,
+.modal-form-container textarea {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+.modal-form-container input:focus,
+.modal-form-container select:focus,
+.modal-form-container textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Botones de cantidad y moneda */
+.input-quantity button.btn-minus,
+.input-quantity button.btn-plus {
+    background-color: #e9ecef;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.input-quantity button.btn-minus:hover,
+.input-quantity button.btn-plus:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Moneda o unidad */
+.input-quantity .currency {
+    margin: 0 6px;
+    font-weight: bold;
+    color: #555;
+}
+
+/* Botones finales */
+.form-actions .btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    padding: 8px 16px;
+}
+
+.form-actions .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.form-actions .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    padding: 8px 16px;
+}
+
+.form-actions .btn-secondary:hover {
+    background-color: #495057;
+}
+
+/* ========== FIN DE ESTILO VISUAL ========== */
