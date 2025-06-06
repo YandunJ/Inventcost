@@ -1,3 +1,4 @@
+<?php include '../CONFIG/validar_sesion.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
